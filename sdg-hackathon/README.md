@@ -1,36 +1,70 @@
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
+# ArtConnect - Hong Kong's Art Community Platform
+
+## About ArtConnect
+
+ArtConnect is a community-based social platform designed to address key challenges faced by artists in Hong Kong. The platform focuses on providing artists with recognition, fair pay, and collaboration opportunities, which are often lacking in the Hong Kong art ecosystem.
+
+### Key Features
+
+- **Artwork Showcase and Discovery**: Artists can upload high-resolution images/videos of physical/digital art with descriptions, pricing, and availability information.
+- **AI-Powered Recommendations**: The platform uses AI to suggest art matching buyer preferences based on profile data and past views.
+- **Artist Profiles**: Detailed artist profiles to showcase their work, bio, and contact information.
+- **Filtering and Search**: Buyers can browse/search via filters (e.g., artist location in HK, style, price range).
+- **Community Features**: Tools for artists to connect, collaborate, and keep each other accountable.
+
+## Technology Stack
+
+- **Frontend**: Next.js, React, TypeScript
+- **Styling**: Tailwind CSS
+- **UI Components**: Custom components with responsive design
+- **State Management**: React hooks and context
+- **AI Integration**: Mock implementation (to be replaced with real AI service)
 
 ## Getting Started
 
-First, run the development server:
+First, install the dependencies:
+
+```bash
+npm install
+```
+
+Then, run the development server:
 
 ```bash
 npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
 ```
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+Open [http://localhost:3000](http://localhost:3000) with your browser to see the application.
 
-You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
+## Project Structure
 
-This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
+```
+src/
+├── app/                # Next.js app router pages
+├── components/         # React components
+│   ├── artwork/        # Artwork-related components
+│   ├── layout/         # Layout components (navbar, footer)
+│   └── ui/             # Reusable UI components
+├── hooks/              # Custom React hooks
+├── lib/                # Utilities and mock data
+├── types/              # TypeScript type definitions
+└── utils/              # Utility functions
+```
 
-## Learn More
+## SDG Hackathon Focus
 
-To learn more about Next.js, take a look at the following resources:
+This project was created for the SDG Hackathon with a specific focus on using GenAI for social good. ArtConnect aims to create a more equitable art ecosystem in Hong Kong by:
 
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
+1. Providing a platform for underrepresented artists to gain visibility
+2. Connecting artists with fair-paying opportunities
+3. Building a supportive community that helps artists thrive
+4. Preserving and promoting both traditional and digital art forms
 
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
+## Future Enhancements
 
-## Deploy on Vercel
-
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
-
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
+- Integration with real AI services for personalized recommendations
+- User authentication and profiles
+- Payment processing for artwork sales
+- Community forums and messaging
+- Virtual exhibitions and events
+- Mobile application
