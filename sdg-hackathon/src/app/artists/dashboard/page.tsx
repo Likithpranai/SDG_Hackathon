@@ -47,6 +47,7 @@ export default function ArtistDashboard() {
     experience: "8 years",
     primaryMedium: "Mixed Media, Digital Art",
     location: "Barcelona, Spain",
+    skills: "Blender, VFX, 3D modelling, Oil Painting, Watercoloring",
     socialLinks: [
       { platform: "instagram", url: "https://instagram.com/sofia.creates" },
       { platform: "twitter", url: "https://twitter.com/sofia_art" },
@@ -257,6 +258,10 @@ export default function ArtistDashboard() {
                     <div>
                       <span className="block text-gray-500 dark:text-gray-400">Location</span>
                       <span className="font-medium text-gray-900 dark:text-white">{artistProfile.location}</span>
+                    </div>
+                    <div>
+                      <span className="block text-gray-500 dark:text-gray-400">Skills</span>
+                      <span className="font-medium text-gray-900 dark:text-white">{artistProfile.skills}</span>
                     </div>
                   </div>
                 </div>
