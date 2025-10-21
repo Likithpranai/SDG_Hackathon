@@ -227,7 +227,7 @@ export default function ArtistDashboard() {
                     : "text-gray-600 dark:text-gray-400 hover:text-indigo-600 dark:hover:text-indigo-500"
                 )}
               >
-                Dashboard Stats
+                Dashboard
               </button>
             </div>
           </div>
@@ -290,7 +290,7 @@ export default function ArtistDashboard() {
                     <div className={cn(
                       "relative bg-gray-200 dark:bg-gray-800",
                       artwork.width === "wide" ? "aspect-video" : "",
-                      artwork.width === "tall" ? "aspect-[9/16]" : "",
+                      artwork.width === "tall" ? "aspect-9/16" : "",
                       artwork.width === "medium" ? "aspect-square" : ""
                     )}>
                       <div className="absolute inset-0 flex items-center justify-center">
