@@ -22,31 +22,31 @@ export function Navbar() {
   };
 
   return (
-    <header className="bg-white dark:bg-gray-900 border-b border-gray-200 dark:border-gray-800 sticky top-0 z-40">
+    <header className="bg-white/90 dark:bg-gray-900/95 backdrop-blur-md border-b border-gray-200 dark:border-gray-800 sticky top-0 z-40 transition-all duration-200">
       <div className="container mx-auto px-4 sm:px-6 lg:px-8">
-        <div className="flex items-center justify-between h-16">
+        <div className="flex items-center justify-between h-18 py-4">
           {/* Logo */}
           <div className="shrink-0">
-            <Link href="/" className="flex items-center">
-              <span className="text-2xl font-bold text-primary-600 dark:text-primary-400">ArtConnect</span>
+            <Link href="/" className="flex items-center group">
+              <span className="text-2xl font-bold bg-gradient-to-r from-primary-600 to-secondary-500 bg-clip-text text-transparent group-hover:from-primary-500 group-hover:to-secondary-400 transition-all duration-300">ArtConnect</span>
             </Link>
           </div>
 
           {/* Desktop Navigation */}
-          <nav className="hidden md:flex items-center space-x-8">
-            <Link href="/explore" className="text-gray-700 hover:text-primary-600 dark:text-gray-300 dark:hover:text-primary-400">
+          <nav className="hidden md:flex items-center space-x-10">
+            <Link href="/explore" className="text-gray-700 hover:text-primary-600 dark:text-gray-300 dark:hover:text-primary-400 font-medium transition-colors duration-200 relative after:absolute after:bottom-0 after:left-0 after:right-0 after:h-0.5 after:bg-primary-600 after:scale-x-0 hover:after:scale-x-100 after:transition-transform after:duration-300">
               Explore
             </Link>
-            <Link href="/artists" className="text-gray-700 hover:text-primary-600 dark:text-gray-300 dark:hover:text-primary-400">
+            <Link href="/artists" className="text-gray-700 hover:text-primary-600 dark:text-gray-300 dark:hover:text-primary-400 font-medium transition-colors duration-200 relative after:absolute after:bottom-0 after:left-0 after:right-0 after:h-0.5 after:bg-primary-600 after:scale-x-0 hover:after:scale-x-100 after:transition-transform after:duration-300">
               Artists
             </Link>
-            <Link href="/about" className="text-gray-700 hover:text-primary-600 dark:text-gray-300 dark:hover:text-primary-400">
+            <Link href="/about" className="text-gray-700 hover:text-primary-600 dark:text-gray-300 dark:hover:text-primary-400 font-medium transition-colors duration-200 relative after:absolute after:bottom-0 after:left-0 after:right-0 after:h-0.5 after:bg-primary-600 after:scale-x-0 hover:after:scale-x-100 after:transition-transform after:duration-300">
               About
             </Link>
           </nav>
 
           {/* Search Bar - Desktop */}
-          <div className="hidden md:flex flex-1 max-w-md mx-4">
+          <div className="hidden md:flex flex-1 max-w-md mx-6">
             <form onSubmit={handleSearch} className="w-full">
               <Input
                 type="search"
@@ -64,7 +64,7 @@ export function Navbar() {
             <Button
               variant="ghost"
               size="sm"
-              className="text-gray-700 dark:text-gray-300"
+              className="text-gray-700 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-800 rounded-full"
               leftIcon={<Bell className="h-5 w-5" />}
             >
               <span className="sr-only">Notifications</span>
@@ -73,6 +73,7 @@ export function Navbar() {
               variant="outline"
               size="sm"
               leftIcon={<Upload className="h-4 w-4" />}
+              className="rounded-full shadow-sm hover:shadow transition-all duration-200"
             >
               Upload
             </Button>
@@ -80,6 +81,7 @@ export function Navbar() {
               variant="primary"
               size="sm"
               leftIcon={<User className="h-4 w-4" />}
+              className="rounded-full shadow-sm hover:shadow-md transition-all duration-200"
             >
               Sign In
             </Button>

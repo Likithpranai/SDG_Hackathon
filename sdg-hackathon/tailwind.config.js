@@ -52,6 +52,51 @@ module.exports = {
         sans: ['var(--font-geist-sans)'],
         mono: ['var(--font-geist-mono)'],
       },
+      animation: {
+        'slow-zoom': 'slow-zoom 20s ease-in-out infinite',
+        'bounce-x': 'bounce-x 1s infinite',
+        'bounce-slow': 'bounce 3s ease-in-out infinite',
+        'fade-in-up': 'fade-in-up 0.8s ease-out',
+        'pulse': 'pulse 4s cubic-bezier(0.4, 0, 0.6, 1) infinite',
+        'float': 'float 6s ease-in-out infinite',
+        'float-slow': 'float 10s ease-in-out infinite',
+        'spin-slow': 'spin 8s linear infinite',
+        'wiggle': 'wiggle 1s ease-in-out infinite',
+      },
+      boxShadow: {
+        'glow': '0 0 15px rgba(255, 255, 255, 0.3)',
+        'glow-lg': '0 0 25px rgba(255, 255, 255, 0.5)',
+        'glow-sm': '0 0 10px rgba(255, 255, 255, 0.2)',
+        'neon': '0 0 5px theme(\'colors.primary.400\'), 0 0 20px theme(\'colors.primary.600\')',
+        'neon-lg': '0 0 10px theme(\'colors.primary.400\'), 0 0 30px theme(\'colors.primary.600\')',
+      },
+      keyframes: {
+        'slow-zoom': {
+          '0%, 100%': { transform: 'scale(1.05)' },
+          '50%': { transform: 'scale(1.1)' },
+        },
+        'bounce-x': {
+          '0%, 100%': { transform: 'translateX(0)' },
+          '50%': { transform: 'translateX(5px)' },
+        },
+        'fade-in-up': {
+          '0%': { opacity: '0', transform: 'translateY(20px)' },
+          '100%': { opacity: '1', transform: 'translateY(0)' },
+        },
+        'float': {
+          '0%, 100%': { transform: 'translateY(0)' },
+          '50%': { transform: 'translateY(-20px)' },
+        },
+        'wiggle': {
+          '0%, 100%': { transform: 'rotate(-3deg)' },
+          '50%': { transform: 'rotate(3deg)' },
+        },
+      },
+      backgroundImage: {
+        'gradient-radial': 'radial-gradient(var(--tw-gradient-stops))',
+        'gradient-conic': 'conic-gradient(from 180deg at 50% 50%, var(--tw-gradient-stops))',
+        'gradient-shine': 'linear-gradient(45deg, transparent 25%, rgba(255, 255, 255, 0.1) 25%, rgba(255, 255, 255, 0.1) 50%, transparent 50%, transparent 75%, rgba(255, 255, 255, 0.1) 75%, rgba(255, 255, 255, 0.1))',
+      },
     },
   },
   plugins: [],

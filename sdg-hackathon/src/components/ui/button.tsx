@@ -21,19 +21,19 @@ const Button = React.forwardRef<HTMLButtonElement, ButtonProps>(
     disabled, 
     ...props 
   }, ref) => {
-    const baseStyles = 'inline-flex items-center justify-center rounded-md font-medium transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary-500 focus-visible:ring-offset-2 disabled:opacity-50 disabled:pointer-events-none';
+    const baseStyles = 'inline-flex items-center justify-center rounded-md font-medium transition-all duration-200 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary-500 focus-visible:ring-offset-2 disabled:opacity-50 disabled:pointer-events-none';
     
     const variants = {
-      primary: 'bg-primary-600 text-white hover:bg-primary-700',
-      secondary: 'bg-secondary-600 text-white hover:bg-secondary-700',
-      outline: 'border border-gray-300 bg-transparent hover:bg-gray-100 dark:border-gray-700 dark:hover:bg-gray-800',
-      ghost: 'bg-transparent hover:bg-gray-100 dark:hover:bg-gray-800',
+      primary: 'bg-primary-600 text-white hover:bg-primary-700 shadow-sm hover:shadow transform hover:-translate-y-0.5 active:translate-y-0',
+      secondary: 'bg-secondary-600 text-white hover:bg-secondary-700 shadow-sm hover:shadow transform hover:-translate-y-0.5 active:translate-y-0',
+      outline: 'border border-gray-300 bg-transparent hover:bg-gray-100 dark:border-gray-700 dark:hover:bg-gray-800 hover:border-primary-500 dark:hover:border-primary-500',
+      ghost: 'bg-transparent hover:bg-gray-100 dark:hover:bg-gray-800 hover:text-primary-600 dark:hover:text-primary-400',
     };
     
     const sizes = {
-      sm: 'h-9 px-3 text-sm',
-      md: 'h-10 px-4 py-2',
-      lg: 'h-12 px-6 py-3 text-lg',
+      sm: 'h-9 px-4 text-sm',
+      md: 'h-10 px-5 py-2',
+      lg: 'h-12 px-8 py-3 text-lg',
     };
     
     return (
