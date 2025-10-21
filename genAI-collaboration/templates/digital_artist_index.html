@@ -1,0 +1,508 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Digital Artist Collaboration Matcher</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/css/bootstrap.min.css" rel="stylesheet">
+    <style>
+        body {
+            font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+            background-color: #f8f9fa;
+            color: #333;
+        }
+        .header {
+            background: linear-gradient(135deg, #6366f1 0%, #8b5cf6 100%);
+            color: white;
+            padding: 3rem 0;
+            margin-bottom: 2rem;
+            text-align: center;
+        }
+        .card {
+            border-radius: 12px;
+            overflow: hidden;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.05);
+            transition: transform 0.2s, box-shadow 0.2s;
+            margin-bottom: 1.5rem;
+        }
+        .card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 10px 15px rgba(0, 0, 0, 0.1);
+        }
+        .artist-card {
+            cursor: pointer;
+            border: 2px solid transparent;
+        }
+        .artist-card.selected {
+            border-color: #6366f1;
+            background-color: #f0f4ff;
+        }
+        .artist-img {
+            width: 100%;
+            height: 200px;
+            object-fit: cover;
+        }
+        .compatibility-score {
+            font-size: 2rem;
+            font-weight: 700;
+            color: #6366f1;
+        }
+        .score-breakdown {
+            background-color: #f0f4ff;
+            border-radius: 8px;
+            padding: 1rem;
+            margin-bottom: 1rem;
+        }
+        .progress {
+            height: 8px;
+            margin-bottom: 0.5rem;
+        }
+        .insight-item {
+            background-color: #f0fdf4;
+            border-left: 4px solid #10b981;
+            padding: 0.75rem 1rem;
+            margin-bottom: 0.5rem;
+            border-radius: 0 4px 4px 0;
+        }
+        .chatbot-form {
+            background-color: white;
+            padding: 2rem;
+            border-radius: 12px;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.05);
+            margin-bottom: 2rem;
+        }
+        .btn-primary {
+            background-color: #6366f1;
+            border-color: #6366f1;
+        }
+        .btn-primary:hover {
+            background-color: #4f46e5;
+            border-color: #4f46e5;
+        }
+        .results-section {
+            display: none;
+        }
+        .loading {
+            display: none;
+            text-align: center;
+            padding: 2rem;
+        }
+        .spinner-border {
+            width: 3rem;
+            height: 3rem;
+            color: #6366f1;
+        }
+        .badge {
+            font-size: 0.75rem;
+            padding: 0.35em 0.65em;
+            margin-right: 0.25rem;
+            margin-bottom: 0.25rem;
+        }
+        .tool-badge {
+            background-color: #e0f2fe;
+            color: #0369a1;
+        }
+        .art-type-badge {
+            background-color: #f0fdf4;
+            color: #166534;
+        }
+        .artwork-preview {
+            display: flex;
+            overflow-x: auto;
+            gap: 10px;
+            padding: 10px 0;
+            margin-bottom: 15px;
+        }
+        .artwork-preview img {
+            width: 100px;
+            height: 100px;
+            object-fit: cover;
+            border-radius: 8px;
+            transition: transform 0.2s;
+        }
+        .artwork-preview img:hover {
+            transform: scale(1.05);
+        }
+        .artist-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
+            gap: 1.5rem;
+        }
+    </style>
+</head>
+<body>
+    <div class="header">
+        <div class="container">
+            <h1 class="display-4">Digital Artist Collaboration Matcher</h1>
+            <p class="lead">Find your perfect creative partner using AI-powered matching</p>
+        </div>
+    </div>
+
+    <div class="container mb-5">
+        <div class="row">
+            <div class="col-lg-10 mx-auto">
+                <div class="chatbot-form">
+                    <h2 class="mb-4">Find Your Ideal Collaborator</h2>
+                    
+                    <div class="mb-4">
+                        <label class="form-label">Select Your Artist Profile</label>
+                        <select class="form-select" id="artistSelect">
+                            <option value="">Select your profile...</option>
+                            <!-- Artists will be loaded here -->
+                        </select>
+                    </div>
+                    
+                    <div class="mb-4">
+                        <label for="chatbotPreference" class="form-label">What kind of collaborator are you looking for?</label>
+                        <textarea class="form-control" id="chatbotPreference" rows="3" placeholder="Example: Looking for 3D artists who work in Blender for an NFT project. Need someone with AR/VR experience."></textarea>
+                    </div>
+                    
+                    <div class="mb-3">
+                        <label class="form-label">Or select a sample preference:</label>
+                        <div id="samplePreferences" class="sample-preferences">
+                            <div class="form-check">
+                                <input class="form-check-input sample-preference" type="radio" name="samplePreference" id="sample1">
+                                <label class="form-check-label" for="sample1">
+                                    Looking for 3D artists who work in Blender for an NFT project. Need someone with AR/VR experience.
+                                </label>
+                            </div>
+                            <div class="form-check">
+                                <input class="form-check-input sample-preference" type="radio" name="samplePreference" id="sample2">
+                                <label class="form-check-label" for="sample2">
+                                    Need digital illustrators for fantasy book covers. Procreate/Photoshop skills + animation bonus.
+                                </label>
+                            </div>
+                            <div class="form-check">
+                                <input class="form-check-input sample-preference" type="radio" name="samplePreference" id="sample3">
+                                <label class="form-check-label" for="sample3">
+                                    Digital street artists who make AR murals and music videos. After Effects required.
+                                </label>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <button id="findBtn" class="btn btn-primary btn-lg w-100">Find Collaborators</button>
+                </div>
+                
+                <div class="loading">
+                    <div class="spinner-border" role="status">
+                        <span class="visually-hidden">Loading...</span>
+                    </div>
+                    <p class="mt-3">Analyzing artist profiles and finding your ideal collaborators...</p>
+                </div>
+                
+                <div class="results-section">
+                    <div class="card mb-4">
+                        <div class="card-body">
+                            <h4>Your Preference</h4>
+                            <div id="preferenceText" class="mb-4"></div>
+                            
+                            <h4>Preference Analysis</h4>
+                            <div class="row">
+                                <div class="col-md-4">
+                                    <h6>Tools</h6>
+                                    <div id="preferenceTools"></div>
+                                </div>
+                                <div class="col-md-4">
+                                    <h6>Art Types</h6>
+                                    <div id="preferenceArtTypes"></div>
+                                </div>
+                                <div class="col-md-4">
+                                    <h6>Keywords</h6>
+                                    <div id="preferenceKeywords"></div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <h2 class="mb-4">Top Collaboration Matches</h2>
+                    <div id="matchesContainer"></div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Match Card Template -->
+    <template id="matchTemplate">
+        <div class="card mb-4">
+            <div class="card-body">
+                <div class="d-flex justify-content-between align-items-start mb-3">
+                    <div class="d-flex align-items-center">
+                        <img class="match-image rounded-circle me-3" src="" alt="" style="width: 80px; height: 80px; object-fit: cover;">
+                        <div>
+                            <h3 class="artist-name mb-1"></h3>
+                            <p class="artist-location text-muted mb-0"></p>
+                        </div>
+                    </div>
+                    <div class="text-center">
+                        <div class="compatibility-score"></div>
+                        <div class="text-muted">Compatibility</div>
+                    </div>
+                </div>
+                
+                <p class="artist-bio mb-3"></p>
+                
+                <div class="mb-4">
+                    <h5>Why This Artist Is a Good Match:</h5>
+                    <div class="insights-list"></div>
+                </div>
+                
+                <div class="score-breakdown mb-4">
+                    <h5>Compatibility Breakdown:</h5>
+                    <div class="breakdown-items"></div>
+                </div>
+                
+                <div class="mb-4">
+                    <h5>Tools & Art Types:</h5>
+                    <div class="tools-list mb-2"></div>
+                    <div class="art-types-list"></div>
+                </div>
+                
+                <div class="artwork-preview mb-3">
+                    <!-- Artwork images will be inserted here -->
+                </div>
+                
+                <div class="mt-4">
+                    <a href="#" class="btn btn-primary view-profile-btn">View Full Profile</a>
+                    <a href="#" class="btn btn-outline-primary ms-2 contact-btn">Contact Artist</a>
+                </div>
+            </div>
+        </div>
+    </template>
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/js/bootstrap.bundle.min.js"></script>
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            const artistSelect = document.getElementById('artistSelect');
+            const chatbotPreference = document.getElementById('chatbotPreference');
+            const findBtn = document.getElementById('findBtn');
+            const matchesContainer = document.getElementById('matchesContainer');
+            const loadingSection = document.querySelector('.loading');
+            const resultsSection = document.querySelector('.results-section');
+            const samplePreferences = document.querySelectorAll('.sample-preference');
+            
+            // Load artists
+            fetch('/api/artists')
+                .then(response => response.json())
+                .then(artists => {
+                    artists.forEach(artist => {
+                        const option = document.createElement('option');
+                        option.value = artist.artistId;
+                        option.textContent = `${artist.basicInfo.name} - ${artist.basicInfo.bio.substring(0, 30)}...`;
+                        artistSelect.appendChild(option);
+                    });
+                })
+                .catch(error => console.error('Error loading artists:', error));
+            
+            // Handle sample preference selection
+            samplePreferences.forEach(radio => {
+                radio.addEventListener('change', function() {
+                    if (this.checked) {
+                        chatbotPreference.value = this.nextElementSibling.textContent.trim();
+                    }
+                });
+            });
+            
+            // Find collaborators
+            findBtn.addEventListener('click', async function() {
+                const artistId = artistSelect.value;
+                const preferenceText = chatbotPreference.value.trim();
+                
+                if (!artistId) {
+                    alert('Please select your artist profile');
+                    return;
+                }
+                
+                if (!preferenceText) {
+                    alert('Please enter your collaboration preference');
+                    return;
+                }
+                
+                // Show loading
+                loadingSection.style.display = 'block';
+                resultsSection.style.display = 'none';
+                matchesContainer.innerHTML = '';
+                
+                try {
+                    // Analyze preference
+                    const analysisResponse = await fetch('/api/analyze-preference', {
+                        method: 'POST',
+                        headers: {
+                            'Content-Type': 'application/json',
+                        },
+                        body: JSON.stringify({
+                            preferenceText: preferenceText
+                        }),
+                    });
+                    
+                    if (!analysisResponse.ok) {
+                        throw new Error('Failed to analyze preference');
+                    }
+                    
+                    const analysis = await analysisResponse.json();
+                    
+                    // Find matches
+                    const matchResponse = await fetch('/api/match', {
+                        method: 'POST',
+                        headers: {
+                            'Content-Type': 'application/json',
+                        },
+                        body: JSON.stringify({
+                            artistId: artistId,
+                            chatbotPreference: preferenceText
+                        }),
+                    });
+                    
+                    if (!matchResponse.ok) {
+                        throw new Error('Failed to find collaborators');
+                    }
+                    
+                    const matchData = await matchResponse.json();
+                    
+                    // Display results
+                    displayResults(matchData, analysis);
+                    
+                } catch (error) {
+                    console.error('Error:', error);
+                    alert('An error occurred while finding collaborators');
+                } finally {
+                    loadingSection.style.display = 'none';
+                    resultsSection.style.display = 'block';
+                }
+            });
+            
+            function displayResults(matchData, analysis) {
+                // Display preference
+                document.getElementById('preferenceText').textContent = matchData.chatbotPreference;
+                
+                // Display preference analysis
+                const toolsContainer = document.getElementById('preferenceTools');
+                const artTypesContainer = document.getElementById('preferenceArtTypes');
+                const keywordsContainer = document.getElementById('preferenceKeywords');
+                
+                toolsContainer.innerHTML = '';
+                artTypesContainer.innerHTML = '';
+                keywordsContainer.innerHTML = '';
+                
+                analysis.tools.forEach(tool => {
+                    const badge = document.createElement('span');
+                    badge.className = 'badge tool-badge';
+                    badge.textContent = tool;
+                    toolsContainer.appendChild(badge);
+                });
+                
+                analysis.art_types.forEach(artType => {
+                    const badge = document.createElement('span');
+                    badge.className = 'badge art-type-badge';
+                    badge.textContent = artType;
+                    artTypesContainer.appendChild(badge);
+                });
+                
+                analysis.keywords.slice(0, 5).forEach(keyword => {
+                    const badge = document.createElement('span');
+                    badge.className = 'badge bg-light text-dark';
+                    badge.textContent = keyword;
+                    keywordsContainer.appendChild(badge);
+                });
+                
+                // Display matches
+                matchesContainer.innerHTML = '';
+                
+                if (matchData.matches.length === 0) {
+                    matchesContainer.innerHTML = '<div class="alert alert-info">No matching collaborators found</div>';
+                    return;
+                }
+                
+                matchData.matches.forEach((match, index) => {
+                    if (index > 4) return; // Show only top 5 matches
+                    
+                    const artist = match.artist;
+                    const score = match.compatibility_score;
+                    const insights = match.insights;
+                    const scoreBreakdown = match.score_breakdown;
+                    
+                    const template = document.getElementById('matchTemplate');
+                    const clone = template.content.cloneNode(true);
+                    
+                    // Set artist info
+                    clone.querySelector('.artist-name').textContent = artist.basicInfo.name;
+                    clone.querySelector('.artist-location').textContent = artist.basicInfo.location;
+                    clone.querySelector('.compatibility-score').textContent = Math.round(score);
+                    clone.querySelector('.artist-bio').textContent = artist.basicInfo.bio;
+                    
+                    // Set random profile image
+                    const gender = ['women', 'men'][Math.floor(Math.random() * 2)];
+                    const randomId = parseInt(artist.artistId.replace('ART00', ''));
+                    clone.querySelector('.match-image').src = `https://randomuser.me/api/portraits/${gender}/${randomId}.jpg`;
+                    
+                    // Set insights
+                    const insightsList = clone.querySelector('.insights-list');
+                    insights.forEach(insight => {
+                        const div = document.createElement('div');
+                        div.className = 'insight-item';
+                        div.textContent = insight;
+                        insightsList.appendChild(div);
+                    });
+                    
+                    // Set score breakdown
+                    const breakdownItems = clone.querySelector('.breakdown-items');
+                    for (const [category, value] of Object.entries(scoreBreakdown)) {
+                        const categoryName = category.replace('_', ' ').replace(/\b\w/g, l => l.toUpperCase());
+                        const percent = (value / 100) * 100;
+                        
+                        const div = document.createElement('div');
+                        div.innerHTML = `
+                            <div class="d-flex justify-content-between mb-1">
+                                <span>${categoryName}</span>
+                                <span>${value.toFixed(1)}</span>
+                            </div>
+                            <div class="progress">
+                                <div class="progress-bar" role="progressbar" style="width: ${percent}%" 
+                                    aria-valuenow="${value}" aria-valuemin="0" aria-valuemax="100"></div>
+                            </div>
+                        `;
+                        breakdownItems.appendChild(div);
+                    }
+                    
+                    // Set tools and art types
+                    if (artist.extracted_tools && artist.extracted_tools.primary_tools) {
+                        const toolsList = clone.querySelector('.tools-list');
+                        artist.extracted_tools.primary_tools.forEach(tool => {
+                            const span = document.createElement('span');
+                            span.className = 'badge tool-badge';
+                            span.textContent = tool;
+                            toolsList.appendChild(span);
+                        });
+                    }
+                    
+                    if (artist.extracted_art_types && artist.extracted_art_types.primary_art_types) {
+                        const artTypesList = clone.querySelector('.art-types-list');
+                        artist.extracted_art_types.primary_art_types.forEach(artType => {
+                            const span = document.createElement('span');
+                            span.className = 'badge art-type-badge';
+                            span.textContent = artType;
+                            artTypesList.appendChild(span);
+                        });
+                    }
+                    
+                    // Set artwork preview
+                    const artworkPreview = clone.querySelector('.artwork-preview');
+                    artist.completeGallery.forEach(artwork => {
+                        const img = document.createElement('img');
+                        img.src = artwork.url;
+                        img.alt = artwork.title;
+                        img.title = artwork.title;
+                        artworkPreview.appendChild(img);
+                    });
+                    
+                    // Set contact link
+                    const contactBtn = clone.querySelector('.contact-btn');
+                    contactBtn.href = `mailto:${artist.basicInfo.email}`;
+                    
+                    matchesContainer.appendChild(clone);
+                });
+            }
+        });
+    </script>
+</body>
+</html>
