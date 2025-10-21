@@ -12,140 +12,160 @@ import { useArtworkRecommendations } from "@/hooks/use-artwork-recommendations";
 export default function Home() {
   // Featured artworks (normally would be selected by an admin or algorithm)
   const featuredArtworks = mockArtworks.slice(0, 3);
-  
+
   return (
     <MainLayout>
       {/* Hero Section */}
-      <section className="relative bg-linear-to-r from-primary-900 to-secondary-900 text-white py-16 md:py-24">
+      <section className="relative bg-linear-to-r from-indigo-500 via-purple-500 to-pink-500 text-white py-24 md:py-32">
         <div className="absolute inset-0 overflow-hidden">
-          <div className="absolute inset-0 bg-black opacity-40"></div>
-          <Image 
-            src="/hero-bg.jpg" 
-            alt="Art background" 
-            fill 
-            className="object-cover" 
-            priority
-          />
+          <div className="absolute inset-0 bg-black opacity-10"></div>
+          <div className="absolute inset-0 bg-[url('/pattern-dots.svg')] opacity-20"></div>
         </div>
-        
-        <div className="container mx-auto px-4 relative z-10">
+
+        <div className="px-4 sm:px-6 lg:px-8 relative z-10 flex flex-col items-center justify-center text-center">
           <div className="max-w-3xl">
-            <h1 className="text-4xl md:text-5xl lg:text-6xl font-bold mb-6">
-              Connect, Create, and Thrive in Hong Kong's Art Community
-            </h1>
-            <p className="text-lg md:text-xl mb-8 text-gray-100">
-              A platform for Hong Kong artists to gain recognition, fair compensation, 
-              and collaboration opportunities in a vibrant creative ecosystem.
+            <div className="mb-8 inline-block">
+              <h1 className="text-5xl md:text-7xl lg:text-8xl font-bold tracking-tight">
+                <span className="relative inline-block">
+                  ArtConnect
+                  <span className="absolute -bottom-2 left-0 right-0 h-3 bg-linear-to-r from-pink-400 to-purple-500 opacity-70 transform -rotate-1 rounded-full"></span>
+                </span>
+              </h1>
+            </div>
+            <p className="text-xl md:text-2xl mb-12 text-white/90 max-w-xl mx-auto">
+              A vibrant platform where artists create, connect, and thrive
+              together
             </p>
-            <div className="flex flex-wrap gap-4">
-              <Button 
-                variant="primary" 
+            <div className="flex flex-wrap gap-4 justify-center">
+              <Button
+                variant="primary"
                 size="lg"
-                className="bg-white text-primary-900 hover:bg-gray-100"
+                className="bg-white text-indigo-600 hover:bg-indigo-50 shadow-lg"
                 rightIcon={<ArrowRight className="h-5 w-5" />}
               >
-                <Link href="/explore">
-                  Explore Artworks
-                </Link>
+                <Link href="/explore">Explore Artworks</Link>
               </Button>
-              <Button 
-                variant="outline" 
+              <Button
+                variant="outline"
                 size="lg"
-                className="border-white text-white hover:bg-white/10"
+                className="border-white text-white hover:bg-white/10 shadow-lg"
               >
-                <Link href="/upload">
-                  Upload Your Art
-                </Link>
+                <Link href="/upload">Upload Your Art</Link>
               </Button>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      {/* Value Proposition */}
+      <section className="py-16 bg-white dark:bg-[#121225]">
+        <div className="px-4 sm:px-6 lg:px-8">
+          <h2 className="text-3xl font-bold text-center mb-12 text-indigo-700 dark:text-indigo-300">
+            Why Join ArtConnect?
+          </h2>
+
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
+            <div className="bg-indigo-50 dark:bg-indigo-900/20 p-6 rounded-lg text-center shadow-sm">
+              <div className="bg-indigo-100 dark:bg-indigo-800/50 p-3 rounded-full inline-flex mb-4">
+                <Brush className="h-8 w-8 text-indigo-600 dark:text-indigo-400" />
+              </div>
+              <h3 className="text-xl font-semibold mb-3 text-indigo-700 dark:text-indigo-300">
+                Recognition
+              </h3>
+              <p className="text-gray-600 dark:text-gray-400">
+                Showcase your art to a community that appreciates creativity and
+                cultural expression.
+              </p>
+            </div>
+
+            <div className="bg-purple-50 dark:bg-purple-900/20 p-6 rounded-lg text-center shadow-sm">
+              <div className="bg-purple-100 dark:bg-purple-800/50 p-3 rounded-full inline-flex mb-4">
+                <DollarSign className="h-8 w-8 text-purple-600 dark:text-purple-400" />
+              </div>
+              <h3 className="text-xl font-semibold mb-3 text-purple-700 dark:text-purple-300">
+                Fair Compensation
+              </h3>
+              <p className="text-gray-600 dark:text-gray-400">
+                Connect directly with buyers who value your work and are willing
+                to pay fair prices.
+              </p>
+            </div>
+
+            <div className="bg-pink-50 dark:bg-pink-900/20 p-6 rounded-lg text-center shadow-sm">
+              <div className="bg-pink-100 dark:bg-pink-800/50 p-3 rounded-full inline-flex mb-4">
+                <Users className="h-8 w-8 text-pink-600 dark:text-pink-400" />
+              </div>
+              <h3 className="text-xl font-semibold mb-3 text-pink-700 dark:text-pink-300">
+                Collaboration
+              </h3>
+              <p className="text-gray-600 dark:text-gray-400">
+                Find like-minded artists for collaboration, accountability, and
+                creative growth.
+              </p>
             </div>
           </div>
         </div>
       </section>
 
       {/* Featured Artworks */}
-      <section className="py-16 bg-gray-50 dark:bg-gray-900">
-        <div className="container mx-auto px-4">
+      <section className="py-16 bg-indigo-50 dark:bg-indigo-900/10">
+        <div className="px-4 sm:px-6 lg:px-8">
           <div className="flex justify-between items-center mb-8">
-            <h2 className="text-3xl font-bold">Featured Artworks</h2>
-            <Link href="/explore" className="text-primary-600 dark:text-primary-400 hover:underline flex items-center">
+            <h2 className="text-3xl font-bold text-indigo-700 dark:text-indigo-300">
+              Featured Artworks
+            </h2>
+            <Link
+              href="/explore"
+              className="text-indigo-600 dark:text-indigo-400 hover:underline flex items-center"
+            >
               View all <ArrowRight className="h-4 w-4 ml-1" />
             </Link>
           </div>
-          
+
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-            {featuredArtworks.map(artwork => (
+            {featuredArtworks.map((artwork) => (
               <ArtworkCard key={artwork.id} artwork={artwork} />
             ))}
           </div>
         </div>
       </section>
 
-      {/* Value Proposition */}
-      <section className="py-16 bg-white dark:bg-gray-950">
-        <div className="container mx-auto px-4">
-          <h2 className="text-3xl font-bold text-center mb-12">Why Join ArtConnect?</h2>
-          
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
-            <div className="bg-gray-50 dark:bg-gray-900 p-6 rounded-lg text-center">
-              <div className="bg-primary-100 dark:bg-primary-900 p-3 rounded-full inline-flex mb-4">
-                <Brush className="h-8 w-8 text-primary-600 dark:text-primary-400" />
-              </div>
-              <h3 className="text-xl font-semibold mb-3">Recognition</h3>
-              <p className="text-gray-600 dark:text-gray-400">
-                Showcase your art to a community that appreciates creativity and cultural expression.
-              </p>
-            </div>
-            
-            <div className="bg-gray-50 dark:bg-gray-900 p-6 rounded-lg text-center">
-              <div className="bg-secondary-100 dark:bg-secondary-900 p-3 rounded-full inline-flex mb-4">
-                <DollarSign className="h-8 w-8 text-secondary-600 dark:text-secondary-400" />
-              </div>
-              <h3 className="text-xl font-semibold mb-3">Fair Compensation</h3>
-              <p className="text-gray-600 dark:text-gray-400">
-                Connect directly with buyers who value your work and are willing to pay fair prices.
-              </p>
-            </div>
-            
-            <div className="bg-gray-50 dark:bg-gray-900 p-6 rounded-lg text-center">
-              <div className="bg-accent-100 dark:bg-accent-900 p-3 rounded-full inline-flex mb-4">
-                <Users className="h-8 w-8 text-accent-600 dark:text-accent-400" />
-              </div>
-              <h3 className="text-xl font-semibold mb-3">Collaboration</h3>
-              <p className="text-gray-600 dark:text-gray-400">
-                Find like-minded artists for collaboration, accountability, and creative growth.
-              </p>
-            </div>
-          </div>
-        </div>
-      </section>
-
       {/* Featured Artists */}
-      <section className="py-16 bg-gray-50 dark:bg-gray-900">
-        <div className="container mx-auto px-4">
+      <section className="py-16 bg-pink-50 dark:bg-pink-900/10">
+        <div className="px-4 sm:px-6 lg:px-8">
           <div className="flex justify-between items-center mb-8">
-            <h2 className="text-3xl font-bold">Featured Artists</h2>
-            <Link href="/artists" className="text-primary-600 dark:text-primary-400 hover:underline flex items-center">
+            <h2 className="text-3xl font-bold text-pink-700 dark:text-pink-300">
+              Featured Artists
+            </h2>
+            <Link
+              href="/artists"
+              className="text-pink-600 dark:text-pink-400 hover:underline flex items-center"
+            >
               View all <ArrowRight className="h-4 w-4 ml-1" />
             </Link>
           </div>
-          
-          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-5 gap-6">
-            {mockArtists.map(artist => (
-              <Link key={artist.id} href={`/artists/${artist.id}`} className="group">
-                <div className="bg-white dark:bg-gray-800 rounded-lg overflow-hidden shadow-sm hover:shadow-md transition-shadow">
+
+          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
+            {mockArtists.slice(0, 4).map((artist) => (
+              <Link
+                key={artist.id}
+                href={`/artists/${artist.id}`}
+                className="group"
+              >
+                <div className="bg-white dark:bg-[#1a1a2e] rounded-lg overflow-hidden shadow-sm hover:shadow-md transition-all hover:scale-[1.02] duration-300">
                   <div className="aspect-square relative">
-                    <Image 
-                      src={artist.profileImage || '/placeholder-profile.jpg'} 
-                      alt={artist.name} 
-                      fill 
-                      className="object-cover group-hover:scale-105 transition-transform duration-300" 
+                    <Image
+                      src={artist.profileImage || "/placeholder-profile.jpg"}
+                      alt={artist.name}
+                      fill
+                      className="object-cover group-hover:scale-105 transition-transform duration-300"
                     />
                   </div>
                   <div className="p-4">
-                    <h3 className="font-medium text-lg group-hover:text-primary-600 dark:group-hover:text-primary-400 transition-colors">
+                    <h3 className="font-medium text-lg group-hover:text-pink-600 dark:group-hover:text-pink-400 transition-colors">
                       {artist.name}
                     </h3>
-                    <p className="text-sm text-gray-500 dark:text-gray-400">
+                    <p className="text-sm text-gray-600 dark:text-gray-300">
                       {artist.location}
                     </p>
                   </div>
@@ -157,21 +177,30 @@ export default function Home() {
       </section>
 
       {/* CTA Section */}
-      <section className="py-16 bg-primary-900 text-white">
-        <div className="container mx-auto px-4 text-center">
-          <h2 className="text-3xl md:text-4xl font-bold mb-6">Ready to Join the Community?</h2>
+      <section className="py-16 bg-linear-to-r from-indigo-600 to-purple-600 text-white">
+        <div className="px-4 sm:px-6 lg:px-8 text-center">
+          <h2 className="text-3xl md:text-4xl font-bold mb-6">
+            Ready to Join the Community?
+          </h2>
           <p className="text-lg mb-8 max-w-2xl mx-auto">
-            Upload your artwork, connect with other artists, and start your journey with ArtConnect today.
+            Upload your artwork, connect with other artists or buy art
           </p>
-          <Button 
-            variant="primary" 
-            size="lg"
-            className="bg-white text-primary-900 hover:bg-gray-100"
-          >
-            <Link href="/signup">
-              Get Started
-            </Link>
-          </Button>
+          <div className="flex flex-row justify-center space-x-10">
+            <Button
+              variant="primary"
+              size="lg"
+              className="bg-white text-indigo-600 hover:bg-indigo-50 shadow-lg"
+            >
+              <Link href="/login">For Artists</Link>
+            </Button>
+            <Button
+              variant="primary"
+              size="lg"
+              className="bg-white text-indigo-600 hover:bg-indigo-50 shadow-lg"
+            >
+              <Link href="/signup">For Buyers</Link>
+            </Button>
+          </div>
         </div>
       </section>
     </MainLayout>

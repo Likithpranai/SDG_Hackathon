@@ -8,10 +8,12 @@ interface MainLayoutProps {
 
 export function MainLayout({ children }: MainLayoutProps) {
   return (
-    <div className="flex flex-col min-h-screen">
+    <div className="flex min-h-screen">
       <Navbar />
-      <main className="grow">{children}</main>
-      <Footer />
+      <div className="flex flex-col flex-1 lg:ml-64 ml-0">
+        <main className="grow">{children}</main>
+        <Footer />
+      </div>
     </div>
   );
 }
