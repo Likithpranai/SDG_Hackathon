@@ -41,10 +41,10 @@ export function Navbar() {
                 <div className="bg-indigo-100 dark:bg-indigo-900/30 p-3 rounded-full mb-4 mr-3">
                   <Palette className="h-7 w-7 text-indigo-600 dark:text-indigo-400" />
                 </div>
-                <span className="font-bold text-3xl mb-2 text-indigo-700 dark:text-indigo-300">Dashboard</span>
+                <span className="font-bold text-3xl mb-2 text-indigo-700 dark:text-indigo-300">You</span>
               </div>
               <p className="text-sm text-gray-500 dark:text-gray-400 max-w-[180px]">
-                Manage your artwork and profile
+                Your profile, artwork and stats
               </p>
             </Link>
 
@@ -183,10 +183,10 @@ export function Navbar() {
                   <div className="bg-indigo-100 dark:bg-indigo-900/30 p-3 rounded-full mb-4 mr-3">
                     <Palette className="h-7 w-7 text-indigo-600 dark:text-indigo-400" />
                   </div>
-                  <span className="font-bold text-3xl mb-2 text-indigo-700 dark:text-indigo-300">Dashboard</span>
+                  <span className="font-bold text-3xl mb-2 text-indigo-700 dark:text-indigo-300">You</span>
                 </div>
                 <p className="text-sm text-gray-500 dark:text-gray-400 max-w-[180px]">
-                  Manage your artwork and profile
+                  Your profile, artwork and stats
                 </p>
               </Link>
 
