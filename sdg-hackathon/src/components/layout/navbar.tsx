@@ -1,177 +1,280 @@
-'use client'
-import React, { useState } from 'react';
-import Link from 'next/link';
-import { Menu, X, Search, User, Upload, Bell } from 'lucide-react';
-import { cn } from '@/utils/cn';
-import { Button } from '@/components/ui/button';
-import { Input } from '@/components/ui/input';
+"use client";
+import React, { useState } from "react";
+import Link from "next/link";
+import { Menu, X, Palette, Users, ChevronRight, Sparkles, Zap, LogOut } from "lucide-react";
+import { cn } from "@/utils/cn";
+import { useAuth } from "@/contexts/auth-context";
 
 export function Navbar() {
-  const [isMenuOpen, setIsMenuOpen] = useState(false);
-  const [searchQuery, setSearchQuery] = useState('');
+  const { isLoggedIn, isArtist, logout } = useAuth();
+  const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
 
-  const toggleMenu = () => {
-    setIsMenuOpen(!isMenuOpen);
-  };
-
-  const handleSearch = (e: React.FormEvent) => {
-    e.preventDefault();
-    // Handle search functionality
-    console.log('Searching for:', searchQuery);
-    // Navigate to search results page with query
+  const toggleMobileMenu = () => {
+    setIsMobileMenuOpen(!isMobileMenuOpen);
   };
 
   return (
-    <header className="bg-white/90 dark:bg-gray-900/95 backdrop-blur-md border-b border-gray-200 dark:border-gray-800 sticky top-0 z-40 transition-all duration-200">
-      <div className="container mx-auto px-4 sm:px-6 lg:px-8">
-        <div className="flex items-center justify-between h-18 py-4">
-          {/* Logo */}
-          <div className="shrink-0">
-            <Link href="/" className="flex items-center group">
-              <span className="text-2xl font-bold bg-gradient-to-r from-primary-600 to-secondary-500 bg-clip-text text-transparent group-hover:from-primary-500 group-hover:to-secondary-400 transition-all duration-300">ArtConnect</span>
-            </Link>
-          </div>
-
-          {/* Desktop Navigation */}
-          <nav className="hidden md:flex items-center space-x-10">
-            <Link href="/explore" className="text-gray-700 hover:text-primary-600 dark:text-gray-300 dark:hover:text-primary-400 font-medium transition-colors duration-200 relative after:absolute after:bottom-0 after:left-0 after:right-0 after:h-0.5 after:bg-primary-600 after:scale-x-0 hover:after:scale-x-100 after:transition-transform after:duration-300">
-              Explore
-            </Link>
-            <Link href="/artists" className="text-gray-700 hover:text-primary-600 dark:text-gray-300 dark:hover:text-primary-400 font-medium transition-colors duration-200 relative after:absolute after:bottom-0 after:left-0 after:right-0 after:h-0.5 after:bg-primary-600 after:scale-x-0 hover:after:scale-x-100 after:transition-transform after:duration-300">
-              Artists
-            </Link>
-            <Link href="/about" className="text-gray-700 hover:text-primary-600 dark:text-gray-300 dark:hover:text-primary-400 font-medium transition-colors duration-200 relative after:absolute after:bottom-0 after:left-0 after:right-0 after:h-0.5 after:bg-primary-600 after:scale-x-0 hover:after:scale-x-100 after:transition-transform after:duration-300">
-              About
-            </Link>
-          </nav>
-
-          {/* Search Bar - Desktop */}
-          <div className="hidden md:flex flex-1 max-w-md mx-6">
-            <form onSubmit={handleSearch} className="w-full">
-              <Input
-                type="search"
-                placeholder="Search artworks, artists, or tags..."
-                value={searchQuery}
-                onChange={(e) => setSearchQuery(e.target.value)}
-                leftIcon={<Search className="h-4 w-4 text-gray-400" />}
-                className="w-full"
-              />
-            </form>
-          </div>
-
-          {/* Desktop Action Buttons */}
-          <div className="hidden md:flex items-center space-x-4">
-            <Button
-              variant="ghost"
-              size="sm"
-              className="text-gray-700 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-800 rounded-full"
-              leftIcon={<Bell className="h-5 w-5" />}
-            >
-              <span className="sr-only">Notifications</span>
-            </Button>
-            <Button
-              variant="outline"
-              size="sm"
-              leftIcon={<Upload className="h-4 w-4" />}
-              className="rounded-full shadow-sm hover:shadow transition-all duration-200"
-            >
-              Upload
-            </Button>
-            <Button
-              variant="primary"
-              size="sm"
-              leftIcon={<User className="h-4 w-4" />}
-              className="rounded-full shadow-sm hover:shadow-md transition-all duration-200"
-            >
-              Sign In
-            </Button>
-          </div>
-
-          {/* Mobile Menu Button */}
-          <div className="flex md:hidden">
-            <button
-              type="button"
-              className="text-gray-700 hover:text-primary-600 dark:text-gray-300 dark:hover:text-primary-400"
-              onClick={toggleMenu}
-              aria-label="Toggle menu"
-            >
-              {isMenuOpen ? (
-                <X className="h-6 w-6" />
-              ) : (
-                <Menu className="h-6 w-6" />
-              )}
-            </button>
-          </div>
-        </div>
+    <nav className="fixed left-0 top-0 h-full z-40 bg-white dark:bg-[#121225] border-r border-indigo-100 dark:border-indigo-900/30 w-64 flex flex-col shadow-lg overflow-hidden">
+      {/* Background Pattern */}
+      <div className="absolute inset-0 opacity-[0.03] dark:opacity-[0.08] pointer-events-none">
+        <div className="absolute inset-0 bg-[radial-gradient(circle,#6366f1_1px,transparent_1px)] bg-size-[20px_20px]"></div>
+      </div>
+      {/* Logo */}
+      <div className="p-6 border-b border-indigo-100 dark:border-indigo-900/30 bg-linear-to-r from-indigo-50 to-purple-50 dark:from-indigo-900/20 dark:to-purple-900/20">
+        <Link href="/" className="flex items-center justify-center">
+          <span className="text-2xl font-bold bg-clip-text text-transparent bg-linear-to-r from-indigo-600 to-purple-600 dark:from-indigo-400 dark:to-purple-400">
+            ArtConnect
+          </span>
+        </Link>
       </div>
 
-      {/* Mobile Menu */}
+      {/* Desktop Navigation */}
+      <div className="flex-1 flex flex-col justify-center items-center space-y-10 py-8 px-4">
+        {isLoggedIn && isArtist ? (
+          // Artist Logged In Navigation
+          <>
+            <Link
+              href="/artists/dashboard"
+              className="w-full flex flex-col items-center text-center p-5 rounded-lg hover:bg-indigo-50 dark:hover:bg-indigo-900/20 transition-colors"
+            >
+              <div className="flex flex-row items-center">
+                <div className="bg-indigo-100 dark:bg-indigo-900/30 p-3 rounded-full mb-4 mr-3">
+                  <Palette className="h-7 w-7 text-indigo-600 dark:text-indigo-400" />
+                </div>
+                <span className="font-bold text-3xl mb-2 text-indigo-700 dark:text-indigo-300">You</span>
+              </div>
+              <p className="text-sm text-gray-500 dark:text-gray-400 max-w-[180px]">
+                Your profile, artwork and stats
+              </p>
+            </Link>
+
+            <Link
+              href="/artists/collaboration"
+              className="w-full flex flex-col items-center text-center p-5 rounded-lg hover:bg-purple-50 dark:hover:bg-purple-900/20 transition-colors"
+            >
+              <div className="flex flex-row items-center">
+                <div className="bg-purple-100 dark:bg-purple-900/30 p-3 rounded-full mb-4 mr-3">
+                  <Sparkles className="h-7 w-7 text-purple-600 dark:text-purple-400" />
+                </div>
+                <span className="font-bold text-3xl mb-2 text-purple-700 dark:text-purple-300">Collaboration</span>
+              </div>
+              <p className="text-sm text-gray-500 dark:text-gray-400 max-w-[180px]">
+                Fuel your creative vision with like-minded artists
+              </p>
+            </Link>
+
+            <Link
+              href="/artists/ai-lab"
+              className="w-full flex flex-col items-center text-center p-5 rounded-lg hover:bg-blue-50 dark:hover:bg-blue-900/20 transition-colors"
+            >
+              <div className="flex flex-row items-center">
+                <div className="bg-blue-100 dark:bg-blue-900/30 p-3 rounded-full mb-4 mr-3">
+                  <Zap className="h-7 w-7 text-blue-600 dark:text-blue-400" />
+                </div>
+                <span className="font-bold text-3xl mb-2 text-blue-700 dark:text-blue-300">AI Lab</span>
+              </div>
+              <p className="text-sm text-gray-500 dark:text-gray-400 max-w-[180px]">
+                Experiment and get feedback for your next creation
+              </p>
+            </Link>
+
+            <button
+              onClick={() => logout()}
+              className="w-full flex flex-col items-center text-center p-5 rounded-lg hover:bg-red-50 dark:hover:bg-red-900/20 transition-colors"
+            >
+              <div className="flex flex-row items-center">
+                <div className="bg-red-100 dark:bg-red-900/30 p-3 rounded-full mb-4 mr-3">
+                  <LogOut className="h-7 w-7 text-red-600 dark:text-red-400" />
+                </div>
+                <span className="font-bold text-3xl mb-2 text-red-700 dark:text-red-300">Logout</span>
+              </div>
+            </button>
+          </>
+        ) : (
+          // Default Navigation (Not Logged In)
+          <>
+            <Link
+              href="/login"
+              className="w-full flex flex-col items-center text-center p-5 rounded-lg hover:bg-indigo-50 dark:hover:bg-indigo-900/20 transition-colors"
+            >
+              <div className="flex flex-row items-center">
+                <div className="bg-indigo-100 dark:bg-indigo-900/30 p-3 rounded-full mb-4 mr-3">
+                  <Palette className="h-7 w-7 text-indigo-600 dark:text-indigo-400" />
+                </div>
+                <span className="font-bold text-3xl mb-2 text-indigo-700 dark:text-indigo-300">Artists</span>
+              </div>
+              <p className="text-sm text-gray-500 dark:text-gray-400 max-w-[180px]">
+                Discover creators and experiment creatively
+              </p>
+            </Link>
+
+            <Link
+              href="/buyers"
+              className="w-full flex flex-col items-center text-center p-5 rounded-lg hover:bg-pink-50 dark:hover:bg-pink-900/20 transition-colors"
+            >
+              <div className="flex flex-row items-center">
+                <div className="bg-pink-100 dark:bg-pink-900/30 p-3 rounded-full mb-4 mr-3">
+                  <Users className="h-7 w-7 text-pink-600 dark:text-pink-400" />
+                </div>
+                <span className="font-bold text-3xl mb-2 text-pink-700 dark:text-pink-300">Buyers</span>
+              </div>
+              <p className="text-sm text-gray-500 dark:text-gray-400 max-w-[180px]">
+                Find art that resonates
+              </p>
+            </Link>
+          </>
+        )}
+      </div>
+
+      {/* Mobile Menu Button - Only visible on small screens */}
+      <div className="lg:hidden fixed top-4 right-4 z-50">
+        <button
+          type="button"
+          className="bg-white dark:bg-indigo-900/50 p-2 rounded-md shadow-md text-indigo-600 hover:text-indigo-800 dark:text-indigo-300 dark:hover:text-indigo-200 backdrop-blur-sm"
+          onClick={toggleMobileMenu}
+          aria-label="Toggle mobile menu"
+        >
+          {isMobileMenuOpen ? (
+            <X className="h-6 w-6" />
+          ) : (
+            <Menu className="h-6 w-6" />
+          )}
+        </button>
+      </div>
+
+      {/* Mobile Menu - Overlay for small screens */}
       <div
         className={cn(
-          "md:hidden bg-white dark:bg-gray-900 border-b border-gray-200 dark:border-gray-800",
-          isMenuOpen ? "block" : "hidden"
+          "lg:hidden fixed inset-0 bg-black bg-opacity-50 z-40",
+          isMobileMenuOpen ? "block" : "hidden"
+        )}
+        onClick={toggleMobileMenu}
+      />
+
+      {/* Mobile Sidebar - Slides in from left */}
+      <div
+        className={cn(
+          "lg:hidden fixed inset-y-0 left-0 w-64 bg-white dark:bg-[#121225] z-50 transform transition-transform duration-300 ease-in-out overflow-hidden",
+          isMobileMenuOpen ? "translate-x-0" : "-translate-x-full"
         )}
       >
-        <div className="px-2 pt-2 pb-3 space-y-1 sm:px-3">
-          {/* Search Bar - Mobile */}
-          <div className="p-2">
-            <form onSubmit={handleSearch}>
-              <Input
-                type="search"
-                placeholder="Search artworks, artists, or tags..."
-                value={searchQuery}
-                onChange={(e) => setSearchQuery(e.target.value)}
-                leftIcon={<Search className="h-4 w-4 text-gray-400" />}
-              />
-            </form>
-          </div>
+        {/* Background Pattern */}
+        <div className="absolute inset-0 opacity-[0.03] dark:opacity-[0.08] pointer-events-none">
+          <div className="absolute inset-0 bg-[radial-gradient(circle,#6366f1_1px,transparent_1px)] bg-size-[20px_20px]"></div>
+        </div>
+        <div className="p-6 border-b border-indigo-100 dark:border-indigo-900/30 bg-linear-to-r from-indigo-50 to-purple-50 dark:from-indigo-900/20 dark:to-purple-900/20">
+          <Link href="/" className="flex items-center justify-center">
+            <span className="text-2xl font-bold bg-clip-text text-transparent bg-linear-to-r from-indigo-600 to-purple-600 dark:from-indigo-400 dark:to-purple-400">
+              ArtConnect
+            </span>
+          </Link>
+        </div>
 
-          <Link
-            href="/explore"
-            className="block px-3 py-2 rounded-md text-base font-medium text-gray-700 hover:text-primary-600 hover:bg-gray-50 dark:text-gray-300 dark:hover:text-primary-400 dark:hover:bg-gray-800"
-            onClick={() => setIsMenuOpen(false)}
-          >
-            Explore
-          </Link>
-          <Link
-            href="/artists"
-            className="block px-3 py-2 rounded-md text-base font-medium text-gray-700 hover:text-primary-600 hover:bg-gray-50 dark:text-gray-300 dark:hover:text-primary-400 dark:hover:bg-gray-800"
-            onClick={() => setIsMenuOpen(false)}
-          >
-            Artists
-          </Link>
-          <Link
-            href="/about"
-            className="block px-3 py-2 rounded-md text-base font-medium text-gray-700 hover:text-primary-600 hover:bg-gray-50 dark:text-gray-300 dark:hover:text-primary-400 dark:hover:bg-gray-800"
-            onClick={() => setIsMenuOpen(false)}
-          >
-            About
-          </Link>
+        <div className="flex-1 flex flex-col justify-center items-center space-y-8 py-8 px-4 h-full">
+          {isLoggedIn && isArtist ? (
+            // Artist Logged In Mobile Navigation
+            <>
+              <Link
+                href="/artists/dashboard"
+                className="w-full flex flex-col items-center text-center p-5 rounded-lg hover:bg-indigo-50 dark:hover:bg-indigo-900/20 transition-colors"
+                onClick={() => setIsMobileMenuOpen(false)}
+              >
+                <div className="flex flex-row items-center">
+                  <div className="bg-indigo-100 dark:bg-indigo-900/30 p-3 rounded-full mb-4 mr-3">
+                    <Palette className="h-7 w-7 text-indigo-600 dark:text-indigo-400" />
+                  </div>
+                  <span className="font-bold text-3xl mb-2 text-indigo-700 dark:text-indigo-300">You</span>
+                </div>
+                <p className="text-sm text-gray-500 dark:text-gray-400 max-w-[180px]">
+                  Your profile, artwork and stats
+                </p>
+              </Link>
 
-          <div className="pt-4 pb-3 border-t border-gray-200 dark:border-gray-700">
-            <div className="flex items-center px-3">
-              <Button
-                variant="outline"
-                size="sm"
-                className="w-full mb-2"
-                leftIcon={<Upload className="h-4 w-4" />}
+              <Link
+                href="/artists/collaboration"
+                className="w-full flex flex-col items-center text-center p-5 rounded-lg hover:bg-purple-50 dark:hover:bg-purple-900/20 transition-colors"
+                onClick={() => setIsMobileMenuOpen(false)}
               >
-                Upload Artwork
-              </Button>
-            </div>
-            <div className="flex items-center px-3">
-              <Button
-                variant="primary"
-                size="sm"
-                className="w-full"
-                leftIcon={<User className="h-4 w-4" />}
+                <div className="flex flex-row items-center">
+                  <div className="bg-purple-100 dark:bg-purple-900/30 p-3 rounded-full mb-4 mr-3">
+                    <Sparkles className="h-7 w-7 text-purple-600 dark:text-purple-400" />
+                  </div>
+                  <span className="font-bold text-3xl mb-2 text-purple-700 dark:text-purple-300">Collaboration</span>
+                </div>
+                <p className="text-sm text-gray-500 dark:text-gray-400 max-w-[180px]">
+                  Fuel your creative vision with like-minded artists
+                </p>
+              </Link>
+
+              <Link
+                href="/artists/ai-lab"
+                className="w-full flex flex-col items-center text-center p-5 rounded-lg hover:bg-blue-50 dark:hover:bg-blue-900/20 transition-colors"
+                onClick={() => setIsMobileMenuOpen(false)}
               >
-                Sign In
-              </Button>
-            </div>
-          </div>
+                <div className="flex flex-row items-center">
+                  <div className="bg-blue-100 dark:bg-blue-900/30 p-3 rounded-full mb-4 mr-3">
+                    <Zap className="h-7 w-7 text-blue-600 dark:text-blue-400" />
+                  </div>
+                  <span className="font-bold text-3xl mb-2 text-blue-700 dark:text-blue-300">AI Lab</span>
+                </div>
+                <p className="text-sm text-gray-500 dark:text-gray-400 max-w-[180px]">
+                  Experiment and get feedback for your next creation
+                </p>
+              </Link>
+
+              <button
+                onClick={() => {
+                  logout();
+                  setIsMobileMenuOpen(false);
+                }}
+                className="w-full flex flex-col items-center text-center p-5 rounded-lg hover:bg-red-50 dark:hover:bg-red-900/20 transition-colors"
+              >
+                <div className="flex flex-row items-center">
+                  <div className="bg-red-100 dark:bg-red-900/30 p-3 rounded-full mb-4 mr-3">
+                    <LogOut className="h-7 w-7 text-red-600 dark:text-red-400" />
+                  </div>
+                  <span className="font-bold text-3xl mb-2 text-red-700 dark:text-red-300">Logout</span>
+                </div>
+              </button>
+            </>
+          ) : (
+            // Default Mobile Navigation (Not Logged In)
+            <>
+              <Link
+                href="/login"
+                className="w-full flex flex-col items-center text-center p-5 rounded-lg hover:bg-indigo-50 dark:hover:bg-indigo-900/20 transition-colors"
+                onClick={() => setIsMobileMenuOpen(false)}
+              >
+                <div className="flex flex-row items-center">
+                  <div className="bg-indigo-100 dark:bg-indigo-900/30 p-3 rounded-full mb-4 mr-3">
+                    <Palette className="h-7 w-7 text-indigo-600 dark:text-indigo-400" />
+                  </div>
+                  <span className="font-bold text-3xl mb-2 text-indigo-700 dark:text-indigo-300">Artists</span>
+                </div>
+                <p className="text-sm text-gray-500 dark:text-gray-400 max-w-[180px]">
+                  Discover creators and experiment creatively
+                </p>
+              </Link>
+
+              <Link
+                href="/buyers"
+                className="w-full flex flex-col items-center text-center p-5 rounded-lg hover:bg-pink-50 dark:hover:bg-pink-900/20 transition-colors"
+                onClick={() => setIsMobileMenuOpen(false)}
+              >
+                <div className="flex flex-row items-center">
+                  <div className="bg-pink-100 dark:bg-pink-900/30 p-3 rounded-full mb-4 mr-3">
+                    <Users className="h-7 w-7 text-pink-600 dark:text-pink-400" />
+                  </div>
+                  <span className="font-bold text-3xl mb-2 text-pink-700 dark:text-pink-300">Buyers</span>
+                </div>
+                <p className="text-sm text-gray-500 dark:text-gray-400 max-w-[180px]">
+                  Find art that resonates
+                </p>
+              </Link>
+            </>
+          )}
         </div>
       </div>
-    </header>
+    </nav>
   );
 }
