@@ -4,20 +4,14 @@ import React, { useEffect } from "react";
 import { useRouter } from "next/navigation";
 import { MainLayout } from "@/components/layout/main-layout";
 import { useAuth } from "@/contexts/auth-context";
+import { RouteGuard } from "@/components/auth/route-guard";
 import { Sparkles, Users, MessageSquare, Calendar, PlusCircle } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import Image from "next/image";
 
 export default function CollaborationHub() {
   const router = useRouter();
-  const { isLoggedIn, isArtist } = useAuth();
-
-  // Redirect if not logged in as artist
-  useEffect(() => {
-    if (!isLoggedIn || !isArtist) {
-      router.push("/login");
-    }
-  }, [isLoggedIn, isArtist, router]);
+  const { user } = useAuth();
 
   // Mock data for collaboration hub
   const activeCollaborations = [
@@ -76,12 +70,11 @@ export default function CollaborationHub() {
     },
   ];
 
-  if (!isLoggedIn || !isArtist) {
-    return null; // Don't render anything while checking auth
-  }
+  // RouteGuard will handle the auth check and redirection
 
   return (
-    <MainLayout>
+    <RouteGuard requiredUserType="artist">
+      <MainLayout>
       <div className="py-8 px-4 sm:px-6 lg:px-8">
         <div className="flex flex-col md:flex-row justify-between items-start md:items-center mb-8">
           <div>
@@ -219,5 +212,6 @@ export default function CollaborationHub() {
         </div>
       </div>
     </MainLayout>
+    </RouteGuard>
   );
 }

@@ -11,7 +11,7 @@ import { useAuth } from "@/contexts/auth-context";
 
 export default function LoginPage() {
   const router = useRouter();
-  const { login, isLoggedIn, isArtist } = useAuth();
+  const { login, isLoggedIn, isArtist, isBuyer, error: authError, clearError } = useAuth();
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [showPassword, setShowPassword] = useState(false);
@@ -20,14 +20,26 @@ export default function LoginPage() {
   
   // Redirect if already logged in
   useEffect(() => {
-    if (isLoggedIn && isArtist) {
-      router.push("/artists/dashboard");
+    if (isLoggedIn) {
+      if (isArtist) {
+        router.push("/artists/dashboard");
+      } else if (isBuyer) {
+        router.push("/buyers/dashboard");
+      }
     }
-  }, [isLoggedIn, isArtist, router]);
+  }, [isLoggedIn, isArtist, isBuyer, router]);
+  
+  // Clear any auth errors when component unmounts
+  useEffect(() => {
+    return () => {
+      clearError();
+    };
+  }, [clearError]);
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     setError("");
+    clearError();
     setIsLoading(true);
 
     try {
@@ -37,11 +49,13 @@ export default function LoginPage() {
         return;
       }
       
-      const success = await login(email, password);
-      if (success) {
-        router.push("/artists/dashboard");
+      const result = await login(email, password);
+      
+      if (result.success) {
+        // The router.push will be handled by the useEffect above
+        // based on the user type (artist or buyer)
       } else {
-        setError("Invalid email or password");
+        setError(result.message || "Invalid email or password");
       }
     } catch (err) {
       setError("An error occurred during login");
@@ -65,9 +79,9 @@ export default function LoginPage() {
               </p>
             </div>
 
-            {error && (
+            {(error || authError) && (
               <div className="bg-red-50 dark:bg-red-900/20 text-red-700 dark:text-red-300 p-3 rounded-md text-sm">
-                {error}
+                {error || authError}
               </div>
             )}
 

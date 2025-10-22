@@ -24,41 +24,38 @@ import Link from "next/link";
 import Image from "next/image";
 import { useRouter } from "next/navigation";
 import { useAuth } from "@/contexts/auth-context";
+import { RouteGuard } from "@/components/auth/route-guard";
 import { cn } from "@/utils/cn";
 
 export default function ArtistDashboard() {
   const router = useRouter();
-  const { isLoggedIn, isArtist } = useAuth();
+  const { user } = useAuth();
   const [activeTab, setActiveTab] = useState("profile"); // "profile" or "dashboard"
 
-  // Redirect if not logged in as artist
-  useEffect(() => {
-    if (!isLoggedIn || !isArtist) {
-      router.push("/login");
-    }
-  }, [isLoggedIn, isArtist, router]);
-
-  // Mock data for the artist profile
+  // Stats data - in a real app, this would come from an API
+  const statsData = {
+    artworks: 42,
+    views: 12480,
+    likes: 3286,
+    sales: 18
+  };
+  
+  // Use the real user data from auth context
   const artistProfile = {
-    name: "Sofia Rodriguez",
-    profileImage: "/placeholder-profile.jpg",
+    name: user?.name || "Artist",
+    profileImage: user?.profileImage || "/placeholder-profile.jpg",
     coverImage: "/placeholder-cover.jpg",
-    bio: "Contemporary visual artist specializing in mixed media and digital art. Drawing inspiration from urban landscapes and natural patterns to create vibrant, thought-provoking pieces that challenge perception.",
-    experience: "8 years",
-    primaryMedium: "Mixed Media, Digital Art",
-    location: "Barcelona, Spain",
-    skills: "Blender, VFX, 3D modelling, Oil Painting, Watercoloring",
-    socialLinks: [
-      { platform: "instagram", url: "https://instagram.com/sofia.creates" },
-      { platform: "twitter", url: "https://twitter.com/sofia_art" },
-      { platform: "website", url: "https://sofiaart.com" },
+    bio: user?.bio || "Contemporary visual artist specializing in mixed media and digital art.",
+    experience: user?.experience || "8 years",
+    primaryMedium: user?.primaryMedium || "Mixed Media, Digital Art",
+    location: user?.location || "Barcelona, Spain",
+    skills: user?.skills || "Blender, VFX, 3D modelling, Oil Painting, Watercoloring",
+    socialLinks: user?.socialLinks || [
+      { platform: "instagram", url: "https://instagram.com/artist" },
+      { platform: "twitter", url: "https://twitter.com/artist" },
+      { platform: "website", url: "https://artist.com" },
     ],
-    stats: {
-      artworks: 42,
-      views: 12480,
-      likes: 3286,
-      sales: 18
-    }
+    stats: statsData
   };
 
   // Mock data for the artist's artwork
@@ -125,9 +122,7 @@ export default function ArtistDashboard() {
     },
   ];
 
-  if (!isLoggedIn || !isArtist) {
-    return null; // Don't render anything while checking auth
-  }
+  // RouteGuard will handle the auth check and redirection
   
   // Helper function to render social icon based on platform
   const renderSocialIcon = (platform: string) => {
@@ -149,7 +144,8 @@ export default function ArtistDashboard() {
   };
 
   return (
-    <MainLayout>
+    <RouteGuard requiredUserType="artist">
+      <MainLayout>
       <div className="py-8 px-4 sm:px-6 lg:px-8">
         {/* Profile Header with Image and Name */}
         <div className="mb-8 bg-white dark:bg-[#1a1a2e] rounded-lg shadow-sm overflow-hidden">
@@ -424,5 +420,6 @@ export default function ArtistDashboard() {
         )}
       </div>
     </MainLayout>
+    </RouteGuard>
   );
 }
