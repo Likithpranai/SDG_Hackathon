@@ -18,8 +18,13 @@ import {
   Facebook, 
   Youtube, 
   User, 
-  Users 
+  Users,
+  X,
+  Save
 } from "lucide-react";
+import EditProfileModal from "./edit-profile-modal";
+import AboutMeSection from "./about-me-section";
+import UploadArtworkModal, { ArtworkFormData } from "./upload-artwork-modal";
 import Link from "next/link";
 import Image from "next/image";
 import { useRouter } from "next/navigation";
@@ -30,6 +35,116 @@ export default function ArtistDashboard() {
   const router = useRouter();
   const { isLoggedIn, isArtist } = useAuth();
   const [activeTab, setActiveTab] = useState("profile"); // "profile" or "dashboard"
+  const [isEditModalOpen, setIsEditModalOpen] = useState(false);
+  const [isUploadModalOpen, setIsUploadModalOpen] = useState(false);
+  
+  // Artist profile data
+  const [artistProfile, setArtistProfile] = useState({
+    id: "ART001",
+    name: "Elena Vasquez",
+    age: 32,
+    email: "elena@vasquezart.com",
+    profileImage: "/placeholder-profile.jpg",
+    coverImage: "/placeholder-cover.jpg",
+    bio: "Digital abstract painter using Procreate & Photoshop. 5+ years experience.",
+    experience: "5+ years",
+    primaryMedium: "Digital Art, Procreate, Photoshop",
+    location: "Mexico City, Mexico",
+    skills: "Digital painting, Abstract art, NFT creation, Mural design",
+    website: "vasquezart.com",
+    socialLinks: [
+      { platform: "instagram", url: "https://instagram.com/elenavasquez_art" },
+      { platform: "twitter", url: "https://twitter.com/vasquezart" },
+      { platform: "website", url: "https://vasquezart.com" },
+    ],
+    socialArray: ["@elenavasquez_art (IG)", "twitter.com/vasquezart"],
+    stats: {
+      artworks: 42,
+      views: 12480,
+      likes: 3286,
+      sales: 18
+    }
+  });
+  
+  // Form state for editing profile
+  const [editForm, setEditForm] = useState({
+    name: artistProfile.name,
+    age: artistProfile.age,
+    location: artistProfile.location,
+    email: artistProfile.email,
+    bio: artistProfile.bio,
+    experience: artistProfile.experience,
+    primaryMedium: artistProfile.primaryMedium,
+    skills: artistProfile.skills
+  });
+  
+  // Handle form input changes
+  const handleInputChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
+    const { name, value } = e.target;
+    setEditForm(prev => ({
+      ...prev,
+      [name]: name === 'age' ? parseInt(value) || 0 : value
+    }));
+  };
+
+  // Handle form submission
+  const handleSubmit = (e: React.FormEvent) => {
+    e.preventDefault();
+    setArtistProfile(prev => ({
+      ...prev,
+      name: editForm.name,
+      age: editForm.age,
+      location: editForm.location,
+      email: editForm.email,
+      bio: editForm.bio,
+      experience: editForm.experience,
+      primaryMedium: editForm.primaryMedium,
+      skills: editForm.skills
+    }));
+    setIsEditModalOpen(false);
+  };
+
+  // Handle new artwork submission
+  const handleArtworkSubmit = (artworkData: ArtworkFormData) => {
+    // In a real app with proper data persistence, we would use the response from the API
+    // But for this demo, we'll create a new artwork object from the form data
+    
+    // Generate a unique ID for the new artwork
+    const newId = `IMG${(artworks.length + 1).toString().padStart(3, '0')}`;
+    
+    // Create a new artwork object
+    const newArtwork = {
+      id: newId,
+      title: artworkData.title,
+      // Use the image preview from the form data since our API doesn't actually store the image
+      // In a real app with proper storage, we would use the URL returned from the API
+      image: artworkData.imagePreview || '',
+      description: artworkData.description,
+      technique: artworkData.medium,
+      year: artworkData.year,
+      likes: 0, // Start with 0 likes
+      views: 0, // Start with 0 views
+      width: "medium" // Default width
+    };
+    
+    // Add the new artwork to the beginning of the array
+    const updatedArtworks = [newArtwork, ...artworks];
+    
+    // Update the artworks array
+    setArtworks(updatedArtworks);
+    
+    // Update the stats
+    setArtistProfile(prev => ({
+      ...prev,
+      stats: {
+        ...prev.stats,
+        artworks: prev.stats.artworks + 1
+      }
+    }));
+    
+    // Show success message (in a real app)
+    console.log('Artwork uploaded successfully!');
+  };
 
   // Redirect if not logged in as artist
   useEffect(() => {
@@ -38,92 +153,64 @@ export default function ArtistDashboard() {
     }
   }, [isLoggedIn, isArtist, router]);
 
-  // Mock data for the artist profile
-  const artistProfile = {
-    name: "Sofia Rodriguez",
-    profileImage: "/placeholder-profile.jpg",
-    coverImage: "/placeholder-cover.jpg",
-    bio: "Contemporary visual artist specializing in mixed media and digital art. Drawing inspiration from urban landscapes and natural patterns to create vibrant, thought-provoking pieces that challenge perception.",
-    experience: "8 years",
-    primaryMedium: "Mixed Media, Digital Art",
-    location: "Barcelona, Spain",
-    skills: "Blender, VFX, 3D modelling, Oil Painting, Watercoloring",
-    socialLinks: [
-      { platform: "instagram", url: "https://instagram.com/sofia.creates" },
-      { platform: "twitter", url: "https://twitter.com/sofia_art" },
-      { platform: "website", url: "https://sofiaart.com" },
-    ],
-    stats: {
-      artworks: 42,
-      views: 12480,
-      likes: 3286,
-      sales: 18
-    }
-  };
-
-  // Mock data for the artist's artwork
-  const artworks = [
+  // Artwork data from digital_artist_data.py completeGallery
+  const [artworks, setArtworks] = useState([
     { 
-      id: 1, 
-      title: "Urban Rhythm", 
-      image: "/placeholder-art-1.jpg", 
-      description: "A dynamic exploration of city life through abstract forms and vibrant colors.",
-      technique: "Acrylic on canvas with digital enhancement",
+      id: "IMG001", 
+      title: "Urban Pulse", 
+      image: "https://cdn11.bigcommerce.com/s-x49po/images/stencil/1500x1500/products/135189/302182/handmade%2Fdownscaled%2Fh_nvobyh5ndmh_2000x2000__80266.1745219873.jpg?c=2", 
+      description: "Bold red/orange swirls in Procreate. 300 DPI export for mural printing. Exhibited: Zona MACO 2024. Status: Sold as NFT + Print",
+      technique: "Digital (Procreate)",
+      year: 2024,
       likes: 124, 
       views: 756,
       width: "wide", // For Pinterest-style layout
     },
     { 
-      id: 2, 
-      title: "Serenity in Blue", 
-      image: "/placeholder-art-2.jpg", 
-      description: "Meditative piece exploring the calming effects of blue tones and flowing forms.",
-      technique: "Digital painting",
+      id: "IMG002", 
+      title: "Silent Storm", 
+      image: "https://images.saatchiart.com/saatchi/1368549/art/6989891/6059227-HSC00001-7.jpg", 
+      description: "Layered blues with 50+ adjustment layers. NFT drop on Foundation. Status: Sold as NFT",
+      technique: "Digital (Photoshop)",
+      year: 2023,
       likes: 98, 
       views: 502,
       width: "medium", 
     },
     { 
-      id: 3, 
-      title: "Fragmented Reality", 
-      image: "/placeholder-art-3.jpg", 
-      description: "A deconstruction of perception through geometric shapes and contrasting textures.",
-      technique: "Mixed media collage",
+      id: "IMG003", 
+      title: "City Dreams", 
+      image: "https://cdn11.bigcommerce.com/s-x49po/images/stencil/1500x1500/products/135189/302182/handmade%2Fdownscaled%2Fh_nvobyh5ndmh_2000x2000__80266.1745219873.jpg?c=2", 
+      description: "Metro ticket scans composited in Photoshop. Airbnb HQ digital wallpaper. Status: Licensed",
+      technique: "Digital (Procreate + Collage)",
+      year: 2022,
       likes: 132, 
       views: 815,
       width: "tall", 
     },
     { 
-      id: 4, 
-      title: "Neon Dreams", 
-      image: "/placeholder-art-4.jpg", 
-      description: "Vibrant nightlife inspired piece with bold neon elements against dark backgrounds.",
-      technique: "Digital art with photographic elements",
+      id: "IMG004", 
+      title: "Echoes", 
+      image: "https://images.unsplash.com/photo-1541701494587-cb58502866ab?w=400", 
+      description: "Gradient mesh circles. OpenSea NFT collection (1/10 editions). Status: Sold out",
+      technique: "Digital Painting (Procreate)",
+      year: 2021,
       likes: 187, 
       views: 1024,
       width: "medium", 
     },
     { 
-      id: 5, 
-      title: "Natural Abstractions", 
-      image: "/placeholder-art-5.jpg", 
-      description: "Organic forms and earthy tones create a harmonious abstract representation of natural elements.",
-      technique: "Watercolor and ink",
+      id: "IMG005", 
+      title: "Mexico City Mural - Digital Concept", 
+      image: "https://images.unsplash.com/photo-1571019613454-1cb2f99b2d8b?w=400", 
+      description: "20ft mural concept rendered at 8K. Used for city approval. Status: Physical mural completed",
+      technique: "Digital Mockup (Photoshop)",
+      year: 2023,
       likes: 76, 
       views: 438,
       width: "wide", 
     },
-    { 
-      id: 6, 
-      title: "Emotional Landscape", 
-      image: "/placeholder-art-6.jpg", 
-      description: "A visual journey through the spectrum of human emotions using color theory and abstract forms.",
-      technique: "Oil painting with digital post-processing",
-      likes: 145, 
-      views: 892,
-      width: "tall", 
-    },
-  ];
+  ]);
 
   if (!isLoggedIn || !isArtist) {
     return null; // Don't render anything while checking auth
@@ -151,6 +238,22 @@ export default function ArtistDashboard() {
   return (
     <MainLayout>
       <div className="py-8 px-4 sm:px-6 lg:px-8">
+        {/* Edit Profile Modal */}
+        <EditProfileModal 
+          isOpen={isEditModalOpen}
+          onClose={() => setIsEditModalOpen(false)}
+          editForm={editForm}
+          handleInputChange={handleInputChange}
+          handleSubmit={handleSubmit}
+        />
+        
+        {/* Upload Artwork Modal */}
+        <UploadArtworkModal
+          isOpen={isUploadModalOpen}
+          onClose={() => setIsUploadModalOpen(false)}
+          onSubmit={handleArtworkSubmit}
+        />
+        
         {/* Profile Header with Image and Name */}
         <div className="mb-8 bg-white dark:bg-[#1a1a2e] rounded-lg shadow-sm overflow-hidden">
           {/* Cover Image */}
@@ -181,6 +284,7 @@ export default function ArtistDashboard() {
                     variant="outline"
                     className="border-indigo-300 dark:border-indigo-700 text-indigo-700 dark:text-indigo-300"
                     size="sm"
+                    onClick={() => setIsEditModalOpen(true)}
                   >
                     <Settings className="h-4 w-4 mr-2" />
                     Edit Profile
@@ -239,33 +343,14 @@ export default function ArtistDashboard() {
           <>
             {/* Artist Bio with Artsy Border */}
             <div className="mb-8">
-              <div className="relative">
-                <div className="absolute inset-0 border-8 border-double border-indigo-100 dark:border-indigo-900/30 rounded-lg transform -rotate-1"></div>
-                <div className="absolute inset-0 border-4 border-dashed border-purple-100 dark:border-purple-900/30 rounded-lg transform rotate-1"></div>
-                <div className="relative bg-white dark:bg-[#1a1a2e] rounded-lg shadow-sm p-6 z-10">
-                  <h2 className="text-xl font-bold text-gray-900 dark:text-white mb-4">About Me</h2>
-                  <p className="text-gray-600 dark:text-gray-400 italic">"{artistProfile.bio}"</p>
-                  
-                  <div className="mt-6 grid grid-cols-1 md:grid-cols-3 gap-4 text-sm">
-                    <div>
-                      <span className="block text-gray-500 dark:text-gray-400">Experience</span>
-                      <span className="font-medium text-gray-900 dark:text-white">{artistProfile.experience}</span>
-                    </div>
-                    <div>
-                      <span className="block text-gray-500 dark:text-gray-400">Primary Medium</span>
-                      <span className="font-medium text-gray-900 dark:text-white">{artistProfile.primaryMedium}</span>
-                    </div>
-                    <div>
-                      <span className="block text-gray-500 dark:text-gray-400">Location</span>
-                      <span className="font-medium text-gray-900 dark:text-white">{artistProfile.location}</span>
-                    </div>
-                    <div>
-                      <span className="block text-gray-500 dark:text-gray-400">Skills</span>
-                      <span className="font-medium text-gray-900 dark:text-white">{artistProfile.skills}</span>
-                    </div>
-                  </div>
-                </div>
-              </div>
+              <AboutMeSection
+                bio={artistProfile.bio}
+                experience={artistProfile.experience}
+                primaryMedium={artistProfile.primaryMedium}
+                email={artistProfile.email}
+                age={artistProfile.age}
+                skills={artistProfile.skills}
+              />
             </div>
             
             {/* My Work - Pinterest Style Gallery */}
@@ -275,56 +360,61 @@ export default function ArtistDashboard() {
                 <Button
                   className="bg-linear-to-r from-indigo-600 to-purple-600 hover:from-indigo-700 hover:to-purple-700 text-white"
                   size="sm"
+                  onClick={() => setIsUploadModalOpen(true)}
                 >
                   <Upload className="h-4 w-4 mr-2" />
                   Upload New Art
                 </Button>
               </div>
               
-              {/* Pinterest-style masonry layout */}
-              <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6 auto-rows-auto">
+              {/* Proper grid layout for gallery */}
+              <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
                 {artworks.map((artwork) => (
                   <div 
                     key={artwork.id}
-                    className={cn(
-                      "bg-white dark:bg-[#1a1a2e] rounded-lg shadow-sm overflow-hidden hover:shadow-md transition-all hover:scale-[1.02] duration-300 cursor-pointer",
-                      artwork.width === "wide" ? "col-span-2" : "",
-                      artwork.width === "tall" ? "row-span-2" : ""
-                    )}
+                    className="bg-white dark:bg-[#1a1a2e] rounded-lg shadow-sm overflow-hidden hover:shadow-md transition-all hover:scale-[1.02] duration-300 cursor-pointer"
                   >
-                    <div className={cn(
-                      "relative bg-gray-200 dark:bg-gray-800",
-                      artwork.width === "wide" ? "aspect-video" : "",
-                      artwork.width === "tall" ? "aspect-9/16" : "",
-                      artwork.width === "medium" ? "aspect-square" : ""
-                    )}>
-                      <div className="absolute inset-0 flex items-center justify-center">
-                        <ImageIcon className="h-10 w-10 text-gray-400 dark:text-gray-600" />
-                      </div>
+                    <div className="aspect-square relative bg-gray-200 dark:bg-gray-800">
+                      <img 
+                        src={artwork.image} 
+                        alt={artwork.title} 
+                        className="w-full h-full object-cover"
+                      />
                       
-                      {/* Overlay on hover */}
-                      <div className="absolute inset-0 bg-linear-to-t from-black/70 via-transparent to-transparent opacity-0 hover:opacity-100 transition-opacity duration-300 flex flex-col justify-end p-4 text-white">
-                        <h3 className="font-medium text-lg">{artwork.title}</h3>
-                        <p className="text-sm text-gray-200 line-clamp-2">{artwork.description}</p>
+                      {/* Overlay with artwork info */}
+                      <div className="absolute inset-0 bg-gradient-to-t from-black/90 via-black/70 to-transparent flex flex-col justify-end p-4 text-white">
+                        <h3 className="font-bold text-lg">{artwork.title} ({artwork.year})</h3>
+                        <p className="text-sm text-gray-200">{artwork.description}</p>
                         <div className="flex justify-between mt-2 text-xs">
-                          <span className="flex items-center">
+                          <span className="flex items-center bg-black/30 px-2 py-1 rounded-full">
                             <Heart className="h-3 w-3 mr-1" /> {artwork.likes}
                           </span>
-                          <span className="flex items-center">
+                          <span className="flex items-center bg-black/30 px-2 py-1 rounded-full">
                             <Eye className="h-3 w-3 mr-1" /> {artwork.views}
                           </span>
                         </div>
                       </div>
                     </div>
+                    <div className="p-3">
+                      <h3 className="font-bold text-lg">{artwork.title} ({artwork.year})</h3>
+                      <p className="text-sm text-gray-700 dark:text-gray-300">{artwork.technique}</p>
+                    </div>
                   </div>
                 ))}
                 
                 {/* Upload New Art Card */}
-                <div className="bg-gray-50 dark:bg-gray-900/50 rounded-lg overflow-hidden border-2 border-dashed border-gray-300 dark:border-gray-700 flex flex-col items-center justify-center p-6 hover:border-indigo-500 dark:hover:border-indigo-500 transition-colors cursor-pointer aspect-square">
-                  <div className="bg-indigo-100 dark:bg-indigo-900/30 p-3 rounded-full mb-3">
-                    <Plus className="h-6 w-6 text-indigo-600 dark:text-indigo-400" />
+                <div 
+                  className="bg-gray-50 dark:bg-gray-900/50 rounded-lg overflow-hidden border-2 border-dashed border-gray-300 dark:border-gray-700 flex flex-col items-center justify-center p-6 hover:border-indigo-500 dark:hover:border-indigo-500 transition-colors cursor-pointer h-full"
+                  onClick={() => setIsUploadModalOpen(true)}
+                >
+                  <div className="aspect-square w-full flex items-center justify-center">
+                    <div className="text-center">
+                      <div className="bg-indigo-100 dark:bg-indigo-900/30 p-3 rounded-full mb-3 mx-auto inline-flex">
+                        <Plus className="h-6 w-6 text-indigo-600 dark:text-indigo-400" />
+                      </div>
+                      <p className="font-medium text-indigo-700 dark:text-indigo-300">Upload New Artwork</p>
+                    </div>
                   </div>
-                  <p className="font-medium text-indigo-700 dark:text-indigo-300">Upload New Artwork</p>
                 </div>
               </div>
             </div>
@@ -398,7 +488,7 @@ export default function ArtistDashboard() {
                 {artworks.slice(0, 3).map((artwork) => (
                   <div key={artwork.id} className="flex items-center p-3 bg-gray-50 dark:bg-gray-900/50 rounded-lg">
                     <div className="h-16 w-16 bg-gray-200 dark:bg-gray-800 rounded-md shrink-0 flex items-center justify-center mr-4">
-                      <ImageIcon className="h-6 w-6 text-gray-400 dark:text-gray-600" />
+                      <img src={artwork.image} alt={artwork.title} className="h-full w-full object-cover rounded-md" />
                     </div>
                     <div className="flex-1">
                       <h3 className="font-medium text-gray-900 dark:text-white">{artwork.title}</h3>
