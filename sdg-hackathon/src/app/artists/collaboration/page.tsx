@@ -1,16 +1,28 @@
 "use client";
 
-import React, { useEffect } from "react";
+import React, { useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
 import { MainLayout } from "@/components/layout/main-layout";
 import { useAuth } from "@/contexts/auth-context";
-import { Sparkles, Users, MessageSquare, Calendar, PlusCircle } from "lucide-react";
+import { Sparkles, Users, MessageSquare, Calendar, PlusCircle, Eye } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import Image from "next/image";
+import { ChatbotModal } from "@/components/collaboration/chatbot-modal";
+import { ArtistDetailsModal } from "@/components/collaboration/artist-details-modal";
+import { getArtistRecommendations, ArtistRecommendation } from "@/lib/grok-api";
 
 export default function CollaborationHub() {
   const router = useRouter();
   const { isLoggedIn, isArtist } = useAuth();
+  
+  // State for modals
+  const [isChatbotOpen, setIsChatbotOpen] = useState(false);
+  const [isDetailsModalOpen, setIsDetailsModalOpen] = useState(false);
+  const [selectedArtist, setSelectedArtist] = useState<ArtistRecommendation | null>(null);
+  const [isLoading, setIsLoading] = useState(false);
+  
+  // State for artist recommendations
+  const [recommendedArtists, setRecommendedArtists] = useState<ArtistRecommendation[]>([]);
 
   // Redirect if not logged in as artist
   useEffect(() => {
@@ -18,6 +30,36 @@ export default function CollaborationHub() {
       router.push("/login");
     }
   }, [isLoggedIn, isArtist, router]);
+  
+  // Handle preference submission
+  const handlePreferenceSubmit = async (preferences: string) => {
+    try {
+      console.log("📣 Starting artist recommendation process with preferences:", preferences);
+      setIsLoading(true);
+      // Add a small delay to ensure the loading state is visible
+      await new Promise(resolve => setTimeout(resolve, 500));
+      
+      console.log("🔍 Calling Grok API for artist recommendations...");
+      const artists = await getArtistRecommendations(preferences);
+      console.log("✅ Received artist recommendations:", artists.length);
+      
+      setRecommendedArtists(artists);
+      setIsChatbotOpen(false);
+    } catch (error) {
+      console.error("❌ Error getting artist recommendations:", error);
+      // Keep the modal open if there's an error
+      alert("Sorry, we couldn't find matching artists. Please try again with different preferences.");
+    } finally {
+      setIsLoading(false);
+      console.log("💾 Artist recommendation process completed");
+    }
+  };
+  
+  // Open artist details modal
+  const openArtistDetails = (artist: ArtistRecommendation) => {
+    setSelectedArtist(artist);
+    setIsDetailsModalOpen(true);
+  };
 
   // Mock data for collaboration hub
   const activeCollaborations = [
@@ -37,28 +79,239 @@ export default function CollaborationHub() {
     },
   ];
 
-  const suggestedArtists = [
+  // Use recommended artists from Grok API if available, otherwise use mock data
+  const suggestedArtists = recommendedArtists.length > 0 ? recommendedArtists : [
     {
-      id: 1,
+      id: "1",
       name: "Sarah Chen",
       specialty: "Digital Illustration",
-      matchScore: 92,
-      image: "/placeholder-artist-1.jpg",
+      compatibilityScore: 92,
+      location: "San Francisco, USA",
+      bio: "Digital illustrator specializing in character design and concept art.",
+      detailedAnalysis: {
+        toolExpertise: {
+          score: 25,
+          maxScore: 30,
+          rating: "Strong",
+          description: "Proficient in industry-standard digital art tools."
+        },
+        artTypeAlignment: {
+          score: 28,
+          maxScore: 30,
+          rating: "Excellent",
+          description: "Specializes in digital illustration and character design."
+        },
+        projectRelevance: {
+          score: 18,
+          maxScore: 20,
+          rating: "Strong",
+          description: "Experience with similar collaborative projects."
+        },
+        experienceLevel: {
+          score: 9,
+          maxScore: 10,
+          rating: "Excellent",
+          description: "Over 7 years of professional experience."
+        },
+        portfolioQuality: {
+          score: 8,
+          maxScore: 10,
+          rating: "Strong",
+          description: "Impressive portfolio with major clients."
+        }
+      },
+      collaborationPotential: {
+        rating: "Excellent Match (90-100%)",
+        description: "This artist would be an exceptional collaborator for your project."
+      },
+      collaborationInsights: [
+        "Uses requested digital illustration tools",
+        "Specializes in character design",
+        "Has worked on similar projects"
+      ],
+      portfolioHighlights: [
+        {
+          title: "Fantasy Character Series",
+          year: "2023",
+          medium: "Digital (Procreate)",
+          description: "Character designs for fantasy RPG",
+          status: "Published"
+        },
+        {
+          title: "Children's Book Illustrations",
+          year: "2022",
+          medium: "Digital (Photoshop)",
+          description: "Full illustrations for award-winning children's book",
+          status: "Published"
+        },
+        {
+          title: "Concept Art Collection",
+          year: "2021",
+          medium: "Digital (Clip Studio)",
+          description: "Environment concepts for animated series",
+          status: "Completed"
+        }
+      ],
+      contactInformation: {
+        website: "sarahchen.art",
+        email: "sarah@sarahchen.art",
+        social: "@sarahchenart"
+      }
     },
     {
-      id: 2,
+      id: "2",
       name: "Michael Wong",
       specialty: "Traditional Painting",
-      matchScore: 87,
-      image: "/placeholder-artist-2.jpg",
+      compatibilityScore: 87,
+      location: "New York, USA",
+      bio: "Traditional painter with focus on oil and acrylic techniques.",
+      detailedAnalysis: {
+        toolExpertise: {
+          score: 22,
+          maxScore: 30,
+          rating: "Strong",
+          description: "Expert in traditional painting techniques."
+        },
+        artTypeAlignment: {
+          score: 25,
+          maxScore: 30,
+          rating: "Strong",
+          description: "Specializes in traditional painting styles."
+        },
+        projectRelevance: {
+          score: 16,
+          maxScore: 20,
+          rating: "Strong",
+          description: "Relevant experience for your project needs."
+        },
+        experienceLevel: {
+          score: 9,
+          maxScore: 10,
+          rating: "Excellent",
+          description: "Over 10 years of professional experience."
+        },
+        portfolioQuality: {
+          score: 8,
+          maxScore: 10,
+          rating: "Strong",
+          description: "High-quality portfolio with gallery exhibitions."
+        }
+      },
+      collaborationPotential: {
+        rating: "Strong Match (75-89%)",
+        description: "This artist would be a very good collaborator for your project."
+      },
+      collaborationInsights: [
+        "Expert in traditional painting techniques",
+        "Has gallery exhibition experience",
+        "Strong technical foundation"
+      ],
+      portfolioHighlights: [
+        {
+          title: "Urban Landscapes",
+          year: "2023",
+          medium: "Oil on Canvas",
+          description: "Series of cityscape paintings exhibited in NYC gallery",
+          status: "Exhibited"
+        },
+        {
+          title: "Portrait Collection",
+          year: "2022",
+          medium: "Acrylic on Canvas",
+          description: "Commissioned portrait series for private collector",
+          status: "Completed"
+        },
+        {
+          title: "Abstract Expressions",
+          year: "2021",
+          medium: "Mixed Media",
+          description: "Experimental series combining traditional and digital techniques",
+          status: "Exhibited"
+        }
+      ],
+      contactInformation: {
+        website: "michaelwongart.com",
+        email: "michael@michaelwongart.com",
+        social: "@michaelwongart"
+      }
     },
     {
-      id: 3,
+      id: "3",
       name: "Aisha Patel",
       specialty: "Mixed Media",
-      matchScore: 85,
-      image: "/placeholder-artist-3.jpg",
-    },
+      compatibilityScore: 85,
+      location: "London, UK",
+      bio: "Mixed media artist combining traditional and digital techniques.",
+      detailedAnalysis: {
+        toolExpertise: {
+          score: 24,
+          maxScore: 30,
+          rating: "Strong",
+          description: "Versatile with both traditional and digital tools."
+        },
+        artTypeAlignment: {
+          score: 23,
+          maxScore: 30,
+          rating: "Strong",
+          description: "Specializes in mixed media approaches."
+        },
+        projectRelevance: {
+          score: 15,
+          maxScore: 20,
+          rating: "Good",
+          description: "Experience with similar collaborative projects."
+        },
+        experienceLevel: {
+          score: 8,
+          maxScore: 10,
+          rating: "Strong",
+          description: "6 years of professional experience."
+        },
+        portfolioQuality: {
+          score: 7,
+          maxScore: 10,
+          rating: "Good",
+          description: "Solid portfolio with diverse projects."
+        }
+      },
+      collaborationPotential: {
+        rating: "Strong Match (75-89%)",
+        description: "This artist would be a very good collaborator for your project."
+      },
+      collaborationInsights: [
+        "Versatile with multiple mediums",
+        "Experience with collaborative projects",
+        "Innovative approach to art creation"
+      ],
+      portfolioHighlights: [
+        {
+          title: "Fusion Series",
+          year: "2023",
+          medium: "Mixed Media",
+          description: "Combination of traditional painting with digital elements",
+          status: "Exhibited"
+        },
+        {
+          title: "Textile Art Project",
+          year: "2022",
+          medium: "Fabric, Digital Print",
+          description: "Collaborative project with fashion designer",
+          status: "Completed"
+        },
+        {
+          title: "Interactive Installation",
+          year: "2021",
+          medium: "Mixed Media, Digital",
+          description: "Gallery installation with interactive elements",
+          status: "Exhibited"
+        }
+      ],
+      contactInformation: {
+        website: "aishapatel.co.uk",
+        email: "aisha@aishapatel.co.uk",
+        social: "@aishapatelart"
+      }
+    }
   ];
 
   const upcomingEvents = [
@@ -138,7 +391,10 @@ export default function CollaborationHub() {
             ))}
 
             {/* Create New Card */}
-            <div className="bg-purple-50 dark:bg-purple-900/20 rounded-lg overflow-hidden border-2 border-dashed border-purple-300 dark:border-purple-700 flex flex-col items-center justify-center p-6 hover:border-purple-500 dark:hover:border-purple-500 transition-colors cursor-pointer">
+            <div 
+              className="bg-purple-50 dark:bg-purple-900/20 rounded-lg overflow-hidden border-2 border-dashed border-purple-300 dark:border-purple-700 flex flex-col items-center justify-center p-6 hover:border-purple-500 dark:hover:border-purple-500 transition-colors cursor-pointer"
+              onClick={() => setIsChatbotOpen(true)}
+            >
               <div className="bg-purple-100 dark:bg-purple-900/30 p-3 rounded-full mb-3">
                 <PlusCircle className="h-6 w-6 text-purple-600 dark:text-purple-400" />
               </div>
@@ -172,11 +428,21 @@ export default function CollaborationHub() {
                   </div>
                   <div className="text-right">
                     <div className="text-sm font-medium text-purple-700 dark:text-purple-300">
-                      {artist.matchScore}% match
+                      {artist.compatibilityScore?.toFixed(1)}% match
                     </div>
-                    <Button variant="outline" size="sm" className="mt-1 text-xs">
-                      Connect
-                    </Button>
+                    <div className="flex space-x-1 mt-1">
+                      <Button 
+                        variant="outline" 
+                        size="sm" 
+                        className="text-xs flex items-center"
+                        onClick={() => openArtistDetails(artist)}
+                      >
+                        <Eye className="h-3 w-3 mr-1" /> View Details
+                      </Button>
+                      <Button variant="outline" size="sm" className="text-xs">
+                        Connect
+                      </Button>
+                    </div>
                   </div>
                 </div>
               ))}
@@ -218,6 +484,20 @@ export default function CollaborationHub() {
           </div>
         </div>
       </div>
+      {/* Chatbot Modal */}
+      <ChatbotModal
+        isOpen={isChatbotOpen}
+        onClose={() => setIsChatbotOpen(false)}
+        onSubmit={handlePreferenceSubmit}
+        isLoading={isLoading}
+      />
+
+      {/* Artist Details Modal */}
+      <ArtistDetailsModal
+        artist={selectedArtist}
+        isOpen={isDetailsModalOpen}
+        onClose={() => setIsDetailsModalOpen(false)}
+      />
     </MainLayout>
   );
 }

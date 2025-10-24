@@ -20,13 +20,9 @@ export function ArtworkCard({ artwork, className }: ArtworkCardProps) {
     >
       <Link href={`/artwork/${artwork.id}`} className="group block relative aspect-4/3 overflow-hidden">
         <div className="absolute inset-0 bg-gradient-to-t from-black/60 via-transparent to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300 z-10"></div>
-        <Image
-          src={artwork.images[0] || '/placeholder-image.jpg'}
-          alt={artwork.title}
-          fill
-          sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw"
-          className="object-cover transition-transform duration-500 group-hover:scale-110"
-        />
+        <div className="absolute inset-0 bg-gradient-to-br from-gray-200 to-gray-300 dark:from-gray-700 dark:to-gray-800 flex items-center justify-center">
+          <Eye className="h-10 w-10 text-gray-400 dark:text-gray-500" />
+        </div>
         <div className="absolute bottom-0 left-0 right-0 p-3 transform translate-y-full group-hover:translate-y-0 transition-transform duration-300 z-20">
           <div className="flex justify-between items-center">
             <span className="text-white text-sm font-medium truncate">{artwork.title}</span>

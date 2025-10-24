@@ -2,7 +2,7 @@ import React from 'react';
 import Image from 'next/image';
 import Link from 'next/link';
 import { notFound } from 'next/navigation';
-import { MapPin, Instagram, Twitter, Globe, ArrowLeft } from 'lucide-react';
+import { MapPin, Instagram, Twitter, Globe, ArrowLeft, Users } from 'lucide-react';
 
 import { MainLayout } from '@/components/layout/main-layout';
 import { Button } from '@/components/ui/button';
@@ -16,6 +16,8 @@ interface ArtistDetailPageProps {
 }
 
 export default function ArtistDetailPage({ params }: ArtistDetailPageProps) {
+  // In Next.js App Router, params is not a Promise in server components
+  // We can access it directly
   const artist = mockArtists.find(a => a.id === params.id);
   
   if (!artist) {
@@ -40,13 +42,9 @@ export default function ArtistDetailPage({ params }: ArtistDetailPageProps) {
           <div className="lg:col-span-1">
             <div className="sticky top-24">
               <div className="aspect-square relative rounded-lg overflow-hidden mb-4">
-                <Image
-                  src={artist.profileImage || '/placeholder-profile.jpg'}
-                  alt={artist.name}
-                  fill
-                  className="object-cover"
-                  priority
-                />
+                <div className="w-full h-full bg-gray-200 dark:bg-gray-700 flex items-center justify-center">
+                  <Users className="h-16 w-16 text-gray-400 dark:text-gray-500" />
+                </div>
               </div>
               
               <h1 className="text-2xl font-bold mb-2">{artist.name}</h1>
