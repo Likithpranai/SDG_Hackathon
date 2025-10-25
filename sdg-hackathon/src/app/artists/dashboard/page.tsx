@@ -22,6 +22,7 @@ import {
   X,
   Save
 } from "lucide-react";
+import { mockDataStore, Artwork } from "@/lib/mock-data-store";
 import EditProfileModal from "./edit-profile-modal";
 import AboutMeSection from "./about-me-section";
 import UploadArtworkModal, { ArtworkFormData } from "./upload-artwork-modal";
@@ -106,44 +107,41 @@ export default function ArtistDashboard() {
 
   // Handle new artwork submission
   const handleArtworkSubmit = (artworkData: ArtworkFormData) => {
-    // In a real app with proper data persistence, we would use the response from the API
-    // But for this demo, we'll create a new artwork object from the form data
+    console.log('Handling artwork submission:', artworkData);
     
-    // Generate a unique ID for the new artwork
-    const newId = `IMG${(artworks.length + 1).toString().padStart(3, '0')}`;
-    
-    // Create a new artwork object
-    const newArtwork = {
-      id: newId,
-      title: artworkData.title,
-      // Use the image preview from the form data since our API doesn't actually store the image
-      // In a real app with proper storage, we would use the URL returned from the API
-      image: artworkData.imagePreview || '',
-      description: artworkData.description,
-      technique: artworkData.medium,
-      year: artworkData.year,
-      likes: 0, // Start with 0 likes
-      views: 0, // Start with 0 views
-      width: "medium" // Default width
-    };
-    
-    // Add the new artwork to the beginning of the array
-    const updatedArtworks = [newArtwork, ...artworks];
-    
-    // Update the artworks array
-    setArtworks(updatedArtworks);
-    
-    // Update the stats
-    setArtistProfile(prev => ({
-      ...prev,
-      stats: {
-        ...prev.stats,
-        artworks: prev.stats.artworks + 1
-      }
-    }));
-    
-    // Show success message (in a real app)
-    console.log('Artwork uploaded successfully!');
+    try {
+      // Create a new artwork object
+      const newArtwork = {
+        title: artworkData.title,
+        // Use the image preview from the form data since our API doesn't actually store the image
+        // In a real app with proper storage, we would use the URL returned from the API
+        image: artworkData.imagePreview || '',
+        description: artworkData.description,
+        technique: artworkData.medium,
+        year: artworkData.year,
+        width: "medium" // Default width
+      };
+      
+      // Add the artwork to the mock data store
+      const addedArtwork = mockDataStore.addArtwork(newArtwork);
+      console.log('Added artwork to mock data store:', addedArtwork);
+      
+      // Update the local state with the latest artworks
+      setArtworks(mockDataStore.getArtworks());
+      
+      // Update the stats
+      setArtistProfile(prev => ({
+        ...prev,
+        stats: {
+          ...prev.stats,
+          artworks: prev.stats.artworks + 1
+        }
+      }));
+      
+      console.log('Artwork uploaded successfully!');
+    } catch (error) {
+      console.error('Error adding artwork to mock data store:', error);
+    }
   };
 
   // Redirect if not logged in as artist
@@ -153,64 +151,13 @@ export default function ArtistDashboard() {
     }
   }, [isLoggedIn, isArtist, router]);
 
-  // Artwork data from digital_artist_data.py completeGallery
-  const [artworks, setArtworks] = useState([
-    { 
-      id: "IMG001", 
-      title: "Urban Pulse", 
-      image: "https://cdn11.bigcommerce.com/s-x49po/images/stencil/1500x1500/products/135189/302182/handmade%2Fdownscaled%2Fh_nvobyh5ndmh_2000x2000__80266.1745219873.jpg?c=2", 
-      description: "Bold red/orange swirls in Procreate. 300 DPI export for mural printing. Exhibited: Zona MACO 2024. Status: Sold as NFT + Print",
-      technique: "Digital (Procreate)",
-      year: 2024,
-      likes: 124, 
-      views: 756,
-      width: "wide", // For Pinterest-style layout
-    },
-    { 
-      id: "IMG002", 
-      title: "Silent Storm", 
-      image: "https://images.saatchiart.com/saatchi/1368549/art/6989891/6059227-HSC00001-7.jpg", 
-      description: "Layered blues with 50+ adjustment layers. NFT drop on Foundation. Status: Sold as NFT",
-      technique: "Digital (Photoshop)",
-      year: 2023,
-      likes: 98, 
-      views: 502,
-      width: "medium", 
-    },
-    { 
-      id: "IMG003", 
-      title: "City Dreams", 
-      image: "https://cdn11.bigcommerce.com/s-x49po/images/stencil/1500x1500/products/135189/302182/handmade%2Fdownscaled%2Fh_nvobyh5ndmh_2000x2000__80266.1745219873.jpg?c=2", 
-      description: "Metro ticket scans composited in Photoshop. Airbnb HQ digital wallpaper. Status: Licensed",
-      technique: "Digital (Procreate + Collage)",
-      year: 2022,
-      likes: 132, 
-      views: 815,
-      width: "tall", 
-    },
-    { 
-      id: "IMG004", 
-      title: "Echoes", 
-      image: "https://images.unsplash.com/photo-1541701494587-cb58502866ab?w=400", 
-      description: "Gradient mesh circles. OpenSea NFT collection (1/10 editions). Status: Sold out",
-      technique: "Digital Painting (Procreate)",
-      year: 2021,
-      likes: 187, 
-      views: 1024,
-      width: "medium", 
-    },
-    { 
-      id: "IMG005", 
-      title: "Mexico City Mural - Digital Concept", 
-      image: "https://images.unsplash.com/photo-1571019613454-1cb2f99b2d8b?w=400", 
-      description: "20ft mural concept rendered at 8K. Used for city approval. Status: Physical mural completed",
-      technique: "Digital Mockup (Photoshop)",
-      year: 2023,
-      likes: 76, 
-      views: 438,
-      width: "wide", 
-    },
-  ]);
+  // Artwork data from mock data store
+  const [artworks, setArtworks] = useState<Artwork[]>([]);
+  
+  // Load artworks from mock data store on component mount
+  useEffect(() => {
+    setArtworks(mockDataStore.getArtworks());
+  }, []);
 
   if (!isLoggedIn || !isArtist) {
     return null; // Don't render anything while checking auth

@@ -1,7 +1,9 @@
 'use client'
-import React, { useState, useCallback } from 'react';
+import React, { useState, useCallback, useEffect } from 'react';
 import { useDropzone } from 'react-dropzone';
-import { X, Upload, Plus, Image as ImageIcon } from 'lucide-react';
+import { X, Upload, Plus, Image as ImageIcon, Sparkles } from 'lucide-react';
+import { PricingSuggestionModal } from '@/components/artwork/pricing-suggestion-modal';
+import { getArtworkPricingSuggestion } from '@/lib/artwork-pricing-api';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { ArtworkCategory, ArtworkType } from '@/types/artwork';
@@ -40,6 +42,15 @@ export function ArtworkUpload({ onSubmit }: ArtworkUploadProps) {
   const [currentTag, setCurrentTag] = useState('');
   const [errors, setErrors] = useState<Partial<Record<keyof FormData, string>>>({});
   const [previewUrls, setPreviewUrls] = useState<string[]>([]);
+  
+  // Pricing suggestion states
+  const [isPricingSuggestionModalOpen, setIsPricingSuggestionModalOpen] = useState(false);
+  const [isLoadingPricingSuggestion, setIsLoadingPricingSuggestion] = useState(false);
+  const [pricingSuggestion, setPricingSuggestion] = useState<{
+    priceRange: string;
+    rationale: string;
+  } | null>(null);
+  const [pricingSuggestionError, setPricingSuggestionError] = useState<string | null>(null);
 
   const onDrop = useCallback((acceptedFiles: File[]) => {
     // Limit to 5 images
@@ -106,6 +117,50 @@ export function ArtworkUpload({ onSubmit }: ArtworkUploadProps) {
       ...formData,
       tags: formData.tags.filter(tag => tag !== tagToRemove),
     });
+  };
+
+  // Function to get pricing suggestions using Grok AI
+  const getPricingSuggestion = async () => {
+    // Check if we have an image
+    if (previewUrls.length === 0) {
+      setPricingSuggestionError('Please upload an image first');
+      return;
+    }
+    
+    try {
+      setIsLoadingPricingSuggestion(true);
+      setPricingSuggestionError(null);
+      
+      // Use the first image for pricing suggestion
+      const imageUrl = previewUrls[0];
+      
+      // Gather artwork details for better pricing accuracy
+      const artworkDetails = {
+        title: formData.title,
+        medium: formData.category,
+        dimensions: formData.width && formData.height ? 
+          `${formData.width} × ${formData.height}${formData.depth ? ` × ${formData.depth}` : ''} ${formData.unit}` : 
+          undefined,
+        description: formData.description,
+      };
+      
+      // Get pricing suggestion
+      const suggestion = await getArtworkPricingSuggestion(imageUrl, artworkDetails);
+      
+      // Update state with suggestion
+      setPricingSuggestion({
+        priceRange: suggestion.priceRange,
+        rationale: suggestion.rationale
+      });
+      
+      // Open the modal
+      setIsPricingSuggestionModalOpen(true);
+    } catch (error) {
+      console.error('Error getting pricing suggestion:', error);
+      setPricingSuggestionError(error instanceof Error ? error.message : 'Failed to get pricing suggestion');
+    } finally {
+      setIsLoadingPricingSuggestion(false);
+    }
   };
 
   const handleSubmit = (e: React.FormEvent) => {
@@ -347,20 +402,47 @@ export function ArtworkUpload({ onSubmit }: ArtworkUploadProps) {
 
         {/* Price */}
         <div>
-          <label htmlFor="price" className="block text-sm font-medium">
-            Price (HKD)
-          </label>
-          <Input
-            id="price"
-            name="price"
-            type="number"
-            min="0"
-            step="1"
-            value={formData.price || ''}
-            onChange={handleNumberInput}
-            placeholder="Leave empty if not for sale"
-            className="mt-1"
-          />
+          <div className="flex justify-between items-center">
+            <label htmlFor="price" className="block text-sm font-medium">
+              Price (HKD)
+            </label>
+            <Button
+              type="button"
+              variant="outline"
+              size="sm"
+              className="flex items-center gap-1 text-xs"
+              onClick={getPricingSuggestion}
+              disabled={isLoadingPricingSuggestion || previewUrls.length === 0}
+            >
+              {isLoadingPricingSuggestion ? (
+                <>
+                  <div className="h-3 w-3 animate-spin rounded-full border-2 border-primary-500 border-t-transparent"></div>
+                  <span>Analyzing...</span>
+                </>
+              ) : (
+                <>
+                  <Sparkles className="h-3 w-3 text-primary-500" />
+                  <span>Get AI Pricing Suggestion</span>
+                </>
+              )}
+            </Button>
+          </div>
+          <div className="mt-1 flex">
+            <Input
+              id="price"
+              name="price"
+              type="number"
+              min="0"
+              step="1"
+              value={formData.price || ''}
+              onChange={handleNumberInput}
+              placeholder="Leave empty if not for sale"
+              className="flex-grow"
+            />
+          </div>
+          {pricingSuggestionError && (
+            <p className="text-xs text-red-500 mt-1">{pricingSuggestionError}</p>
+          )}
         </div>
 
         {/* Dimensions (only for physical artworks) */}
@@ -438,12 +520,27 @@ export function ArtworkUpload({ onSubmit }: ArtworkUploadProps) {
             type="submit"
             variant="primary"
             size="lg"
-            leftIcon={<Upload className="h-4 w-4" />}
+            className="flex items-center gap-2"
           >
+            <Upload className="h-4 w-4" />
             Upload Artwork
           </Button>
         </div>
       </form>
+
+      {/* Pricing Suggestion Modal */}
+      {isPricingSuggestionModalOpen && pricingSuggestion && (
+        <PricingSuggestionModal
+          isOpen={isPricingSuggestionModalOpen}
+          onClose={() => setIsPricingSuggestionModalOpen(false)}
+          imageUrl={previewUrls[0]}
+          artworkTitle={formData.title}
+          priceRange={pricingSuggestion.priceRange}
+          rationale={pricingSuggestion.rationale}
+          isLoading={isLoadingPricingSuggestion}
+          error={pricingSuggestionError || undefined}
+        />
+      )}
     </div>
   );
 }

@@ -4,12 +4,13 @@ import React, { useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
 import { MainLayout } from "@/components/layout/main-layout";
 import { useAuth } from "@/contexts/auth-context";
-import { Sparkles, Users, MessageSquare, Calendar, PlusCircle, Eye } from "lucide-react";
+import { Sparkles, Users, MessageSquare, Calendar, PlusCircle, Eye, CheckCircle, Clock } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import Image from "next/image";
 import { ChatbotModal } from "@/components/collaboration/chatbot-modal";
 import { ArtistDetailsModal } from "@/components/collaboration/artist-details-modal";
-import { getArtistRecommendations, ArtistRecommendation } from "@/lib/grok-api";
+import { ConnectionRequestModal } from "@/components/collaboration/connection-request-modal";
+import { ArtistRecommendation, getArtistRecommendations } from "@/lib/grok-api";
 
 export default function CollaborationHub() {
   const router = useRouter();
@@ -18,11 +19,15 @@ export default function CollaborationHub() {
   // State for modals
   const [isChatbotOpen, setIsChatbotOpen] = useState(false);
   const [isDetailsModalOpen, setIsDetailsModalOpen] = useState(false);
+  const [isConnectionModalOpen, setIsConnectionModalOpen] = useState(false);
   const [selectedArtist, setSelectedArtist] = useState<ArtistRecommendation | null>(null);
   const [isLoading, setIsLoading] = useState(false);
   
   // State for artist recommendations
   const [recommendedArtists, setRecommendedArtists] = useState<ArtistRecommendation[]>([]);
+  
+  // State for connection requests
+  const [connectionRequests, setConnectionRequests] = useState<Record<string, {pending: boolean, message: string}>>({});
 
   // Redirect if not logged in as artist
   useEffect(() => {
@@ -39,9 +44,9 @@ export default function CollaborationHub() {
       // Add a small delay to ensure the loading state is visible
       await new Promise(resolve => setTimeout(resolve, 500));
       
-      console.log("🔍 Calling Grok API for artist recommendations...");
+      console.log("🔍 Calling Grok API for artist recommendations based on current trends...");
       const artists = await getArtistRecommendations(preferences);
-      console.log("✅ Received artist recommendations:", artists.length);
+      console.log("✅ Received artist recommendations from Grok API:", artists.length);
       
       setRecommendedArtists(artists);
       setIsChatbotOpen(false);
@@ -59,6 +64,29 @@ export default function CollaborationHub() {
   const openArtistDetails = (artist: ArtistRecommendation) => {
     setSelectedArtist(artist);
     setIsDetailsModalOpen(true);
+  };
+  
+  // Open connection request modal
+  const openConnectionModal = (artist: ArtistRecommendation) => {
+    setSelectedArtist(artist);
+    setIsConnectionModalOpen(true);
+  };
+  
+  // Handle connection request submission
+  const handleConnectionSubmit = (message: string) => {
+    if (!selectedArtist) return;
+    
+    // Update connection requests state
+    setConnectionRequests(prev => ({
+      ...prev,
+      [selectedArtist.id]: {
+        pending: true,
+        message: message
+      }
+    }));
+    
+    // Log the action (for debugging purposes)
+    console.log(`Connection request sent to ${selectedArtist.name} with message: ${message}`);
   };
 
   // Mock data for collaboration hub
@@ -417,8 +445,15 @@ export default function CollaborationHub() {
               {suggestedArtists.map((artist) => (
                 <div
                   key={artist.id}
-                  className="flex items-center p-4 bg-purple-50 dark:bg-purple-900/10 rounded-lg hover:bg-purple-100 dark:hover:bg-purple-900/20 transition-colors"
+                  className={`flex items-center p-4 rounded-lg transition-colors relative ${connectionRequests[artist.id]?.pending ? 'bg-amber-50/50 dark:bg-amber-900/10 border border-amber-200 dark:border-amber-800' : 'bg-purple-50 dark:bg-purple-900/10 hover:bg-purple-100 dark:hover:bg-purple-900/20'}`}
                 >
+                  {connectionRequests[artist.id]?.pending && (
+                    <div className="absolute top-0 right-0 transform translate-x-1/4 -translate-y-1/4">
+                      <div className="bg-amber-500 text-white text-xs px-2 py-1 rounded-full shadow-sm flex items-center">
+                        <Clock className="h-3 w-3 mr-1" /> Pending
+                      </div>
+                    </div>
+                  )}
                   <div className="h-12 w-12 rounded-full bg-gray-200 dark:bg-gray-700 flex items-center justify-center overflow-hidden mr-4">
                     <Users className="h-6 w-6 text-gray-400 dark:text-gray-500" />
                   </div>
@@ -439,8 +474,22 @@ export default function CollaborationHub() {
                       >
                         <Eye className="h-3 w-3 mr-1" /> View Details
                       </Button>
-                      <Button variant="outline" size="sm" className="text-xs">
-                        Connect
+                      <Button 
+                        variant="outline" 
+                        size="sm" 
+                        className={`text-xs transition-all ${connectionRequests[artist.id]?.pending 
+                          ? 'bg-amber-50 text-amber-600 border-amber-200 hover:bg-amber-100 hover:text-amber-700 dark:bg-amber-900/20 dark:text-amber-400 dark:border-amber-800 dark:hover:bg-amber-900/30 flex items-center' 
+                          : ''}`}
+                        onClick={() => !connectionRequests[artist.id]?.pending && openConnectionModal(artist)}
+                        disabled={connectionRequests[artist.id]?.pending}
+                      >
+                        {connectionRequests[artist.id]?.pending ? (
+                          <>
+                            <Clock className="h-3 w-3 mr-1" /> Request Sent
+                          </>
+                        ) : (
+                          'Connect'
+                        )}
                       </Button>
                     </div>
                   </div>
@@ -498,6 +547,16 @@ export default function CollaborationHub() {
         isOpen={isDetailsModalOpen}
         onClose={() => setIsDetailsModalOpen(false)}
       />
+      
+      {/* Connection Request Modal */}
+      {selectedArtist && (
+        <ConnectionRequestModal
+          isOpen={isConnectionModalOpen}
+          onClose={() => setIsConnectionModalOpen(false)}
+          onSubmit={handleConnectionSubmit}
+          artistName={selectedArtist.name}
+        />
+      )}
     </MainLayout>
   );
 }

@@ -1,6 +1,7 @@
 "use client";
 
 import React, { useState } from "react";
+import PostUploadPricingModal from "./post-upload-pricing-modal";
 import { 
   Dialog, 
   DialogContent, 
@@ -42,6 +43,10 @@ export default function UploadArtworkModal({ isOpen, onClose, onSubmit }: Upload
   const [formData, setFormData] = useState<ArtworkFormData>(initialFormState);
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [uploadStatus, setUploadStatus] = useState<{ success?: string; error?: string } | null>(null);
+  
+  // State for pricing suggestion modal
+  const [isPricingModalOpen, setIsPricingModalOpen] = useState(false);
+  const [uploadedArtwork, setUploadedArtwork] = useState<ArtworkFormData | null>(null);
 
   const handleInputChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
     const { name, value } = e.target;
@@ -105,11 +110,19 @@ export default function UploadArtworkModal({ isOpen, onClose, onSubmit }: Upload
       // Pass the result to the parent component
       onSubmit(formData);
       
-      // Reset form after a short delay to show the success message
+      // Save the uploaded artwork data for the pricing modal
+      setUploadedArtwork(formData);
+      
+      // Close the upload modal and show pricing modal after a short delay
+      console.log('Setting up to show pricing modal...');
       setTimeout(() => {
-        setFormData(initialFormState);
+        console.log('Closing upload modal and opening pricing modal...');
         onClose();
+        setIsPricingModalOpen(true);
+        console.log('Pricing modal should be open now, artwork data:', formData);
       }, 1500);
+      
+      // Don't reset the form data yet - we need it for the pricing modal
     } catch (error: any) {
       console.error("Error uploading artwork:", error);
       setUploadStatus({ error: error.message || 'Failed to upload artwork' });
@@ -128,9 +141,20 @@ export default function UploadArtworkModal({ isOpen, onClose, onSubmit }: Upload
 
   // Reset form when modal is closed
   const handleClose = () => {
-    setFormData(initialFormState);
+    // Only reset if we're not about to show the pricing modal
+    if (!uploadedArtwork) {
+      setFormData(initialFormState);
+    }
     setUploadStatus(null);
     onClose();
+  };
+  
+  // Handle closing the pricing modal
+  const handlePricingModalClose = () => {
+    setIsPricingModalOpen(false);
+    // Now we can reset the form data
+    setFormData(initialFormState);
+    setUploadedArtwork(null);
   };
 
   return (
@@ -287,6 +311,13 @@ export default function UploadArtworkModal({ isOpen, onClose, onSubmit }: Upload
           </DialogFooter>
         </form>
       </DialogContent>
+      
+      {/* Pricing Suggestion Modal */}
+      <PostUploadPricingModal
+        isOpen={isPricingModalOpen}
+        onClose={handlePricingModalClose}
+        artworkData={uploadedArtwork}
+      />
     </Dialog>
   );
 }
