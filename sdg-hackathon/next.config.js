@@ -12,18 +12,71 @@ const nextConfig = {
   // swcMinify is deprecated in newer Next.js versions
   // swcMinify: true,
   images: {
-    domains: ['localhost'],
+    remotePatterns: [
+      {
+        protocol: 'http',
+        hostname: 'localhost',
+      },
+      {
+        protocol: 'https',
+        hostname: 'www.discoverhongkong.com',
+      },
+      {
+        protocol: 'https',
+        hostname: 'media.timeout.com',
+      },
+      {
+        protocol: 'https',
+        hostname: 'ichef.bbci.co.uk',
+      },
+      {
+        protocol: 'https',
+        hostname: 'images.lifestyleasia.com',
+      },
+      {
+        protocol: 'https',
+        hostname: 'd2u3kfwd92fzu7.cloudfront.net',
+      },
+      {
+        protocol: 'https',
+        hostname: 'cdn.tatlerasia.com',
+      },
+      {
+        protocol: 'https',
+        hostname: 'images.unsplash.com',
+      },
+      {
+        protocol: 'https',
+        hostname: 'wallpapers.com',
+      },
+      {
+        protocol: 'https',
+        hostname: 'thepicturesdp.in',
+      },
+      {
+        protocol: 'https',
+        hostname: 'images.ctfassets.net',
+      },
+      {
+        protocol: 'https',
+        hostname: 'media.istockphoto.com',
+      },
+      {
+        protocol: 'https',
+        hostname: 'img.freepik.com',
+      },
+      {
+        protocol: 'https',
+        hostname: 'i.redd.it',
+      },
+      {
+        protocol: 'https',
+        hostname: 'i.pinimg.com',
+      },
+    ],
   },
-  // This ensures server-side environment variables are properly loaded
-  serverRuntimeConfig: {
-    // Will only be available on the server side
-    XAI_API_KEY: process.env.XAI_API_KEY,
-    OPENAI_API_KEY: process.env.XAI_API_KEY, // Use XAI_API_KEY as OPENAI_API_KEY
-  },
-  publicRuntimeConfig: {
-    // Will be available on both server and client
-    staticFolder: '/static',
-  },
+  // Environment variables are now handled through the env property above
+  // and through the .env.local file
   eslint: {
     // Warning: This allows production builds to successfully complete even with ESLint errors
     ignoreDuringBuilds: true,
