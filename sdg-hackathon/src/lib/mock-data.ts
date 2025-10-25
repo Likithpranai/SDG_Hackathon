@@ -1,4 +1,5 @@
-import { Artist, Artwork } from '@/types/artwork';
+import { Artwork } from '@/types/artwork';
+import { Artist } from '@/types/artist';
 
 export const mockArtists: Artist[] = [
   {
@@ -63,7 +64,7 @@ export const mockArtworks: Artwork[] = [
     title: 'Victoria Harbor at Dusk',
     description: 'A traditional Chinese painting depicting Victoria Harbor at dusk, showcasing the iconic Hong Kong skyline with traditional brushwork techniques.',
     artistId: '1',
-    images: ['/artworks/artwork1.jpg'],
+    images: ['/artworks/victoria_harbour_at_dusk.jpg'],
     type: 'physical',
     category: 'traditional-chinese',
     tags: ['landscape', 'harbor', 'skyline', 'traditional'],
@@ -85,7 +86,7 @@ export const mockArtworks: Artwork[] = [
     title: 'Digital Kowloon',
     description: 'A digital artwork reimagining the streets of Kowloon with futuristic neon elements while preserving traditional architectural features.',
     artistId: '2',
-    images: ['/artworks/artwork2.jpg'],
+    images: ['/artworks/digital_kowloon.jpg'],
     type: 'digital',
     category: 'digital',
     tags: ['cyberpunk', 'neon', 'urban', 'futuristic'],
@@ -102,7 +103,7 @@ export const mockArtworks: Artwork[] = [
     title: 'Fragments of Wan Chai',
     description: 'A mixed media collage exploring the diverse textures and patterns found in Wan Chai\'s urban landscape.',
     artistId: '3',
-    images: ['/artworks/artwork3.jpg'],
+    images: ['/artworks/fragments_of_wanchai.jpg'],
     type: 'physical',
     category: 'mixed-media',
     tags: ['collage', 'urban', 'texture', 'city life'],
@@ -124,7 +125,7 @@ export const mockArtworks: Artwork[] = [
     title: 'Between Mountains and Skyscrapers',
     description: 'A photographic series exploring the unique geography of Hong Kong, where mountains meet urban development.',
     artistId: '4',
-    images: ['/artworks/artwork4.jpg', '/artworks/artwork4-2.jpg', '/artworks/artwork4-3.jpg'],
+    images: ['/artworks/between_mountains_and_skyscrapers.jpg'],
     type: 'physical',
     category: 'photography',
     tags: ['nature', 'urban', 'contrast', 'landscape'],
@@ -146,7 +147,7 @@ export const mockArtworks: Artwork[] = [
     title: 'Poetic Strokes',
     description: 'A modern calligraphy piece featuring a traditional Chinese poem about Hong Kong\'s resilience and beauty.',
     artistId: '5',
-    images: ['/artworks/artwork5.jpg'],
+    images: ['/artworks/poetic_strokes.jpg'],
     type: 'physical',
     category: 'calligraphy',
     tags: ['poetry', 'traditional', 'chinese', 'characters'],
@@ -168,7 +169,7 @@ export const mockArtworks: Artwork[] = [
     title: 'Urban Rhythm',
     description: 'An abstract painting capturing the energy and rhythm of Hong Kong\'s busy streets and markets.',
     artistId: '3',
-    images: ['/artworks/artwork6.jpg'],
+    images: ['/artworks/urban_rhythm.jpg'],
     type: 'physical',
     category: 'painting',
     tags: ['abstract', 'urban', 'colorful', 'movement'],
@@ -190,7 +191,7 @@ export const mockArtworks: Artwork[] = [
     title: 'Digital Memories of Hong Kong',
     description: 'A series of digital illustrations depicting nostalgic scenes from Hong Kong\'s past, blended with contemporary elements.',
     artistId: '2',
-    images: ['/artworks/artwork7.jpg'],
+    images: ['/artworks/digital_memories_of_hong_kong.jpg'],
     type: 'digital',
     category: 'illustration',
     tags: ['nostalgia', 'history', 'digital', 'illustration'],
@@ -207,7 +208,7 @@ export const mockArtworks: Artwork[] = [
     title: 'Bamboo Dreams',
     description: 'A delicate traditional Chinese painting featuring bamboo, symbolizing resilience and flexibility - qualities embodied by Hong Kong.',
     artistId: '1',
-    images: ['/artworks/artwork8.jpg'],
+    images: ['/artworks/bamboo_dreams.jpg'],
     type: 'physical',
     category: 'traditional-chinese',
     tags: ['bamboo', 'traditional', 'ink', 'symbolic'],

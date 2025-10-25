@@ -34,21 +34,19 @@ export async function POST(request: NextRequest) {
       process.env.OPENAI_API_KEY = process.env.XAI_API_KEY;
     }
     
-    // Call our Grok API analysis function
+    // Call our Grok API analysis function to get professional artist feedback
     const feedback = await analyzeArtwork(base64Data);
     
-    // For now, we'll return the original image as the enhanced image
-    // In a real implementation, you might want to use another AI service to actually enhance the image
+    // Return the feedback without any enhanced image
     return NextResponse.json({
-      enhancedImage: image,  // Return the original image for now
-      feedback: feedback    // Return the AI feedback
+      feedback: feedback    // Return the AI artist feedback
     });
   } catch (error) {
-    console.error('Error analyzing image:', error);
+    console.error('Error analyzing artwork:', error);
     const errorMessage = error instanceof Error ? error.message : 'Unknown error';
     return NextResponse.json(
       { 
-        error: 'Failed to analyze image', 
+        error: 'Failed to analyze artwork', 
         details: errorMessage,
         // Add a more user-friendly message
         message: "We couldn't analyze your artwork at this time. Please check your API key and try again."

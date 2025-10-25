@@ -36,23 +36,7 @@ export default function Home() {
               A vibrant platform where artists create, connect, and thrive
               together
             </p>
-            <div className="flex flex-wrap gap-4 justify-center">
-              <Button
-                variant="primary"
-                size="lg"
-                className="bg-white text-indigo-600 hover:bg-indigo-50 shadow-lg"
-                rightIcon={<ArrowRight className="h-5 w-5" />}
-              >
-                <Link href="/explore">Explore Artworks</Link>
-              </Button>
-              <Button
-                variant="outline"
-                size="lg"
-                className="border-white text-white hover:bg-white/10 shadow-lg"
-              >
-                <Link href="/upload">Upload Your Art</Link>
-              </Button>
-            </div>
+            {/* Buttons removed to keep the homepage simple */}
           </div>
         </div>
       </section>
@@ -180,25 +164,25 @@ export default function Home() {
       <section className="py-16 bg-linear-to-r from-indigo-600 to-purple-600 text-white">
         <div className="px-4 sm:px-6 lg:px-8 text-center">
           <h2 className="text-3xl md:text-4xl font-bold mb-6">
-            Ready to Join the Community?
+            Choose Your Experience
           </h2>
           <p className="text-lg mb-8 max-w-2xl mx-auto">
-            Upload your artwork, connect with other artists or buy art
+            Select your role to access the features designed specifically for you
           </p>
-          <div className="flex flex-row justify-center space-x-10">
+          <div className="flex flex-col sm:flex-row justify-center gap-6 sm:gap-10">
             <Button
               variant="primary"
               size="lg"
-              className="bg-white text-indigo-600 hover:bg-indigo-50 shadow-lg"
+              className="bg-white text-indigo-600 hover:bg-indigo-50 shadow-lg px-10"
             >
-              <Link href="/login">For Artists</Link>
+              <Link href="/artists/dashboard">Artist Portal</Link>
             </Button>
             <Button
               variant="primary"
               size="lg"
-              className="bg-white text-indigo-600 hover:bg-indigo-50 shadow-lg"
+              className="bg-white text-indigo-600 hover:bg-indigo-50 shadow-lg px-10"
             >
-              <Link href="/signup">For Buyers</Link>
+              <Link href="/marketplace">Buyer Marketplace</Link>
             </Button>
           </div>
         </div>

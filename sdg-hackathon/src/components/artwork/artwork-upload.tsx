@@ -437,7 +437,7 @@ export function ArtworkUpload({ onSubmit }: ArtworkUploadProps) {
               value={formData.price || ''}
               onChange={handleNumberInput}
               placeholder="Leave empty if not for sale"
-              className="flex-grow"
+              className="grow"
             />
           </div>
           {pricingSuggestionError && (

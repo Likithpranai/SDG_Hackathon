@@ -53,7 +53,7 @@ export function CartSidebar() {
           </div>
           
           {/* Cart Items */}
-          <div className="flex-grow overflow-y-auto p-4">
+          <div className="grow overflow-y-auto p-4">
             {cart.length === 0 ? (
               <div className="flex flex-col items-center justify-center h-full text-center">
                 <ShoppingBag className="h-16 w-16 text-gray-300 dark:text-gray-600 mb-4" />
@@ -73,7 +73,7 @@ export function CartSidebar() {
                     className="flex border-b border-gray-100 dark:border-gray-800 pb-4"
                   >
                     {/* Artwork Image */}
-                    <div className="w-20 h-20 relative rounded-md overflow-hidden flex-shrink-0">
+                    <div className="w-20 h-20 relative rounded-md overflow-hidden shrink-0">
                       <Image
                         src={item.artwork.images[0] || '/placeholder-image.jpg'}
                         alt={item.artwork.title}
@@ -83,7 +83,7 @@ export function CartSidebar() {
                     </div>
                     
                     {/* Item Details */}
-                    <div className="ml-4 flex-grow">
+                    <div className="ml-4 grow">
                       <Link 
                         href={`/artwork/${item.artwork.id}`}
                         className="font-medium hover:text-blue-600 dark:hover:text-blue-400"
@@ -136,6 +136,18 @@ export function CartSidebar() {
               <Button 
                 className="w-full bg-linear-to-r from-blue-600 to-indigo-600 hover:from-blue-700 hover:to-indigo-700"
                 size="lg"
+                onClick={() => {
+                  console.log('Checkout button clicked');
+                  console.log('Cart contents:', cart);
+                  console.log('Cart length:', cart.length);
+                  console.log('Total price:', totalPrice);
+                  
+                  // Close the cart sidebar
+                  closeCart();
+                  
+                  // Navigate programmatically
+                  window.location.href = '/checkout';
+                }}
               >
                 Proceed to Checkout
               </Button>
