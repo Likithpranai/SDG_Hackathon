@@ -13,6 +13,7 @@
     "@heroicons/react": "^2.1.1",
     "@radix-ui/react-dialog": "^1.1.15",
     "@types/uuid": "^11.0.0",
+    "@vercel/blob": "^2.0.0",
     "clsx": "^2.1.0",
     "framer-motion": "^11.0.8",
     "lucide-react": "^0.344.0",
