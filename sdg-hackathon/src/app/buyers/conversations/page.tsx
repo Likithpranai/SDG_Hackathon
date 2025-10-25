@@ -1,18 +1,19 @@
 "use client";
 
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, Suspense } from 'react';
 import { useSearchParams } from 'next/navigation';
 import { MainLayout, RouteGuard } from '@/components';
 import { useMatchmaking } from '@/contexts/matchmaking-context';
 import { useAuth } from '@/contexts/auth-context';
 import { Button } from '@/components/ui';
-import { MessageCircle, ChevronRight, User, X } from 'lucide-react';
+import { MessageCircle, ChevronRight, User, X, Loader2 } from 'lucide-react';
 import { getUserConversations, getConversationMessages, createMessage } from '@/data/mock/messages';
 import { mockArtists } from '@/data/mock';
 import { Message } from '@/types';
 import Link from 'next/link';
 
-export default function BuyerConversationsPage() {
+// Client component that uses useSearchParams
+function ConversationsContent() {
   const { user } = useAuth();
   const { savedArtists } = useMatchmaking();
   const [selectedArtistId, setSelectedArtistId] = useState<string | null>(null);
@@ -217,5 +218,26 @@ export default function BuyerConversationsPage() {
         </div>
       </MainLayout>
     </RouteGuard>
+  );
+}
+
+// Main page component that wraps the client component in Suspense
+export default function BuyerConversationsPage() {
+  return (
+    <Suspense fallback={
+      <RouteGuard requiredUserType="buyer">
+        <MainLayout>
+          <div className="container mx-auto px-4 py-8">
+            <h1 className="text-3xl font-bold mb-8">Your Artist Conversations</h1>
+            <div className="flex flex-col items-center justify-center py-12">
+              <Loader2 className="h-12 w-12 text-blue-500 animate-spin mb-4" />
+              <p className="text-gray-600 dark:text-gray-400">Loading conversations...</p>
+            </div>
+          </div>
+        </MainLayout>
+      </RouteGuard>
+    }>
+      <ConversationsContent />
+    </Suspense>
   );
 }

@@ -1,5 +1,12 @@
+const path = require('path');
+
 /** @type {import('next').NextConfig} */
 const nextConfig = {
+  // Set the output tracing root to fix the lockfile warning
+  output: {
+    // Set this to the absolute path of your project
+    fileTracingRoot: path.join(__dirname),
+  },
   // Expose specific environment variables to the browser
   env: {
     // We're only exposing the version number, not the actual API keys

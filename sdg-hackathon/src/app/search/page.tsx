@@ -1,6 +1,6 @@
 "use client";
 
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useState, Suspense } from 'react';
 import { useSearchParams } from 'next/navigation';
 import { ArrowLeft, Loader2, Search } from 'lucide-react';
 import Link from 'next/link';
@@ -10,7 +10,8 @@ import { Button } from '@/components/ui';
 import { Artwork } from '@/types';
 import { ROUTES } from '@/constants';
 
-export default function SearchResultsPage() {
+// Client component that uses useSearchParams
+function SearchContent() {
   const searchParams = useSearchParams();
   const query = searchParams.get('q') || '';
   
@@ -141,5 +142,23 @@ export default function SearchResultsPage() {
         )}
       </div>
     </MainLayout>
+  );
+}
+
+// Main page component that wraps the client component in Suspense
+export default function SearchResultsPage() {
+  return (
+    <Suspense fallback={
+      <MainLayout>
+        <div className="container mx-auto px-4 py-8">
+          <div className="flex flex-col items-center justify-center py-12">
+            <Loader2 className="h-12 w-12 text-blue-500 animate-spin mb-4" />
+            <p className="text-gray-600 dark:text-gray-400">Loading search results...</p>
+          </div>
+        </div>
+      </MainLayout>
+    }>
+      <SearchContent />
+    </Suspense>
   );
 }
