@@ -43,7 +43,10 @@ export default function CollaborationHub() {
       const artists = await getArtistRecommendations(preferences);
       console.log("✅ Received artist recommendations from Grok API:", artists.length);
       
-      setRecommendedArtists(artists);
+      // Sort artists by compatibility score in descending order
+      const sortedArtists = artists.sort((a, b) => b.compatibilityScore - a.compatibilityScore);
+      
+      setRecommendedArtists(sortedArtists);
       setIsChatbotOpen(false);
     } catch (error) {
       console.error("❌ Error getting artist recommendations:", error);
@@ -102,8 +105,8 @@ export default function CollaborationHub() {
     },
   ];
 
-  // Use recommended artists from Grok API if available, otherwise use mock data
-  const suggestedArtists = recommendedArtists.length > 0 ? recommendedArtists : [
+  // Define mock artists data
+  const mockArtistData = [
     {
       id: "1",
       name: "Sarah Chen",
@@ -337,6 +340,30 @@ export default function CollaborationHub() {
     }
   ];
 
+  // Sort mock artists by compatibility score in descending order (highest first)
+  const sortedMockArtists = [...mockArtistData].sort((a: ArtistRecommendation, b: ArtistRecommendation) => {
+    const aScore = (
+      a.detailedAnalysis.toolExpertise.score +
+      a.detailedAnalysis.artTypeAlignment.score +
+      a.detailedAnalysis.projectRelevance.score +
+      a.detailedAnalysis.experienceLevel.score +
+      a.detailedAnalysis.portfolioQuality.score
+    );
+    
+    const bScore = (
+      b.detailedAnalysis.toolExpertise.score +
+      b.detailedAnalysis.artTypeAlignment.score +
+      b.detailedAnalysis.projectRelevance.score +
+      b.detailedAnalysis.experienceLevel.score +
+      b.detailedAnalysis.portfolioQuality.score
+    );
+    
+    return bScore - aScore; // Descending order
+  });
+  
+  // Use recommended artists from Grok API if available, otherwise use sorted mock data
+  const suggestedArtists = recommendedArtists.length > 0 ? recommendedArtists : sortedMockArtists;
+  
   const upcomingEvents = [
     {
       id: 1,
@@ -436,7 +463,7 @@ export default function CollaborationHub() {
             </div>
 
             <div className="space-y-4">
-              {suggestedArtists.map((artist) => (
+              {suggestedArtists.map((artist: ArtistRecommendation) => (
                 <div
                   key={artist.id}
                   className={`flex items-center p-4 rounded-lg transition-colors relative ${connectionRequests[artist.id]?.pending ? 'bg-amber-50/50 dark:bg-amber-900/10 border border-amber-200 dark:border-amber-800' : 'bg-purple-50 dark:bg-purple-900/10 hover:bg-purple-100 dark:hover:bg-purple-900/20'}`}
@@ -457,7 +484,14 @@ export default function CollaborationHub() {
                   </div>
                   <div className="text-right">
                     <div className="text-sm font-medium text-purple-700 dark:text-purple-300">
-                      {artist.compatibilityScore?.toFixed(1)}% match
+                      {/* Calculate total score as sum of individual scores */}
+                      {(
+                        artist.detailedAnalysis.toolExpertise.score +
+                        artist.detailedAnalysis.artTypeAlignment.score +
+                        artist.detailedAnalysis.projectRelevance.score +
+                        artist.detailedAnalysis.experienceLevel.score +
+                        artist.detailedAnalysis.portfolioQuality.score
+                      ).toFixed(1)}% match
                     </div>
                     <div className="flex space-x-1 mt-1">
                       <Button 

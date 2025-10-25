@@ -69,7 +69,14 @@ export function ArtistDetailsModal({
             </div>
             <div className="text-right">
               <div className="text-2xl font-bold text-purple-700 dark:text-purple-300">
-                {compatibilityScore.toFixed(1)}/100
+                {/* Calculate total score as sum of individual scores */}
+                {(
+                  detailedAnalysis.toolExpertise.score +
+                  detailedAnalysis.artTypeAlignment.score +
+                  detailedAnalysis.projectRelevance.score +
+                  detailedAnalysis.experienceLevel.score +
+                  detailedAnalysis.portfolioQuality.score
+                ).toFixed(1)}/100
               </div>
               <p className="text-sm text-gray-500 dark:text-gray-400">Compatibility Score</p>
             </div>
@@ -175,12 +182,42 @@ export function ArtistDetailsModal({
           {/* Collaboration Potential */}
           <div className="bg-purple-50 dark:bg-purple-900/10 p-4 rounded-lg">
             <h3 className="font-medium mb-2">Collaboration Potential</h3>
-            <p className="font-bold text-purple-700 dark:text-purple-300">
-              {collaborationPotential.rating}
-            </p>
-            <p className="text-gray-700 dark:text-gray-300 mt-1">
-              {collaborationPotential.description}
-            </p>
+            {/* Calculate total score and determine rating based on it */}
+            {(() => {
+              const totalScore = (
+                detailedAnalysis.toolExpertise.score +
+                detailedAnalysis.artTypeAlignment.score +
+                detailedAnalysis.projectRelevance.score +
+                detailedAnalysis.experienceLevel.score +
+                detailedAnalysis.portfolioQuality.score
+              );
+              
+              let rating, description;
+              if (totalScore >= 90) {
+                rating = "Excellent Match (90-100%)";
+                description = "This artist would be an exceptional collaborator for your project.";
+              } else if (totalScore >= 75) {
+                rating = "Strong Match (75-89%)";
+                description = "This artist would be a very good collaborator for your project.";
+              } else if (totalScore >= 60) {
+                rating = "Good Match (60-74%)";
+                description = "This artist would be a suitable collaborator for your project.";
+              } else {
+                rating = "Moderate Match (Below 60%)";
+                description = "This artist may be a potential collaborator, but there might be some compatibility challenges.";
+              }
+              
+              return (
+                <>
+                  <p className="font-bold text-purple-700 dark:text-purple-300">
+                    {rating}
+                  </p>
+                  <p className="text-gray-700 dark:text-gray-300 mt-1">
+                    {description}
+                  </p>
+                </>
+              );
+            })()}
           </div>
 
           {/* Collaboration Insights */}
