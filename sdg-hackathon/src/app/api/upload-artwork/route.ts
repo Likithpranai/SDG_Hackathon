@@ -1,8 +1,6 @@
 import { NextRequest, NextResponse } from 'next/server';
-import { writeFile, mkdir } from 'fs/promises';
-import { join } from 'path';
+import { put } from '@vercel/blob';
 import { v4 as uuidv4 } from 'uuid';
-import { existsSync } from 'fs';
 
 export async function POST(request: NextRequest) {
   try {
@@ -31,24 +29,21 @@ export async function POST(request: NextRequest) {
       );
     }
 
-    // Create unique filename
-    const bytes = await file.arrayBuffer();
-    const buffer = Buffer.from(bytes);
+    // Create unique filename with UUID to avoid collisions
     const uniqueId = uuidv4();
     const filename = `${uniqueId}-${file.name.replace(/\s+/g, '-')}`;
     
-    // Ensure directory exists
-    const uploadDir = join(process.cwd(), 'public', 'uploads');
-    if (!existsSync(uploadDir)) {
-      await mkdir(uploadDir, { recursive: true });
-    }
+    console.log(`Uploading file ${filename} to Vercel Blob Storage...`);
     
-    // Save file to public/uploads directory
-    const filePath = join(uploadDir, filename);
-    await writeFile(filePath, buffer);
+    // Upload to Vercel Blob Storage
+    const { url } = await put(filename, file, {
+      access: 'public', // Make the file publicly accessible
+    });
     
-    // Create URL for the file
-    const fileUrl = `/uploads/${filename}`;
+    console.log(`File uploaded successfully. URL: ${url}`);
+    
+    // Use the returned URL for the file
+    const fileUrl = url;
     
     // Generate a unique ID for the new artwork
     const newArtworkId = `IMG${Date.now().toString().slice(-6)}`;
@@ -75,8 +70,19 @@ export async function POST(request: NextRequest) {
     });
   } catch (error) {
     console.error('Error uploading artwork:', error);
+    
+    // Provide more detailed error information
+    let errorMessage = 'Failed to upload artwork';
+    if (error instanceof Error) {
+      errorMessage = `${errorMessage}: ${error.message}`;
+      console.error('Error details:', error.stack);
+    }
+    
     return NextResponse.json(
-      { error: 'Failed to upload artwork' },
+      { 
+        error: errorMessage,
+        details: error instanceof Error ? error.message : String(error)
+      },
       { status: 500 }
     );
   }

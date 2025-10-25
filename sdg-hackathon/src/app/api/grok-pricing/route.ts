@@ -24,7 +24,17 @@ export async function POST(request: Request) {
     console.log("🔍 API route: Starting Grok API call for artwork pricing...");
     console.log("API Key (first 10 chars):", GROK_API_KEY.substring(0, 10) + "...");
     console.log("API URL:", GROK_API_URL);
-    console.log("📝 Using text-only analysis (no image) to avoid timeouts");
+    console.log("Image URL:", imageUrl);
+    
+    // Check if the image URL is a data URL or an external URL
+    const isDataUrl = imageUrl.startsWith('data:');
+    const isExternalUrl = imageUrl.startsWith('http');
+    
+    if (!isDataUrl && !isExternalUrl) {
+      console.log("📝 Using text-only analysis (invalid image URL format) to avoid errors");
+    } else {
+      console.log("📝 Using image analysis with valid URL format");
+    }
     
     // Create a simple prompt for debugging
     const system = "You are an art pricing expert. Provide a price range for this artwork.";
@@ -37,7 +47,15 @@ export async function POST(request: Request) {
     const requestPayload = {
       messages: [
         { role: "system", content: system },
-        { role: "user", content: user }
+        { 
+          role: "user", 
+          content: isDataUrl || isExternalUrl ? [
+            { type: "text", text: user },
+            { type: "image_url", image_url: { url: imageUrl } }
+          ] : [
+            { type: "text", text: user + " (Note: Image URL was invalid or missing, so this is a text-only analysis.)" }
+          ] 
+        },
       ],
       model: "grok-4",
       stream: false,
