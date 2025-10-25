@@ -1,6 +1,7 @@
 "use client";
 
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
+import { useSearchParams } from 'next/navigation';
 import { MainLayout, RouteGuard } from '@/components';
 import { useMatchmaking } from '@/contexts/matchmaking-context';
 import { useAuth } from '@/contexts/auth-context';
@@ -17,9 +18,18 @@ export default function BuyerConversationsPage() {
   const [selectedArtistId, setSelectedArtistId] = useState<string | null>(null);
   const [messageInput, setMessageInput] = useState('');
   const [messages, setMessages] = useState<Message[]>([]);
+  const searchParams = useSearchParams();
   
   // Get conversations for the current user
   const conversations = user ? getUserConversations(user.id) : [];
+  
+  // Check if an artist ID was passed in the URL query
+  useEffect(() => {
+    const artistId = searchParams.get('artistId');
+    if (artistId && savedArtists.some(artist => artist.id === artistId)) {
+      handleSelectArtist(artistId);
+    }
+  }, [searchParams, savedArtists]);
   
   // Get the selected artist
   const selectedArtist = selectedArtistId 
