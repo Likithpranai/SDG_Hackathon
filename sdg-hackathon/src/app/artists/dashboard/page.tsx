@@ -43,9 +43,9 @@ export default function ArtistDashboard() {
   // Artist profile data
   const [artistProfile, setArtistProfile] = useState({
     id: "ART001",
-    name: "Likithpranai Mukkamala",
+    name: "Sofia Rodriguez",
     age: 32,
-    email: "likith.misb21@gmail.com",
+    email: "sofia.rodriguez@gmail.com",
     profileImage: "/placeholder-profile.jpg",
     coverImage: "/placeholder-cover.jpg",
     bio: "Digital abstract painter using Procreate & Photoshop. 5+ years experience.",
@@ -53,13 +53,13 @@ export default function ArtistDashboard() {
     primaryMedium: "Digital Art, Procreate, Photoshop",
     location: "Hong Kong, Hong Kong",
     skills: "Digital painting, Abstract art, NFT creation, Mural design",
-    website: "likithpranai.com",
+    website: "sofiarodriguez.com",
     socialLinks: [
-      { platform: "instagram", url: "https://instagram.com/likithpranai" },
-      { platform: "twitter", url: "https://twitter.com/likithpranai" },
-      { platform: "website", url: "https://likithpranai.com" },
+      { platform: "instagram", url: "https://instagram.com/sofia.rodriguez.art" },
+      { platform: "twitter", url: "https://twitter.com/sofiaRodriguezArt" },
+      { platform: "website", url: "https://sofiarodriguez.com" },
     ],
-    socialArray: ["@likithpranai (IG)", "twitter.com/likithpranai"],
+    socialArray: ["@sofia.rodriguez.art (IG)", "twitter.com/sofiaRodriguezArt"],
     stats: {
       artworks: 42,
       views: 12480,

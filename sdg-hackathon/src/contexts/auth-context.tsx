@@ -36,7 +36,7 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
       profileImage: '/placeholder-image.jpg',
       bio: 'This is a mock buyer account for development',
       location: 'Hong Kong',
-      savedArtists: ['1', '2', '3']
+      savedArtists: ['1', '2', '3', '4', '6', '8']
     };
     
     // Store in localStorage for persistence
