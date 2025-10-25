@@ -30,11 +30,12 @@ import Link from "next/link";
 import Image from "next/image";
 import { useRouter } from "next/navigation";
 import { useAuth } from "@/contexts/auth-context";
+import { RouteGuard } from "@/components/auth/route-guard";
 import { cn } from "@/utils/cn";
 
 export default function ArtistDashboard() {
   const router = useRouter();
-  const { isLoggedIn, isArtist } = useAuth();
+  const { user } = useAuth();
   const [activeTab, setActiveTab] = useState("profile"); // "profile" or "dashboard"
   const [isEditModalOpen, setIsEditModalOpen] = useState(false);
   const [isUploadModalOpen, setIsUploadModalOpen] = useState(false);
@@ -144,13 +145,6 @@ export default function ArtistDashboard() {
     }
   };
 
-  // Redirect if not logged in as artist
-  useEffect(() => {
-    if (!isLoggedIn || !isArtist) {
-      router.push("/login");
-    }
-  }, [isLoggedIn, isArtist, router]);
-
   // Artwork data from mock data store
   const [artworks, setArtworks] = useState<Artwork[]>([]);
   
@@ -159,9 +153,7 @@ export default function ArtistDashboard() {
     setArtworks(mockDataStore.getArtworks());
   }, []);
 
-  if (!isLoggedIn || !isArtist) {
-    return null; // Don't render anything while checking auth
-  }
+  // RouteGuard will handle the auth check and redirection
   
   // Helper function to render social icon based on platform
   const renderSocialIcon = (platform: string) => {
@@ -183,7 +175,8 @@ export default function ArtistDashboard() {
   };
 
   return (
-    <MainLayout>
+    <RouteGuard requiredUserType="artist">
+      <MainLayout>
       <div className="py-8 px-4 sm:px-6 lg:px-8">
         {/* Edit Profile Modal */}
         <EditProfileModal 
@@ -461,5 +454,6 @@ export default function ArtistDashboard() {
         )}
       </div>
     </MainLayout>
+    </RouteGuard>
   );
 }

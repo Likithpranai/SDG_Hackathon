@@ -1,3 +1,5 @@
+"use client";
+
 import React from 'react';
 import Image from 'next/image';
 import Link from 'next/link';
@@ -6,6 +8,8 @@ import { Artwork } from '@/types/artwork';
 import { Card, CardContent, CardFooter } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
 import { cn } from '@/utils/cn';
+import { AddToCartButton } from './add-to-cart-button';
+import { PlaceholderImage } from '@/components/placeholder-image';
 
 interface ArtworkCardProps {
   artwork: Artwork;
@@ -20,9 +24,26 @@ export function ArtworkCard({ artwork, className }: ArtworkCardProps) {
     >
       <Link href={`/artwork/${artwork.id}`} className="group block relative aspect-4/3 overflow-hidden">
         <div className="absolute inset-0 bg-gradient-to-t from-black/60 via-transparent to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300 z-10"></div>
-        <div className="absolute inset-0 bg-gradient-to-br from-gray-200 to-gray-300 dark:from-gray-700 dark:to-gray-800 flex items-center justify-center">
-          <Eye className="h-10 w-10 text-gray-400 dark:text-gray-500" />
-        </div>
+        
+        {artwork.images && artwork.images[0] ? (
+          <Image
+            src={artwork.images[0]}
+            alt={artwork.title}
+            fill
+            sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw"
+            className="object-cover transition-transform duration-300 group-hover:scale-105"
+          />
+        ) : (
+          <div className="w-full h-full">
+            <PlaceholderImage 
+              text={artwork.title} 
+              width={400} 
+              height={300} 
+              className="w-full h-full"
+            />
+          </div>
+        )}
+        
         <div className="absolute bottom-0 left-0 right-0 p-3 transform translate-y-full group-hover:translate-y-0 transition-transform duration-300 z-20">
           <div className="flex justify-between items-center">
             <span className="text-white text-sm font-medium truncate">{artwork.title}</span>
@@ -83,7 +104,9 @@ export function ArtworkCard({ artwork, className }: ArtworkCardProps) {
       <CardFooter className="p-5 pt-0 flex items-center justify-between border-t border-gray-100 dark:border-gray-800 bg-gradient-to-r from-white to-gray-50 dark:from-gray-900 dark:to-gray-950">
         <div className="font-medium">
           {artwork.price ? (
-            <span className="text-lg bg-clip-text text-transparent bg-gradient-to-r from-primary-600 to-secondary-600 dark:from-primary-400 dark:to-secondary-400">{artwork.price.toLocaleString()} {artwork.currency || 'HKD'}</span>
+            <span className="text-lg bg-clip-text text-transparent bg-gradient-to-r from-primary-600 to-secondary-600 dark:from-primary-400 dark:to-secondary-400">
+              {artwork.price.toLocaleString()} {artwork.currency || 'HKD'}
+            </span>
           ) : (
             <span className="text-gray-500 italic">Price on request</span>
           )}
@@ -100,6 +123,12 @@ export function ArtworkCard({ artwork, className }: ArtworkCardProps) {
           </div>
         </div>
       </CardFooter>
+      
+      {artwork.status === 'available' && (
+        <div className="px-5 pb-5">
+          <AddToCartButton artwork={artwork} className="w-full" size="sm" />
+        </div>
+      )}
     </Card>
   );
 }

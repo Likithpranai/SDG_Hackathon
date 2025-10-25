@@ -11,14 +11,17 @@ import {
   Ruler, 
   Calendar, 
   Eye, 
-  ArrowLeft 
+  ArrowLeft,
+  Sparkles
 } from 'lucide-react';
 
 import { MainLayout } from '@/components/layout/main-layout';
 import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
-import { ArtworkRecommendations } from '@/components/artwork/artwork-recommendations';
-import { getArtworkWithArtist, getSimilarArtworks } from '@/lib/mock-data';
+import { ArtworkRecommendations, AddToCartButton } from '@/components/artwork';
+import { getArtworkWithArtist } from '@/data/mock';
+import { getSimilarArtworks } from '@/services/ai/artwork-search';
+import { Artwork } from '@/types';
 
 interface ArtworkDetailPageProps {
   params: {
@@ -26,14 +29,20 @@ interface ArtworkDetailPageProps {
   };
 }
 
-export default function ArtworkDetailPage({ params }: ArtworkDetailPageProps) {
+export default async function ArtworkDetailPage({ params }: ArtworkDetailPageProps) {
   const artwork = getArtworkWithArtist(params.id);
   
   if (!artwork) {
     notFound();
   }
   
-  const similarArtworks = getSimilarArtworks(params.id);
+  // Get AI-powered similar artwork recommendations
+  let similarArtworks: Artwork[] = [];
+  try {
+    similarArtworks = await getSimilarArtworks(artwork);
+  } catch (error) {
+    console.error('Error getting similar artworks:', error);
+  }
   
   return (
     <MainLayout>
@@ -134,6 +143,9 @@ export default function ArtworkDetailPage({ params }: ArtworkDetailPageProps) {
                   Contact Artist
                 </Button>
               )}
+              {artwork.status === 'available' && (
+                <AddToCartButton artwork={artwork} size="lg" />
+              )}
               <Button variant="outline" size="lg" leftIcon={<Heart className="h-4 w-4" />}>
                 Save
               </Button>
@@ -206,36 +218,18 @@ export default function ArtworkDetailPage({ params }: ArtworkDetailPageProps) {
           </div>
         </div>
         
-        {/* Similar Artworks */}
-        {similarArtworks.length > 0 && (
-          <div className="mt-16">
-            <h2 className="text-2xl font-bold mb-6">You Might Also Like</h2>
-            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
-              {similarArtworks.map((artwork) => (
-                <Link key={artwork.id} href={`/artwork/${artwork.id}`} className="block">
-                  <div className="bg-white dark:bg-gray-800 rounded-lg overflow-hidden shadow-sm hover:shadow-md transition-shadow">
-                    <div className="aspect-square relative">
-                      <Image
-                        src={artwork.images[0] || '/placeholder-image.jpg'}
-                        alt={artwork.title}
-                        fill
-                        className="object-cover"
-                      />
-                    </div>
-                    <div className="p-4">
-                      <h3 className="font-medium text-lg hover:text-primary-600 dark:hover:text-primary-400 transition-colors">
-                        {artwork.title}
-                      </h3>
-                      <p className="text-sm text-gray-500 dark:text-gray-400">
-                        {artwork.price ? `${artwork.price.toLocaleString()} ${artwork.currency || 'HKD'}` : 'Price on request'}
-                      </p>
-                    </div>
-                  </div>
-                </Link>
-              ))}
-            </div>
-          </div>
-        )}
+        {/* AI-Powered Similar Artworks */}
+        <div className="mt-16">
+          <h2 className="text-2xl font-bold mb-6 flex items-center">
+            <Sparkles className="h-5 w-5 text-blue-500 mr-2" />
+            AI-Powered Recommendations
+          </h2>
+          <ArtworkRecommendations
+            title="Similar Artworks You Might Like"
+            artworks={similarArtworks}
+            loading={false}
+          />
+        </div>
       </div>
     </MainLayout>
   );

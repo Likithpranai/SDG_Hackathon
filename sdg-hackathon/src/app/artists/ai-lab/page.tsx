@@ -4,23 +4,19 @@ import React, { useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
 import { MainLayout } from "@/components/layout/main-layout";
 import { useAuth } from "@/contexts/auth-context";
-import { Zap, Image as ImageIcon, Upload, Sparkles, PlusCircle, ChevronRight } from "lucide-react";
+import { RouteGuard } from "@/components/auth/route-guard";
+import { Zap, Image as ImageIcon, Upload, Sparkles, PlusCircle, ChevronRight, X } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import Image from "next/image";
+import { ImageEnhancer } from "@/components/ai-lab/image-enhancer";
 
 export default function AILab() {
   const router = useRouter();
-  const { isLoggedIn, isArtist } = useAuth();
+  const { user } = useAuth();
   const [prompt, setPrompt] = useState("");
   const [isGenerating, setIsGenerating] = useState(false);
-
-  // Redirect if not logged in as artist
-  useEffect(() => {
-    if (!isLoggedIn || !isArtist) {
-      router.push("/login");
-    }
-  }, [isLoggedIn, isArtist, router]);
+  const [activeFeature, setActiveFeature] = useState<'generator' | 'enhancer' | null>(null);
 
   // Mock data for AI Lab
   const recentExperiments = [
@@ -58,12 +54,11 @@ export default function AILab() {
     }, 2000);
   };
 
-  if (!isLoggedIn || !isArtist) {
-    return null; // Don't render anything while checking auth
-  }
+  // RouteGuard will handle the auth check and redirection
 
   return (
-    <MainLayout>
+    <RouteGuard requiredUserType="artist">
+      <MainLayout>
       <div className="py-8 px-4 sm:px-6 lg:px-8">
         <div className="flex flex-col md:flex-row justify-between items-start md:items-center mb-8">
           <div>
@@ -74,80 +69,154 @@ export default function AILab() {
           </div>
         </div>
 
-        {/* AI Generation Tool */}
-        <div className="bg-white dark:bg-[#1a1a2e] rounded-lg shadow-sm p-6 mb-8">
-          <div className="flex items-center mb-6">
-            <Zap className="h-6 w-6 text-blue-600 dark:text-blue-400 mr-2" />
-            <h2 className="text-xl font-bold text-gray-900 dark:text-white">AI Image Generator</h2>
-          </div>
-
-          <div className="grid grid-cols-1 lg:grid-cols-2 gap-8">
-            <div>
-              <div className="mb-4">
-                <Input
-                  label="Describe what you want to create"
-                  placeholder="E.g., A surreal landscape with floating islands and waterfalls"
-                  value={prompt}
-                  onChange={(e) => setPrompt(e.target.value)}
-                  className="bg-gray-50 dark:bg-gray-900"
-                />
+        {/* Feature Selection */}
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-6 mb-8">
+          {/* AI Image Generator Card */}
+          <div 
+            className="bg-white dark:bg-[#1a1a2e] rounded-lg shadow-sm p-6 hover:shadow-md transition-all hover:scale-[1.02] duration-300 cursor-pointer"
+            onClick={() => setActiveFeature('generator')}
+          >
+            <div className="flex items-center mb-4">
+              <div className="bg-blue-100 dark:bg-blue-900/30 p-3 rounded-full">
+                <Sparkles className="h-6 w-6 text-blue-600 dark:text-blue-400" />
               </div>
-
-              <div className="mb-6">
-                <p className="text-sm text-gray-600 dark:text-gray-400 mb-2">Try these prompts:</p>
-                <div className="flex flex-wrap gap-2">
-                  {suggestedPrompts.map((suggestion, index) => (
-                    <button
-                      key={index}
-                      className="text-xs bg-blue-50 dark:bg-blue-900/20 text-blue-700 dark:text-blue-300 px-3 py-1 rounded-full hover:bg-blue-100 dark:hover:bg-blue-900/40 transition-colors"
-                      onClick={() => setPrompt(suggestion)}
-                    >
-                      {suggestion}
-                    </button>
-                  ))}
-                </div>
-              </div>
-
-              <div className="flex space-x-3">
-                <Button
-                  className="bg-linear-to-r from-blue-600 to-indigo-600 hover:from-blue-700 hover:to-indigo-700 text-white"
-                  onClick={handleGenerate}
-                  disabled={!prompt || isGenerating}
-                >
-                  {isGenerating ? (
-                    <>
-                      <span className="animate-pulse">Generating...</span>
-                    </>
-                  ) : (
-                    <>
-                      <Sparkles className="h-4 w-4 mr-2" />
-                      Generate Image
-                    </>
-                  )}
-                </Button>
-
-                <Button variant="outline" className="border-blue-300 dark:border-blue-700 text-blue-700 dark:text-blue-300">
-                  <Upload className="h-4 w-4 mr-2" />
-                  Upload Reference
-                </Button>
+              <div className="ml-4">
+                <h2 className="text-xl font-bold text-gray-900 dark:text-white">AI Image Generator</h2>
+                <p className="text-sm text-gray-600 dark:text-gray-400">Create new artwork from text descriptions</p>
               </div>
             </div>
-
-            <div className="bg-gray-100 dark:bg-gray-800 rounded-lg aspect-square flex items-center justify-center">
-              {isGenerating ? (
-                <div className="text-center">
-                  <Sparkles className="h-12 w-12 text-blue-500 dark:text-blue-400 animate-pulse mx-auto mb-4" />
-                  <p className="text-gray-600 dark:text-gray-400">Creating your masterpiece...</p>
-                </div>
-              ) : (
-                <div className="text-center">
-                  <ImageIcon className="h-12 w-12 text-gray-400 dark:text-gray-600 mx-auto mb-4" />
-                  <p className="text-gray-600 dark:text-gray-400">Your generated image will appear here</p>
-                </div>
-              )}
+            <div className="bg-blue-50 dark:bg-blue-900/10 rounded-lg p-4">
+              <p className="text-sm text-gray-600 dark:text-gray-400 mb-2">Example prompts:</p>
+              <div className="flex flex-wrap gap-2">
+                {suggestedPrompts.slice(0, 2).map((suggestion, index) => (
+                  <span
+                    key={index}
+                    className="text-xs bg-blue-100 dark:bg-blue-900/30 text-blue-700 dark:text-blue-300 px-3 py-1 rounded-full"
+                  >
+                    {suggestion.substring(0, 30)}...
+                  </span>
+                ))}
+              </div>
+            </div>
+          </div>
+          
+          {/* AI Art Enhancement Card */}
+          <div 
+            className="bg-white dark:bg-[#1a1a2e] rounded-lg shadow-sm p-6 hover:shadow-md transition-all hover:scale-[1.02] duration-300 cursor-pointer"
+            onClick={() => setActiveFeature('enhancer')}
+          >
+            <div className="flex items-center mb-4">
+              <div className="bg-purple-100 dark:bg-purple-900/30 p-3 rounded-full">
+                <Zap className="h-6 w-6 text-purple-600 dark:text-purple-400" />
+              </div>
+              <div className="ml-4">
+                <h2 className="text-xl font-bold text-gray-900 dark:text-white">AI Art Enhancement</h2>
+                <p className="text-sm text-gray-600 dark:text-gray-400">Improve your existing artwork with AI feedback</p>
+              </div>
+            </div>
+            <div className="bg-purple-50 dark:bg-purple-900/10 rounded-lg p-4">
+              <p className="text-sm text-gray-600 dark:text-gray-400">Upload your artwork and get:</p>
+              <ul className="text-sm text-gray-600 dark:text-gray-400 mt-2 space-y-1 list-disc list-inside">
+                <li>Enhanced version of your artwork</li>
+                <li>Personalized feedback on composition, color, and technique</li>
+                <li>Interactive chat to refine the enhancements</li>
+              </ul>
             </div>
           </div>
         </div>
+        
+        {/* Active Feature */}
+        {activeFeature === 'enhancer' && (
+          <div className="mb-8">
+            <ImageEnhancer onClose={() => setActiveFeature(null)} />
+          </div>
+        )}
+        
+        {activeFeature === 'generator' && (
+          <div className="bg-white dark:bg-[#1a1a2e] rounded-lg shadow-sm p-6 mb-8">
+            <div className="flex items-center justify-between mb-6">
+              <div className="flex items-center">
+                <Sparkles className="h-6 w-6 text-blue-600 dark:text-blue-400 mr-2" />
+                <h2 className="text-xl font-bold text-gray-900 dark:text-white">AI Image Generator</h2>
+              </div>
+              <Button 
+                variant="ghost" 
+                size="sm" 
+                onClick={() => setActiveFeature(null)}
+                className="text-gray-500 hover:text-gray-700 dark:text-gray-400 dark:hover:text-gray-200"
+              >
+                <X className="h-5 w-5" />
+              </Button>
+            </div>
+
+            <div className="grid grid-cols-1 lg:grid-cols-2 gap-8">
+              <div>
+                <div className="mb-4">
+                  <Input
+                    label="Describe what you want to create"
+                    placeholder="E.g., A surreal landscape with floating islands and waterfalls"
+                    value={prompt}
+                    onChange={(e) => setPrompt(e.target.value)}
+                    className="bg-gray-50 dark:bg-gray-900"
+                  />
+                </div>
+
+                <div className="mb-6">
+                  <p className="text-sm text-gray-600 dark:text-gray-400 mb-2">Try these prompts:</p>
+                  <div className="flex flex-wrap gap-2">
+                    {suggestedPrompts.map((suggestion, index) => (
+                      <button
+                        key={index}
+                        className="text-xs bg-blue-50 dark:bg-blue-900/20 text-blue-700 dark:text-blue-300 px-3 py-1 rounded-full hover:bg-blue-100 dark:hover:bg-blue-900/40 transition-colors"
+                        onClick={() => setPrompt(suggestion)}
+                      >
+                        {suggestion}
+                      </button>
+                    ))}
+                  </div>
+                </div>
+
+                <div className="flex space-x-3">
+                  <Button
+                    className="bg-linear-to-r from-blue-600 to-indigo-600 hover:from-blue-700 hover:to-indigo-700 text-white"
+                    onClick={handleGenerate}
+                    disabled={!prompt || isGenerating}
+                  >
+                    {isGenerating ? (
+                      <>
+                        <span className="animate-pulse">Generating...</span>
+                      </>
+                    ) : (
+                      <>
+                        <Sparkles className="h-4 w-4 mr-2" />
+                        Generate Image
+                      </>
+                    )}
+                  </Button>
+
+                  <Button variant="outline" className="border-blue-300 dark:border-blue-700 text-blue-700 dark:text-blue-300">
+                    <Upload className="h-4 w-4 mr-2" />
+                    Upload Reference
+                  </Button>
+                </div>
+              </div>
+
+              <div className="bg-gray-100 dark:bg-gray-800 rounded-lg aspect-square flex items-center justify-center">
+                {isGenerating ? (
+                  <div className="text-center">
+                    <Sparkles className="h-12 w-12 text-blue-500 dark:text-blue-400 animate-pulse mx-auto mb-4" />
+                    <p className="text-gray-600 dark:text-gray-400">Creating your masterpiece...</p>
+                  </div>
+                ) : (
+                  <div className="text-center">
+                    <ImageIcon className="h-12 w-12 text-gray-400 dark:text-gray-600 mx-auto mb-4" />
+                    <p className="text-gray-600 dark:text-gray-400">Your generated image will appear here</p>
+                  </div>
+                )}
+              </div>
+            </div>
+          </div>
+        )}
 
         {/* Recent Experiments */}
         <div className="bg-white dark:bg-[#1a1a2e] rounded-lg shadow-sm p-6 mb-8">
@@ -239,5 +308,6 @@ export default function AILab() {
         </div>
       </div>
     </MainLayout>
+    </RouteGuard>
   );
 }

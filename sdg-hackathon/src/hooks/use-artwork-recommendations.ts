@@ -1,6 +1,6 @@
 import { useState, useEffect } from 'react';
 import { Artwork, ArtworkCategory } from '@/types/artwork';
-import { mockArtworks } from '@/lib/mock-data';
+import { mockArtworks } from '@/data/mock';
 
 interface RecommendationOptions {
   userId?: string;

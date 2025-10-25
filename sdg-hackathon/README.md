@@ -18,7 +18,7 @@ ArtConnect is a community-based social platform designed to address key challeng
 - **Styling**: Tailwind CSS
 - **UI Components**: Custom components with responsive design
 - **State Management**: React hooks and context
-- **AI Integration**: Mock implementation (to be replaced with real AI service)
+- **AI Integration**: Grok API for artwork analysis and feedback
 
 ## Getting Started
 
@@ -27,6 +27,21 @@ First, install the dependencies:
 ```bash
 npm install
 ```
+
+Next, create a `.env.local` file in the root directory with the required environment variables. You can use the provided `env.example` file as a template:
+
+```bash
+# Copy the example file and rename it
+cp env.example .env.local
+
+# Then edit .env.local to add your actual API keys
+```
+
+To get a Grok API key:
+1. Sign up for an account at [x.ai](https://x.ai)
+2. Navigate to the API section in your account settings
+3. Generate a new API key
+4. Copy the key to your `.env.local` file
 
 Then, run the development server:
 

@@ -4,6 +4,7 @@ import React, { useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
 import { MainLayout } from "@/components/layout/main-layout";
 import { useAuth } from "@/contexts/auth-context";
+import { RouteGuard } from "@/components/auth/route-guard";
 import { Sparkles, Users, MessageSquare, Calendar, PlusCircle, Eye, CheckCircle, Clock, MapPin } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import Image from "next/image";
@@ -15,7 +16,7 @@ import { NearbyMap } from "@/components/collaboration/nearby-map";
 
 export default function CollaborationHub() {
   const router = useRouter();
-  const { isLoggedIn, isArtist } = useAuth();
+  const { user } = useAuth();
   
   // State for modals
   const [isChatbotOpen, setIsChatbotOpen] = useState(false);
@@ -29,13 +30,6 @@ export default function CollaborationHub() {
   
   // State for connection requests
   const [connectionRequests, setConnectionRequests] = useState<Record<string, {pending: boolean, message: string}>>({});
-
-  // Redirect if not logged in as artist
-  useEffect(() => {
-    if (!isLoggedIn || !isArtist) {
-      router.push("/login");
-    }
-  }, [isLoggedIn, isArtist, router]);
   
   // Handle preference submission
   const handlePreferenceSubmit = async (preferences: string) => {
@@ -358,12 +352,11 @@ export default function CollaborationHub() {
     },
   ];
 
-  if (!isLoggedIn || !isArtist) {
-    return null; // Don't render anything while checking auth
-  }
+  // RouteGuard will handle the auth check and redirection
 
   return (
-    <MainLayout>
+    <RouteGuard requiredUserType="artist">
+      <MainLayout>
       <div className="py-8 px-4 sm:px-6 lg:px-8">
         <div className="flex flex-col md:flex-row justify-between items-start md:items-center mb-8">
           <div>
@@ -578,5 +571,6 @@ export default function CollaborationHub() {
         />
       )}
     </MainLayout>
+    </RouteGuard>
   );
 }

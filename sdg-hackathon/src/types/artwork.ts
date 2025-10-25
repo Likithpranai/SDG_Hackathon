@@ -1,3 +1,4 @@
+<<<<<<< HEAD
 export interface Artist {
   id: string;  // This will map to artistId in the digital_artist_data.py
   name: string;
@@ -28,6 +29,9 @@ export interface Artist {
     description: string;
   }[];
 }
+=======
+import { Artist } from './artist';
+>>>>>>> shivansh
 
 export type ArtworkType = 'physical' | 'digital';
 
