@@ -9,13 +9,6 @@ const envApiKey = process.env.XAI_API_KEY
 // Use environment variable only
 const apiKey = envApiKey;
 
-
-console.log('API Key source:', envApiKey ? 'Environment variable' : 'Direct hardcoded key');
-
-if (!apiKey) {
-    console.error("Missing API key for Grok. Please set XAI_API_KEY in your .env.local file.");
-}
-
 // Create the OpenAI client with explicit configuration
 const openai = new OpenAI({
     apiKey: apiKey,
