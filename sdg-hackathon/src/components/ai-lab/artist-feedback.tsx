@@ -6,8 +6,6 @@ import remarkGfm from "remark-gfm";
 import { 
   Upload, 
   Image as ImageIcon, 
-  MessageSquare, 
-  Send, 
   X,
   Loader2,
   RefreshCw,
@@ -86,8 +84,6 @@ export function ArtistFeedback({ onClose, onFeedbackSaved, initialSession }: Art
   const [originalImage, setOriginalImage] = useState<string | null>(initialSession?.image || null);
   const [description, setDescription] = useState(initialSession?.description || "");
   const [feedback, setFeedback] = useState(initialSession?.feedback || "");
-  const [chatMessages, setChatMessages] = useState<Array<{role: 'user' | 'assistant', content: string}>>([]);
-  const [chatInput, setChatInput] = useState("");
   const [isSubmitting, setIsSubmitting] = useState(false);
   
   // Set the title for the page
@@ -138,28 +134,56 @@ export function ArtistFeedback({ onClose, onFeedbackSaved, initialSession }: Art
       if (onFeedbackSaved) {
         const title = description.split('.')[0].trim();
         
-        // Create a thumbnail version of the image to avoid localStorage quota issues
-        let thumbnailImage = '';
+        // Process the image for storage
+        let imageToStore = '';
         if (originalImage) {
-          // Store a reference to the image instead of the full base64 data
           // If it's a public URL, store that directly
           if (originalImage.startsWith('/')) {
-            thumbnailImage = originalImage;
+            imageToStore = originalImage;
           } else {
-            // For uploaded images, we'll just use a placeholder instead of storing the full image
-            // In a real app, you'd use a proper image storage service like S3 or Firebase Storage
+            // For uploaded images (base64), create a smaller version to save space
             try {
-              // Just store a reference to the placeholder image
-              thumbnailImage = '/placeholder-image.jpg';
+              // Create a temporary canvas to resize the image
+              const img = new Image() as HTMLImageElement;
+              img.src = originalImage;
               
-              // Note: The proper way would be to upload the image to a server
-              // and then store the URL, but that's beyond the scope of this demo
+              // Wait for the image to load
+              await new Promise((resolve) => {
+                img.onload = resolve;
+              });
+              
+              const canvas = document.createElement('canvas');
+              const ctx = canvas.getContext('2d');
+              
+              // Calculate new dimensions (max 300px width/height while preserving aspect ratio)
+              const maxDimension = 300;
+              let width = img.width;
+              let height = img.height;
+              
+              if (width > height && width > maxDimension) {
+                height = Math.round((height * maxDimension) / width);
+                width = maxDimension;
+              } else if (height > maxDimension) {
+                width = Math.round((width * maxDimension) / height);
+                height = maxDimension;
+              }
+              
+              // Set canvas dimensions and draw resized image
+              canvas.width = width;
+              canvas.height = height;
+              ctx?.drawImage(img, 0, 0, width, height);
+              
+              // Convert to JPEG with reduced quality
+              imageToStore = canvas.toDataURL('image/jpeg', 0.7);
             } catch (error) {
               console.error('Error creating thumbnail:', error);
-              // Fallback to a placeholder
-              thumbnailImage = '/placeholder-image.jpg';
+              // Fallback to the original image if there's an error
+              imageToStore = originalImage;
             }
           }
+        } else {
+          // If no image, use placeholder
+          imageToStore = '/placeholder-image.jpg';
         }
         
         const feedbackSession: FeedbackSession = {
@@ -167,7 +191,7 @@ export function ArtistFeedback({ onClose, onFeedbackSaved, initialSession }: Art
           title: title.length > 30 ? title.substring(0, 30) + '...' : title,
           description: description.length > 100 ? description.substring(0, 100) + '...' : description,
           date: new Date().toLocaleDateString(),
-          image: thumbnailImage || '/placeholder-image.jpg',
+          image: imageToStore || '/placeholder-image.jpg',
           feedback: data.feedback
         };
         onFeedbackSaved(feedbackSession);
@@ -218,59 +242,12 @@ Please try again after addressing these potential issues.`);
     }
   };
 
-  const handleChatSubmit = async () => {
-    if (!chatInput.trim() || !originalImage) return;
-    
-    const newMessages = [
-      ...chatMessages,
-      { role: 'user' as const, content: chatInput }
-    ];
-    
-    setChatMessages(newMessages);
-    setChatInput("");
-    setIsSubmitting(true);
-    
-    try {
-      // Call our API endpoint for chat
-      const response = await fetch('/api/ai/chat', {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify({
-          messages: newMessages,
-          originalImage: originalImage
-        }),
-      });
-      
-      if (!response.ok) {
-        throw new Error('Failed to process chat');
-      }
-      
-      const data = await response.json();
-      
-      // Add AI response to chat
-      setChatMessages([
-        ...newMessages,
-        { role: 'assistant' as const, content: data.reply }
-      ]);
-    } catch (error) {
-      console.error("Error in chat:", error);
-      // Add error message to chat
-      setChatMessages([
-        ...newMessages,
-        { role: 'assistant' as const, content: "I'm sorry, I encountered an error processing your request. Please try again." }
-      ]);
-    } finally {
-      setIsSubmitting(false);
-    }
-  };
+  // Chat functionality removed
 
   const handleReset = () => {
     setOriginalImage(null);
     setDescription("");
     setFeedback("");
-    setChatMessages([]);
     setStep('upload');
     if (fileInputRef.current) {
       fileInputRef.current.value = "";
@@ -406,60 +383,6 @@ Please try again after addressing these potential issues.`);
                 <div className="bg-gray-50 dark:bg-gray-900 rounded-lg p-4">
                   <h4 className="text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">Your Description</h4>
                   <p className="text-sm text-gray-600 dark:text-gray-400">{description}</p>
-                </div>
-
-                {/* Chat Interface */}
-                <div className="border border-gray-200 dark:border-gray-800 rounded-lg overflow-hidden">
-                  <div className="bg-gray-50 dark:bg-gray-900 p-3 border-b border-gray-200 dark:border-gray-800">
-                    <h4 className="text-sm font-medium text-gray-700 dark:text-gray-300 flex items-center">
-                      <MessageSquare className="h-4 w-4 mr-2" />
-                      Follow-up Questions
-                    </h4>
-                  </div>
-                  
-                  <div className="p-3 max-h-[200px] overflow-y-auto space-y-3">
-                    {chatMessages.length > 0 ? (
-                      chatMessages.map((msg, index) => (
-                        <div 
-                          key={index} 
-                          className={cn(
-                            "p-3 rounded-lg max-w-[80%]",
-                            msg.role === 'user' 
-                              ? "bg-blue-100 dark:bg-blue-900/30 ml-auto text-blue-800 dark:text-blue-200" 
-                              : "bg-gray-100 dark:bg-gray-800 text-gray-800 dark:text-gray-200"
-                          )}
-                        >
-                          {msg.content}
-                        </div>
-                      ))
-                    ) : (
-                      <p className="text-xs text-gray-500 dark:text-gray-400 text-center py-2">
-                        Ask questions or provide additional context to refine the feedback
-                      </p>
-                    )}
-                  </div>
-                  
-                  <div className="border-t border-gray-200 dark:border-gray-800 p-3 flex">
-                    <Textarea
-                      placeholder="Ask a question or provide more context..."
-                      className="min-h-[40px] bg-gray-50 dark:bg-gray-900 text-sm resize-none flex-1 mr-2"
-                      value={chatInput}
-                      onChange={(e: React.ChangeEvent<HTMLTextAreaElement>) => setChatInput(e.target.value)}
-                      onKeyDown={(e: React.KeyboardEvent<HTMLTextAreaElement>) => {
-                        if (e.key === 'Enter' && !e.shiftKey) {
-                          e.preventDefault();
-                          handleChatSubmit();
-                        }
-                      }}
-                    />
-                    <Button 
-                      onClick={handleChatSubmit}
-                      disabled={!chatInput.trim()}
-                      className="bg-blue-600 hover:bg-blue-700 text-white h-10 w-10 p-0 flex items-center justify-center"
-                    >
-                      <Send className="h-4 w-4" />
-                    </Button>
-                  </div>
                 </div>
               </div>
 

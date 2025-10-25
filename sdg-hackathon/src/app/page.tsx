@@ -167,23 +167,29 @@ export default function Home() {
             Choose Your Experience
           </h2>
           <p className="text-lg mb-8 max-w-2xl mx-auto">
-            Select your role to access the features designed specifically for you
+            Select your role to get started with ArtConnect
           </p>
           <div className="flex flex-col sm:flex-row justify-center gap-6 sm:gap-10">
-            <Button
-              variant="primary"
-              size="lg"
-              className="bg-white text-indigo-600 hover:bg-indigo-50 shadow-lg px-10"
-            >
-              <Link href="/artists/dashboard">Artist Portal</Link>
-            </Button>
-            <Button
-              variant="primary"
-              size="lg"
-              className="bg-white text-indigo-600 hover:bg-indigo-50 shadow-lg px-10"
-            >
-              <Link href="/marketplace">Buyer Marketplace</Link>
-            </Button>
+            <Link href="/artists/auth" className="inline-block">
+              <Button
+                variant="primary"
+                size="lg"
+                className="bg-white text-indigo-600 hover:bg-indigo-50 shadow-lg px-10 flex items-center gap-2"
+              >
+                <Brush className="h-5 w-5" />
+                For Artists
+              </Button>
+            </Link>
+            <Link href="/buyers/auth" className="inline-block">
+              <Button
+                variant="primary"
+                size="lg"
+                className="bg-white text-pink-600 hover:bg-pink-50 shadow-lg px-10 flex items-center gap-2"
+              >
+                <Users className="h-5 w-5" />
+                For Buyers
+              </Button>
+            </Link>
           </div>
         </div>
       </section>

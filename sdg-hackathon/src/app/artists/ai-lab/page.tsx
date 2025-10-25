@@ -6,7 +6,7 @@ import Image from "next/image";
 import { MainLayout } from "@/components/layout/main-layout";
 import { useAuth } from "@/contexts/auth-context";
 import { RouteGuard } from "@/components/auth/route-guard";
-import { Palette, Image as ImageIcon, ChevronRight, PlusCircle } from "lucide-react";
+import { Palette, Image as ImageIcon, ChevronRight, PlusCircle, X, Trash2 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { ArtistFeedback } from "@/components/ai-lab/artist-feedback";
 
@@ -26,6 +26,7 @@ export default function AILab() {
   const [showFeedbackTool, setShowFeedbackTool] = useState(false);
   const [recentFeedback, setRecentFeedback] = useState<FeedbackSession[]>([]);
   const [selectedFeedback, setSelectedFeedback] = useState<FeedbackSession | null>(null);
+  const [showDeleteConfirm, setShowDeleteConfirm] = useState<string | null>(null);
 
   // Load saved feedback sessions from localStorage on component mount
   useEffect(() => {
@@ -82,6 +83,26 @@ export default function AILab() {
         // Just keep the new session in memory without persisting
       }
     }
+  };
+  
+  // Handle deleting a feedback session
+  const handleDeleteFeedback = (id: string) => {
+    // Show confirmation dialog
+    setShowDeleteConfirm(id);
+  };
+  
+  // Confirm deletion of a feedback session
+  const confirmDeleteFeedback = (id: string) => {
+    const updatedFeedback = recentFeedback.filter(item => item.id !== id);
+    setRecentFeedback(updatedFeedback);
+    
+    try {
+      localStorage.setItem('artist-feedback-sessions', JSON.stringify(updatedFeedback));
+    } catch (error) {
+      console.error('Error saving to localStorage after deletion:', error);
+    }
+    
+    setShowDeleteConfirm(null);
   };
 
   return (
@@ -211,10 +232,66 @@ export default function AILab() {
                       <p className="text-sm text-gray-600 dark:text-gray-400 mt-1 line-clamp-2">{item.description}</p>
                       <div className="flex justify-between mt-2 text-xs text-gray-500 dark:text-gray-400">
                         <span>{item.date}</span>
-                        <Button variant="ghost" size="sm" className="p-0 h-auto">
-                          View <ChevronRight className="h-3 w-3 ml-1" />
-                        </Button>
+                        <div className="flex items-center space-x-2">
+                          <Button 
+                            variant="ghost" 
+                            size="sm" 
+                            className="p-0 h-auto text-blue-600 dark:text-blue-400 hover:text-blue-800 dark:hover:text-blue-300"
+                            onClick={(e) => {
+                              e.stopPropagation();
+                              setSelectedFeedback(item);
+                              setShowFeedbackTool(true);
+                            }}
+                          >
+                            View <ChevronRight className="h-3 w-3 ml-1" />
+                          </Button>
+                          <Button 
+                            variant="ghost" 
+                            size="sm" 
+                            className="p-0 h-auto text-red-600 dark:text-red-400 hover:text-red-800 dark:hover:text-red-300"
+                            onClick={(e) => {
+                              e.stopPropagation();
+                              handleDeleteFeedback(item.id);
+                            }}
+                          >
+                            <X className="h-3 w-3" />
+                          </Button>
+                        </div>
                       </div>
+                      
+                      {/* Delete Confirmation Dialog */}
+                      {showDeleteConfirm === item.id && (
+                        <div className="absolute inset-0 bg-black/50 flex items-center justify-center rounded-lg z-10">
+                          <div className="bg-white dark:bg-gray-800 p-4 rounded-lg shadow-lg max-w-[90%] text-center">
+                            <p className="text-sm text-gray-700 dark:text-gray-300 mb-3">
+                              Delete this feedback session?
+                            </p>
+                            <div className="flex justify-center space-x-2">
+                              <Button 
+                                size="sm" 
+                                variant="outline" 
+                                className="bg-red-600 hover:bg-red-700 text-white"
+                                onClick={(e) => {
+                                  e.stopPropagation();
+                                  confirmDeleteFeedback(item.id);
+                                }}
+                              >
+                                Delete
+                              </Button>
+                              <Button 
+                                size="sm" 
+                                variant="outline" 
+                                onClick={(e) => {
+                                  e.stopPropagation();
+                                  setShowDeleteConfirm(null);
+                                }}
+                              >
+                                Cancel
+                              </Button>
+                            </div>
+                          </div>
+                        </div>
+                      )}
                     </div>
                   </div>
                 ))}

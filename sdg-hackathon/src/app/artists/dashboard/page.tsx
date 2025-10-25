@@ -23,6 +23,7 @@ import {
   Save
 } from "lucide-react";
 import { mockDataStore, Artwork } from "@/lib/mock-data-store";
+import { ActivityCharts } from "@/components/dashboard/activity-charts";
 import EditProfileModal from "./edit-profile-modal";
 import AboutMeSection from "./about-me-section";
 import UploadArtworkModal, { ArtworkFormData } from "./upload-artwork-modal";
@@ -147,6 +148,16 @@ export default function ArtistDashboard() {
 
   // Artwork data from mock data store
   const [artworks, setArtworks] = useState<Artwork[]>([]);
+  
+  // Mock activity data for charts
+  const activityData = [
+    { month: 'Jan', sales: 120, views: 1450, likes: 280 },
+    { month: 'Feb', sales: 90, views: 1200, likes: 240 },
+    { month: 'Mar', sales: 150, views: 1800, likes: 320 },
+    { month: 'Apr', sales: 180, views: 2100, likes: 380 },
+    { month: 'May', sales: 210, views: 2400, likes: 450 },
+    { month: 'Jun', sales: 250, views: 2800, likes: 520 },
+  ];
   
   // Load artworks from mock data store on component mount
   useEffect(() => {
@@ -322,7 +333,7 @@ export default function ArtistDashboard() {
                       />
                       
                       {/* Overlay with artwork info */}
-                      <div className="absolute inset-0 bg-gradient-to-t from-black/90 via-black/70 to-transparent flex flex-col justify-end p-4 text-white">
+                      <div className="absolute inset-0 bg-linear-to-t from-black/90 via-black/70 to-transparent flex flex-col justify-end p-4 text-white">
                         <h3 className="font-bold text-lg">{artwork.title} ({artwork.year})</h3>
                         <p className="text-sm text-gray-200">{artwork.description}</p>
                         <div className="flex justify-between mt-2 text-xs">
@@ -413,13 +424,8 @@ export default function ArtistDashboard() {
               </div>
             </div>
             
-            {/* Recent Activity Chart Placeholder */}
-            <div className="bg-white dark:bg-[#1a1a2e] rounded-lg shadow-sm p-6 mb-8">
-              <h2 className="text-xl font-bold text-gray-900 dark:text-white mb-4">Activity Overview</h2>
-              <div className="h-64 bg-gray-50 dark:bg-gray-900/50 rounded-lg flex items-center justify-center">
-                <p className="text-gray-500 dark:text-gray-400">Activity chart visualization would appear here</p>
-              </div>
-            </div>
+            {/* Activity Charts */}
+            <ActivityCharts data={activityData} />
             
             {/* Top Performing Artworks */}
             <div className="bg-white dark:bg-[#1a1a2e] rounded-lg shadow-sm p-6">

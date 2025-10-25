@@ -30,7 +30,7 @@ export function Navbar() {
   };
 
   return (
-    <nav className="fixed left-0 top-0 h-full z-40 bg-white dark:bg-[#121225] border-r border-indigo-100 dark:border-indigo-900/30 w-64 flex flex-col shadow-lg overflow-auto">
+    <nav className="fixed left-0 top-0 h-full z-40 bg-white dark:bg-[#121225] border-r border-indigo-100 dark:border-indigo-900/30 w-64 flex flex-col shadow-lg overflow-y-hidden hover:overflow-y-auto">
       {/* Background Pattern */}
       <div className="absolute inset-0 opacity-[0.03] dark:opacity-[0.08] pointer-events-none">
         <div className="absolute inset-0 bg-[radial-gradient(circle,#6366f1_1px,transparent_1px)] bg-size-[20px_20px]"></div>
@@ -45,87 +45,89 @@ export function Navbar() {
       </div>
 
       {/* Desktop Navigation */}
-      <div className="flex-1 flex flex-col justify-center items-center space-y-10 py-8 px-4">
+      <div className="flex-1 flex flex-col justify-start items-center space-y-2 py-4 px-4 overflow-y-auto scrollbar-none">
         {isLoggedIn && isArtist ? (
           // Artist Logged In Navigation
           <>
             <Link
               href="/artists/dashboard"
-              className="w-full flex flex-col items-center text-center p-5 rounded-lg hover:bg-indigo-50 dark:hover:bg-indigo-900/20 transition-colors"
+              className="w-full flex items-center p-3 rounded-lg hover:bg-indigo-50 dark:hover:bg-indigo-900/20 transition-colors"
             >
-              <div className="flex flex-row items-center">
-                <div className="bg-indigo-100 dark:bg-indigo-900/30 p-3 rounded-full mb-4 mr-3">
-                  <Palette className="h-7 w-7 text-indigo-600 dark:text-indigo-400" />
-                </div>
-                <span className="font-bold text-3xl mb-2 text-indigo-700 dark:text-indigo-300">
+              <div className="bg-indigo-100 dark:bg-indigo-900/30 p-2 rounded-full">
+                <Palette className="h-5 w-5 text-indigo-600 dark:text-indigo-400" />
+              </div>
+              <div className="ml-3">
+                <span className="font-medium text-base text-indigo-700 dark:text-indigo-300 block">
                   You
                 </span>
+                <p className="text-xs text-gray-500 dark:text-gray-400">
+                  Your profile & artwork
+                </p>
               </div>
-              <p className="text-sm text-gray-500 dark:text-gray-400 max-w-[180px]">
-                Your profile, artwork and stats
-              </p>
             </Link>
 
             <Link
               href="/artists/messages"
-              className="w-full flex flex-col items-center text-center p-5 rounded-lg hover:bg-pink-50 dark:hover:bg-pink-900/20 transition-colors"
+              className="w-full flex items-center p-3 rounded-lg hover:bg-pink-50 dark:hover:bg-pink-900/20 transition-colors"
             >
-              <div className="flex flex-row items-center">
-                <div className="bg-pink-100 dark:bg-pink-900/30 p-3 rounded-full mb-4 mr-3">
-                  <MessageCircle className="h-7 w-7 text-pink-600 dark:text-pink-400" />
-                </div>
-                <span className="font-bold text-3xl mb-2 text-pink-700 dark:text-pink-300">
+              <div className="bg-pink-100 dark:bg-pink-900/30 p-2 rounded-full">
+                <MessageCircle className="h-5 w-5 text-pink-600 dark:text-pink-400" />
+              </div>
+              <div className="ml-3">
+                <span className="font-medium text-base text-pink-700 dark:text-pink-300 block">
                   Messages
                 </span>
+                <p className="text-xs text-gray-500 dark:text-gray-400">
+                  Inquiries & commissions
+                </p>
               </div>
-              <p className="text-sm text-gray-500 dark:text-gray-400 max-w-[180px]">
-                Respond to buyer inquiries and commissions
-              </p>
             </Link>
 
             <Link
               href="/artists/collaboration"
-              className="w-full flex flex-col items-center text-center p-5 rounded-lg hover:bg-purple-50 dark:hover:bg-purple-900/20 transition-colors"
+              className="w-full flex items-center p-3 rounded-lg hover:bg-purple-50 dark:hover:bg-purple-900/20 transition-colors"
             >
-              <div className="flex flex-row items-center">
-                <div className="bg-purple-100 dark:bg-purple-900/30 p-3 rounded-full mb-4 mr-3">
-                  <Sparkles className="h-7 w-7 text-purple-600 dark:text-purple-400" />
-                </div>
-                <span className="font-bold text-3xl mb-2 text-purple-700 dark:text-purple-300">
+              <div className="bg-purple-100 dark:bg-purple-900/30 p-2 rounded-full">
+                <Sparkles className="h-5 w-5 text-purple-600 dark:text-purple-400" />
+              </div>
+              <div className="ml-3">
+                <span className="font-medium text-base text-purple-700 dark:text-purple-300 block">
                   Collaboration
                 </span>
+                <p className="text-xs text-gray-500 dark:text-gray-400">
+                  Connect with artists
+                </p>
               </div>
-              <p className="text-sm text-gray-500 dark:text-gray-400 max-w-[180px]">
-                Fuel your creative vision with like-minded artists
-              </p>
             </Link>
 
             <Link
               href="/artists/ai-lab"
-              className="w-full flex flex-col items-center text-center p-5 rounded-lg hover:bg-blue-50 dark:hover:bg-blue-900/20 transition-colors"
+              className="w-full flex items-center p-3 rounded-lg hover:bg-blue-50 dark:hover:bg-blue-900/20 transition-colors"
             >
-              <div className="flex flex-row items-center">
-                <div className="bg-blue-100 dark:bg-blue-900/30 p-3 rounded-full mb-4 mr-3">
-                  <Zap className="h-7 w-7 text-blue-600 dark:text-blue-400" />
-                </div>
-                <span className="font-bold text-3xl mb-2 text-blue-700 dark:text-blue-300">
+              <div className="bg-blue-100 dark:bg-blue-900/30 p-2 rounded-full">
+                <Zap className="h-5 w-5 text-blue-600 dark:text-blue-400" />
+              </div>
+              <div className="ml-3">
+                <span className="font-medium text-base text-blue-700 dark:text-blue-300 block">
                   AI Lab
                 </span>
+                <p className="text-xs text-gray-500 dark:text-gray-400">
+                  Get artwork feedback
+                </p>
               </div>
-              <p className="text-sm text-gray-500 dark:text-gray-400 max-w-[180px]">
-                Experiment and get feedback for your next creation
-              </p>
             </Link>
 
+            <div className="grow"></div>
+            
             <button
               onClick={() => logout()}
-              className="w-full flex flex-col items-center text-center p-5 rounded-lg border-2 border-red-300 dark:border-red-700 bg-red-50 dark:bg-red-900/20 hover:bg-red-100 dark:hover:bg-red-900/40 transition-colors mt-4"
+              className="w-full flex items-center p-3 rounded-lg border border-red-300 dark:border-red-700 bg-red-50 dark:bg-red-900/20 hover:bg-red-100 dark:hover:bg-red-900/40 transition-colors mt-2"
             >
-              <div className="flex flex-row items-center">
-                <div className="bg-red-100 dark:bg-red-900/30 p-3 rounded-full mb-4 mr-3">
-                  <LogOut className="h-7 w-7 text-red-600 dark:text-red-400" />
-                </div>
-                <span className="font-bold text-3xl mb-2 text-red-700 dark:text-red-300">
+              <div className="bg-red-100 dark:bg-red-900/30 p-2 rounded-full">
+                <LogOut className="h-5 w-5 text-red-600 dark:text-red-400" />
+              </div>
+              <div className="ml-3">
+                <span className="font-medium text-base text-red-700 dark:text-red-300">
                   Logout
                 </span>
               </div>
@@ -134,103 +136,102 @@ export function Navbar() {
         ) : isLoggedIn && isBuyer ? (
           // Buyer Logged In Navigation
           <>
-            <div className="flex justify-end px-4 mb-2">
-              <CartButton />
-            </div>
             <Link
               href="/buyers/dashboard"
-              className="w-full flex flex-col items-center text-center p-5 rounded-lg hover:bg-blue-50 dark:hover:bg-blue-900/20 transition-colors"
+              className="w-full flex items-center p-3 rounded-lg hover:bg-blue-50 dark:hover:bg-blue-900/20 transition-colors"
             >
-              <div className="flex flex-row items-center">
-                <div className="bg-blue-100 dark:bg-blue-900/30 p-3 rounded-full mb-4 mr-3">
-                  <User className="h-7 w-7 text-blue-600 dark:text-blue-400" />
-                </div>
-                <span className="font-bold text-3xl mb-2 text-blue-700 dark:text-blue-300">
+              <div className="bg-blue-100 dark:bg-blue-900/30 p-2 rounded-full">
+                <User className="h-5 w-5 text-blue-600 dark:text-blue-400" />
+              </div>
+              <div className="ml-3">
+                <span className="font-medium text-base text-blue-700 dark:text-blue-300 block">
                   You
                 </span>
+                <p className="text-xs text-gray-500 dark:text-gray-400">
+                  Profile & saved art
+                </p>
               </div>
-              <p className="text-sm text-gray-500 dark:text-gray-400 max-w-[180px]">
-                Your profile and saved artworks
-              </p>
             </Link>
 
             <Link
               href="/marketplace"
-              className="w-full flex flex-col items-center text-center p-5 rounded-lg hover:bg-purple-50 dark:hover:bg-purple-900/20 transition-colors"
+              className="w-full flex items-center p-3 rounded-lg hover:bg-purple-50 dark:hover:bg-purple-900/20 transition-colors"
             >
-              <div className="flex flex-row items-center">
-                <div className="bg-purple-100 dark:bg-purple-900/30 p-3 rounded-full mb-4 mr-3">
-                  <Search className="h-7 w-7 text-purple-600 dark:text-purple-400" />
-                </div>
-                <span className="font-bold text-3xl mb-2 text-purple-700 dark:text-purple-300">
+              <div className="bg-purple-100 dark:bg-purple-900/30 p-2 rounded-full">
+                <Search className="h-5 w-5 text-purple-600 dark:text-purple-400" />
+              </div>
+              <div className="ml-3">
+                <span className="font-medium text-base text-purple-700 dark:text-purple-300 block">
                   Marketplace
                 </span>
+                <p className="text-xs text-gray-500 dark:text-gray-400">
+                  Find perfect artwork
+                </p>
               </div>
-              <p className="text-sm text-gray-500 dark:text-gray-400 max-w-[180px]">
-                Find your perfect artwork with AI assistance
-              </p>
             </Link>
 
             <Link
               href="/buyers/events"
-              className="w-full flex flex-col items-center text-center p-5 rounded-lg hover:bg-amber-50 dark:hover:bg-amber-900/20 transition-colors"
+              className="w-full flex items-center p-3 rounded-lg hover:bg-amber-50 dark:hover:bg-amber-900/20 transition-colors"
             >
-              <div className="flex flex-row items-center">
-                <div className="bg-amber-100 dark:bg-amber-900/30 p-3 rounded-full mb-4 mr-3">
-                  <Calendar className="h-7 w-7 text-amber-600 dark:text-amber-400" />
-                </div>
-                <span className="font-bold text-3xl mb-2 text-amber-700 dark:text-amber-300">
+              <div className="bg-amber-100 dark:bg-amber-900/30 p-2 rounded-full">
+                <Calendar className="h-5 w-5 text-amber-600 dark:text-amber-400" />
+              </div>
+              <div className="ml-3">
+                <span className="font-medium text-base text-amber-700 dark:text-amber-300 block">
                   Events
                 </span>
+                <p className="text-xs text-gray-500 dark:text-gray-400">
+                  Exhibitions & shows
+                </p>
               </div>
-              <p className="text-sm text-gray-500 dark:text-gray-400 max-w-[180px]">
-                Exhibitions and art events
-              </p>
             </Link>
 
             <Link
               href="/buyers/conversations"
-              className="w-full flex flex-col items-center text-center p-5 rounded-lg hover:bg-pink-50 dark:hover:bg-pink-900/20 transition-colors"
+              className="w-full flex items-center p-3 rounded-lg hover:bg-pink-50 dark:hover:bg-pink-900/20 transition-colors"
             >
-              <div className="flex flex-row items-center">
-                <div className="bg-pink-100 dark:bg-pink-900/30 p-3 rounded-full mb-4 mr-3">
-                  <MessageCircle className="h-7 w-7 text-pink-600 dark:text-pink-400" />
-                </div>
-                <span className="font-bold text-3xl mb-2 text-pink-700 dark:text-pink-300">
+              <div className="bg-pink-100 dark:bg-pink-900/30 p-2 rounded-full">
+                <MessageCircle className="h-5 w-5 text-pink-600 dark:text-pink-400" />
+              </div>
+              <div className="ml-3">
+                <span className="font-medium text-base text-pink-700 dark:text-pink-300 block">
                   Messages
                 </span>
+                <p className="text-xs text-gray-500 dark:text-gray-400">
+                  Chat with artists
+                </p>
               </div>
-              <p className="text-sm text-gray-500 dark:text-gray-400 max-w-[180px]">
-                Chat with your matched artists
-              </p>
             </Link>
 
             <Link
               href="/buyers/matchmaking"
-              className="w-full flex flex-col items-center text-center p-5 rounded-lg hover:bg-green-50 dark:hover:bg-green-900/20 transition-colors"
+              className="w-full flex items-center p-3 rounded-lg hover:bg-green-50 dark:hover:bg-green-900/20 transition-colors"
             >
-              <div className="flex flex-row items-center">
-                <div className="bg-green-100 dark:bg-green-900/30 p-3 rounded-full mb-4 mr-3">
-                  <UserPlus className="h-7 w-7 text-green-600 dark:text-green-400" />
-                </div>
-                <span className="font-bold text-3xl mb-2 text-green-700 dark:text-green-300">
+              <div className="bg-green-100 dark:bg-green-900/30 p-2 rounded-full">
+                <UserPlus className="h-5 w-5 text-green-600 dark:text-green-400" />
+              </div>
+              <div className="ml-3">
+                <span className="font-medium text-base text-green-700 dark:text-green-300 block">
                   Matchmaking
                 </span>
+                <p className="text-xs text-gray-500 dark:text-gray-400">
+                  Find artists you'll love
+                </p>
               </div>
-              <p className="text-sm text-gray-500 dark:text-gray-400 max-w-[180px]">
-                Connect with artists that match your taste
-              </p>
             </Link>
 
+            <div className="grow"></div>
+            
             <button
               onClick={() => logout()}
-              className="w-full flex flex-col items-center text-center p-5 rounded-lg border-2 border-red-300 dark:border-red-700 bg-red-50 dark:bg-red-900/20 hover:bg-red-100 dark:hover:bg-red-900/40 transition-colors mt-4"
+              className="w-full flex items-center p-3 rounded-lg border border-red-300 dark:border-red-700 bg-red-50 dark:bg-red-900/20 hover:bg-red-100 dark:hover:bg-red-900/40 transition-colors mt-2"
             >
-              <div className="flex flex-row items-center">
-                <div className="bg-red-100 dark:bg-red-900/30 p-3 rounded-full mb-4 mr-3">
-                  <LogOut className="h-7 w-7 text-red-600 dark:text-red-400" />
-                </div>
-                <span className="font-bold text-3xl mb-2 text-red-700 dark:text-red-300">
+              <div className="bg-red-100 dark:bg-red-900/30 p-2 rounded-full">
+                <LogOut className="h-5 w-5 text-red-600 dark:text-red-400" />
+              </div>
+              <div className="ml-3">
+                <span className="font-medium text-base text-red-700 dark:text-red-300">
                   Logout
                 </span>
               </div>
@@ -240,37 +241,37 @@ export function Navbar() {
           // Default Navigation (Not Logged In)
           <>
             <Link
-              href="/login"
-              className="w-full flex flex-col items-center text-center p-5 rounded-lg hover:bg-indigo-50 dark:hover:bg-indigo-900/20 transition-colors"
+              href="/artists/auth"
+              className="w-full flex items-center p-3 rounded-lg hover:bg-indigo-50 dark:hover:bg-indigo-900/20 transition-colors"
             >
-              <div className="flex flex-row items-center">
-                <div className="bg-indigo-100 dark:bg-indigo-900/30 p-3 rounded-full mb-4 mr-3">
-                  <Palette className="h-7 w-7 text-indigo-600 dark:text-indigo-400" />
-                </div>
-                <span className="font-bold text-3xl mb-2 text-indigo-700 dark:text-indigo-300">
+              <div className="bg-indigo-100 dark:bg-indigo-900/30 p-2 rounded-full">
+                <Palette className="h-5 w-5 text-indigo-600 dark:text-indigo-400" />
+              </div>
+              <div className="ml-3">
+                <span className="font-medium text-base text-indigo-700 dark:text-indigo-300 block">
                   Artists
                 </span>
+                <p className="text-xs text-gray-500 dark:text-gray-400">
+                  Login or sign up as artist
+                </p>
               </div>
-              <p className="text-sm text-gray-500 dark:text-gray-400 max-w-[180px]">
-                Discover creators and experiment creatively
-              </p>
             </Link>
 
             <Link
-              href="/signup/buyer"
-              className="w-full flex flex-col items-center text-center p-5 rounded-lg hover:bg-pink-50 dark:hover:bg-pink-900/20 transition-colors"
+              href="/buyers/auth"
+              className="w-full flex items-center p-3 rounded-lg hover:bg-pink-50 dark:hover:bg-pink-900/20 transition-colors"
             >
-              <div className="flex flex-row items-center">
-                <div className="bg-pink-100 dark:bg-pink-900/30 p-3 rounded-full mb-4 mr-3">
-                  <Users className="h-7 w-7 text-pink-600 dark:text-pink-400" />
-                </div>
-                <span className="font-bold text-3xl mb-2 text-pink-700 dark:text-pink-300">
+              <div className="bg-pink-100 dark:bg-pink-900/30 p-2 rounded-full">
+                <Users className="h-5 w-5 text-pink-600 dark:text-pink-400" />
+              </div>
+              <div className="ml-3">
+                <span className="font-medium text-base text-pink-700 dark:text-pink-300 block">
                   Buyers
                 </span>
+                <p className="text-xs text-gray-500 dark:text-gray-400">
+                  Login or sign up as buyer
+                </p>
               </div>
-              <p className="text-sm text-gray-500 dark:text-gray-400 max-w-[180px]">
-                Find art that resonates
-              </p>
             </Link>
           </>
         )}

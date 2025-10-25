@@ -2,6 +2,7 @@
 
 import React from 'react';
 import { Navbar } from './navbar';
+import { Header } from './header';
 import { Footer } from './footer';
 import { CartProvider } from '@/contexts/cart-context';
 import { CartSidebar } from '@/components/cart';
@@ -16,6 +17,7 @@ export function MainLayout({ children }: MainLayoutProps) {
       <div className="flex min-h-screen">
         <Navbar />
         <div className="flex flex-col flex-1 lg:ml-64 ml-0">
+          <Header />
           <main className="grow">{children}</main>
           <Footer />
         </div>
