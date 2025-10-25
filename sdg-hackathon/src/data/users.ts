@@ -1,25 +1,24 @@
 // Mock user database for the prototype
 // In a real application, this would be stored in a database
 
-export interface User {
-  id: string;
-  email: string;
+import { User as UserType } from '@/types/user';
+
+// Extend the User type to include password for authentication
+interface AuthUser extends UserType {
   password: string; // In a real app, this would be hashed
-  name: string;
-  userType: 'artist' | 'buyer' | 'admin';
-  profileImage?: string;
-  bio?: string;
-  location?: string;
-  experience?: string;
-  primaryMedium?: string;
-  skills?: string;
-  socialLinks?: {
-    platform: string;
-    url: string;
-  }[];
 }
 
-export const users: User[] = [
+export const users: AuthUser[] = [
+  {
+    id: 'buyer1',
+    email: 'buyer@test.com',
+    password: 'password123',
+    name: 'Test Buyer',
+    userType: 'buyer',
+    profileImage: '/placeholder-buyer.jpg',
+    bio: 'Art enthusiast looking for unique pieces to add to my collection.',
+    location: 'Hong Kong',
+  },
   {
     id: '1',
     email: 'sofia@artist.com',
@@ -68,11 +67,11 @@ export const users: User[] = [
 ];
 
 // Helper function to find a user by email
-export function findUserByEmail(email: string): User | undefined {
+export function findUserByEmail(email: string): AuthUser | undefined {
   return users.find(user => user.email === email);
 }
 
 // Helper function to find a user by ID
-export function findUserById(id: string): User | undefined {
+export function findUserById(id: string): AuthUser | undefined {
   return users.find(user => user.id === id);
 }

@@ -2,26 +2,14 @@
 
 import React, { createContext, useContext, useState, useEffect } from "react";
 import { useRouter } from "next/navigation";
-
-type User = {
-  id: string;
-  name: string;
-  email: string;
-  userType: "artist" | "buyer" | "admin";
-  profileImage?: string | null;
-  bio?: string | null;
-  location?: string | null;
-  experience?: string | null;
-  primaryMedium?: string | null;
-  skills?: string | null;
-  socialLinks?: { platform: string; url: string }[];
-};
+import { User } from "@/types/user";
 
 interface AuthContextType {
   user: User | null;
   isLoading: boolean;
   login: (email: string, password: string) => Promise<{success: boolean; message?: string}>;
   logout: () => void;
+  updateUser: (updatedUser: User) => void;
   isLoggedIn: boolean;
   isArtist: boolean;
   isBuyer: boolean;
@@ -126,6 +114,11 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
     setError(null);
   };
 
+  const updateUser = (updatedUser: User) => {
+    setUser(updatedUser);
+    localStorage.setItem("artconnect_user", JSON.stringify(updatedUser));
+  };
+
   const isLoggedIn = !!user;
   const isArtist = isLoggedIn && user?.userType === "artist";
   const isBuyer = isLoggedIn && user?.userType === "buyer";
@@ -135,6 +128,7 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
     isLoading,
     login,
     logout,
+    updateUser,
     isLoggedIn,
     isArtist,
     isBuyer,

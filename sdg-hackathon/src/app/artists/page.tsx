@@ -5,7 +5,7 @@ import { Search, MapPin } from 'lucide-react';
 
 import { MainLayout } from '@/components/layout/main-layout';
 import { Input } from '@/components/ui/input';
-import { mockArtists } from '@/lib/mock-data';
+import { mockArtists } from '@/data/mock';
 
 export default function ArtistsPage() {
   return (

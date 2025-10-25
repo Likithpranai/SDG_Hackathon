@@ -7,7 +7,7 @@ import { MapPin, Instagram, Twitter, Globe, ArrowLeft } from 'lucide-react';
 import { MainLayout } from '@/components/layout/main-layout';
 import { Button } from '@/components/ui/button';
 import { ArtworkCard } from '@/components/artwork/artwork-card';
-import { mockArtists, getArtworksByArtist } from '@/lib/mock-data';
+import { mockArtists, getArtworksByArtist } from '@/data/mock';
 
 interface ArtistDetailPageProps {
   params: {

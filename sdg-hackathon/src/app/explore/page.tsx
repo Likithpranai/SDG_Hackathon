@@ -1,7 +1,7 @@
 import React from 'react';
 import { MainLayout } from '@/components/layout/main-layout';
 import { ArtworkGallery } from '@/components/artwork/artwork-gallery';
-import { mockArtworks } from '@/lib/mock-data';
+import { mockArtworks } from '@/data/mock';
 
 export default function ExplorePage() {
   return (

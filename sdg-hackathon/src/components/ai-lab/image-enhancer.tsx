@@ -1,6 +1,8 @@
 "use client";
 
 import React, { useState, useRef, ChangeEvent, KeyboardEvent } from "react";
+import ReactMarkdown from "react-markdown";
+import remarkGfm from "remark-gfm";
 import { 
   Upload, 
   Image as ImageIcon, 
@@ -18,6 +20,50 @@ import { Button } from "@/components/ui/button";
 import { Textarea } from "@/components/ui/textarea";
 import Image from "next/image";
 import { cn } from "@/utils/cn";
+
+// Custom components for ReactMarkdown to enhance styling
+const MarkdownComponents = {
+  h2: ({ children, ...props }: React.ComponentPropsWithoutRef<'h2'>) => {
+    // Extract emoji from children if it exists
+    const childrenArray = React.Children.toArray(children);
+    const firstChild = childrenArray[0];
+    const restChildren = childrenArray.slice(1);
+    
+    // Check if the first child is a string and starts with an emoji (simpler approach)
+    const hasEmoji = typeof firstChild === 'string' && /^\s*[\p{Emoji}]/u.test(firstChild);
+    
+    if (hasEmoji) {
+      // Extract emoji and text with a simpler regex
+      const match = (firstChild as string).match(/^\s*([\p{Emoji}])\s*(.*)$/u);
+      if (match) {
+        const [, emoji, text] = match;
+        return (
+          <h2 className="flex items-center gap-3 mt-8 first:mt-2 pb-2" {...props}>
+            <span className="text-2xl">{emoji}</span>
+            <span>{text}</span>
+            {restChildren}
+          </h2>
+        );
+      }
+    }
+    
+    // Default rendering if no emoji is found
+    return <h2 className="flex items-center gap-2 mt-8 first:mt-2" {...props}>{children}</h2>;
+  },
+  p: ({ children, ...props }: React.ComponentPropsWithoutRef<'p'>) => {
+    return <p className="my-4" {...props}>{children}</p>;
+  },
+  ul: ({ children, ...props }: React.ComponentPropsWithoutRef<'ul'>) => {
+    return <ul className="my-4 space-y-3" {...props}>{children}</ul>;
+  },
+  li: ({ children, ...props }: React.ComponentPropsWithoutRef<'li'>) => {
+    return (
+      <li className="ml-2 relative pl-5 before:content-[''] before:absolute before:left-0 before:top-[0.6em] before:w-3 before:h-3 before:bg-blue-100 dark:before:bg-blue-900/50 before:rounded-full" {...props}>
+        {children}
+      </li>
+    );
+  },
+};
 
 interface ImageEnhancerProps {
   onClose?: () => void;
@@ -76,7 +122,46 @@ export function ImageEnhancer({ onClose }: ImageEnhancerProps) {
       setStep('results');
     } catch (error) {
       console.error("Error enhancing image:", error);
-      alert("Failed to enhance image. Please try again.");
+      
+      // Try to extract error message from response if available
+      let errorMessage = "Failed to enhance image. Please try again.";
+      if (error instanceof Error) {
+        errorMessage = error.message;
+      }
+      
+      // If it's a response error, try to get the detailed message
+      if (error instanceof Response || (error as any)?.json) {
+        try {
+          const data = await (error as Response).json();
+          if (data.message) {
+            errorMessage = data.message;
+          }
+        } catch (e) {
+          // Ignore JSON parsing errors
+        }
+      }
+      
+      // Set feedback to error message with markdown formatting
+      setFeedback(`## ❌ Error Analyzing Artwork
+
+${errorMessage}
+
+&nbsp;
+
+## 🔧 Troubleshooting Tips
+
+- **Check Connection**: Ensure your internet connection is stable
+- **API Key**: Verify your API key is correctly set in .env.local
+- **Image Format**: Try uploading a different image format (JPG or PNG)
+- **File Size**: Make sure your image isn't too large (keep under 5MB)
+
+&nbsp;
+
+Please try again after addressing these potential issues.`);
+      
+      // Still show results screen but with error message
+      setStep('results');
+      setEnhancedImage(originalImage); // Use original image
     } finally {
       setIsSubmitting(false);
     }
@@ -360,10 +445,27 @@ The enhanced version maintains your original artistic vision while refining thes
                     className="object-contain"
                   />
                 </div>
-                <div className="bg-blue-50 dark:bg-blue-900/20 rounded-lg p-4">
-                  <h4 className="text-sm font-medium text-blue-700 dark:text-blue-300 mb-2">AI Feedback</h4>
-                  <div className="text-sm text-gray-600 dark:text-gray-400 prose dark:prose-invert max-w-none">
-                    <div dangerouslySetInnerHTML={{ __html: feedback.replace(/\n/g, '<br />') }} />
+                <div className="bg-linear-to-br from-blue-50 to-white dark:from-blue-900/20 dark:to-gray-900/50 rounded-lg p-6 shadow-md border border-blue-100 dark:border-blue-900/50">
+                  <h4 className="text-base font-semibold text-blue-700 dark:text-blue-300 mb-4 flex items-center">
+                    <div className="bg-blue-100 dark:bg-blue-900/40 p-1.5 rounded-full mr-2">
+                      <Sparkles className="h-4 w-4 text-blue-600 dark:text-blue-400" />
+                    </div>
+                    AI Feedback
+                  </h4>
+                  <div className="text-sm text-gray-600 dark:text-gray-400 prose dark:prose-invert max-w-none
+                    prose-headings:font-bold prose-h2:text-xl prose-h2:mt-8 prose-h2:mb-4 prose-h2:text-blue-600 dark:prose-h2:text-blue-300 prose-h2:pb-2 prose-h2:border-b prose-h2:border-blue-100 dark:prose-h2:border-blue-900/30
+                    prose-h3:text-lg prose-h3:mt-6 prose-h3:mb-3 prose-h3:text-purple-600 dark:prose-h3:text-purple-300
+                    prose-p:my-4 prose-p:leading-relaxed
+                    prose-ul:my-4 prose-ul:space-y-3
+                    prose-li:my-2 prose-li:leading-relaxed prose-li:ml-2
+                    prose-strong:text-blue-700 dark:prose-strong:text-blue-300 prose-strong:font-semibold
+                    ">
+                    <ReactMarkdown 
+                      remarkPlugins={[remarkGfm]} 
+                      components={MarkdownComponents}
+                    >
+                      {feedback}
+                    </ReactMarkdown>
                   </div>
                 </div>
 

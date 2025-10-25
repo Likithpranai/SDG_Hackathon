@@ -1,5 +1,5 @@
 import { NextRequest, NextResponse } from 'next/server';
-import { findUserById } from '@/data/users';
+import { AuthService } from '@/services/auth/auth-service';
 
 // Endpoint to get user data by ID
 export async function GET(request: NextRequest) {
@@ -13,7 +13,7 @@ export async function GET(request: NextRequest) {
       );
     }
 
-    const user = findUserById(userId);
+    const user = await AuthService.getUserById(userId);
     
     if (!user) {
       return NextResponse.json(
@@ -22,22 +22,7 @@ export async function GET(request: NextRequest) {
       );
     }
 
-    // Create a sanitized user object (without the password)
-    const sanitizedUser = {
-      id: user.id,
-      email: user.email,
-      name: user.name,
-      userType: user.userType,
-      profileImage: user.profileImage || null,
-      bio: user.bio || null,
-      location: user.location || null,
-      experience: user.experience || null,
-      primaryMedium: user.primaryMedium || null,
-      skills: user.skills || null,
-      socialLinks: user.socialLinks || [],
-    };
-
-    return NextResponse.json({ user: sanitizedUser });
+    return NextResponse.json({ user });
   } catch (error) {
     console.error('Get user error:', error);
     return NextResponse.json(

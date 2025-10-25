@@ -1,69 +1,13 @@
 "use client";
 
-import React, { useState, useEffect } from "react";
+import React from "react";
 import Link from "next/link";
-import { useRouter } from "next/navigation";
-import { MainLayout } from "@/components/layout/main-layout";
-import { Button } from "@/components/ui/button";
-import { Input } from "@/components/ui/input";
-import { ArrowRight, Mail, Lock, Eye, EyeOff } from "lucide-react";
-import { useAuth } from "@/contexts/auth-context";
+import { MainLayout } from "@/components";
+import { Button } from "@/components/ui";
+import { Palette, ShoppingBag, ArrowRight } from "lucide-react";
+import { ROUTES } from "@/constants";
 
 export default function LoginPage() {
-  const router = useRouter();
-  const { login, isLoggedIn, isArtist, isBuyer, error: authError, clearError } = useAuth();
-  const [email, setEmail] = useState("");
-  const [password, setPassword] = useState("");
-  const [showPassword, setShowPassword] = useState(false);
-  const [isLoading, setIsLoading] = useState(false);
-  const [error, setError] = useState("");
-  
-  // Redirect if already logged in
-  useEffect(() => {
-    if (isLoggedIn) {
-      if (isArtist) {
-        router.push("/artists/dashboard");
-      } else if (isBuyer) {
-        router.push("/buyers/dashboard");
-      }
-    }
-  }, [isLoggedIn, isArtist, isBuyer, router]);
-  
-  // Clear any auth errors when component unmounts
-  useEffect(() => {
-    return () => {
-      clearError();
-    };
-  }, [clearError]);
-
-  const handleSubmit = async (e: React.FormEvent) => {
-    e.preventDefault();
-    setError("");
-    clearError();
-    setIsLoading(true);
-
-    try {
-      if (!email || !password) {
-        setError("Please enter both email and password");
-        setIsLoading(false);
-        return;
-      }
-      
-      const result = await login(email, password);
-      
-      if (result.success) {
-        // The router.push will be handled by the useEffect above
-        // based on the user type (artist or buyer)
-      } else {
-        setError(result.message || "Invalid email or password");
-      }
-    } catch (err) {
-      setError("An error occurred during login");
-      console.error(err);
-    } finally {
-      setIsLoading(false);
-    }
-  };
 
   return (
     <MainLayout>
@@ -71,99 +15,55 @@ export default function LoginPage() {
         <div className="w-full max-w-md">
           <div className="bg-white dark:bg-[#1a1a2e] rounded-2xl shadow-lg p-8 space-y-8">
             <div className="text-center">
-              <h2 className="mt-2 text-3xl font-bold tracking-tight text-indigo-700 dark:text-indigo-300">
-                Artist Login
+              <h2 className="mt-2 text-3xl font-bold tracking-tight text-gray-900 dark:text-white">
+                Choose Account Type
               </h2>
               <p className="mt-2 text-sm text-gray-600 dark:text-gray-400">
-                Sign in to your account to showcase your art
+                Select the type of account you want to sign in to
               </p>
             </div>
 
-            {(error || authError) && (
-              <div className="bg-red-50 dark:bg-red-900/20 text-red-700 dark:text-red-300 p-3 rounded-md text-sm">
-                {error || authError}
-              </div>
-            )}
-
-            <form className="mt-8 space-y-6" onSubmit={handleSubmit}>
-              <div className="space-y-4">
-                <div>
-                  <Input
-                    id="email"
-                    name="email"
-                    type="email"
-                    autoComplete="email"
-                    required
-                    value={email}
-                    onChange={(e) => setEmail(e.target.value)}
-                    className="bg-gray-50 dark:bg-gray-900"
-                    placeholder="you@example.com"
-                    label="Email address"
-                    leftIcon={<Mail className="h-5 w-5 text-gray-400" />}
-                  />
+            <div className="space-y-6">
+              <Link href={ROUTES.LOGIN + "/artist"} className="block">
+                <div className="p-6 border border-indigo-200 dark:border-indigo-800 rounded-lg hover:bg-indigo-50 dark:hover:bg-indigo-900/20 transition-all">
+                  <div className="flex items-center">
+                    <div className="bg-indigo-100 dark:bg-indigo-900/30 p-3 rounded-full mr-4">
+                      <Palette className="h-6 w-6 text-indigo-600 dark:text-indigo-400" />
+                    </div>
+                    <div>
+                      <h3 className="text-lg font-medium text-indigo-700 dark:text-indigo-300">Artist Account</h3>
+                      <p className="text-sm text-gray-600 dark:text-gray-400">Showcase your artwork and connect with buyers</p>
+                    </div>
+                  </div>
+                  <Button 
+                    className="mt-4 w-full bg-linear-to-r from-indigo-600 to-purple-600 hover:from-indigo-700 hover:to-purple-700 text-white"
+                  >
+                    Sign in as Artist
+                    <ArrowRight className="ml-2 h-4 w-4" />
+                  </Button>
                 </div>
+              </Link>
 
-                <div>
-                  <Input
-                    id="password"
-                    name="password"
-                    type={showPassword ? "text" : "password"}
-                    autoComplete="current-password"
-                    required
-                    value={password}
-                    onChange={(e) => setPassword(e.target.value)}
-                    className="bg-gray-50 dark:bg-gray-900"
-                    placeholder="••••••••"
-                    label="Password"
-                    leftIcon={<Lock className="h-5 w-5 text-gray-400" />}
-                    rightIcon={
-                      <button
-                        type="button"
-                        onClick={() => setShowPassword(!showPassword)}
-                        className="text-gray-400 hover:text-gray-500 focus:outline-none"
-                      >
-                        {showPassword ? (
-                          <EyeOff className="h-5 w-5" />
-                        ) : (
-                          <Eye className="h-5 w-5" />
-                        )}
-                      </button>
-                    }
-                  />
+              <Link href={ROUTES.LOGIN + "/buyer"} className="block">
+                <div className="p-6 border border-blue-200 dark:border-blue-800 rounded-lg hover:bg-blue-50 dark:hover:bg-blue-900/20 transition-all">
+                  <div className="flex items-center">
+                    <div className="bg-blue-100 dark:bg-blue-900/30 p-3 rounded-full mr-4">
+                      <ShoppingBag className="h-6 w-6 text-blue-600 dark:text-blue-400" />
+                    </div>
+                    <div>
+                      <h3 className="text-lg font-medium text-blue-700 dark:text-blue-300">Buyer Account</h3>
+                      <p className="text-sm text-gray-600 dark:text-gray-400">Discover and purchase unique artworks</p>
+                    </div>
+                  </div>
+                  <Button 
+                    className="mt-4 w-full bg-linear-to-r from-blue-600 to-indigo-600 hover:from-blue-700 hover:to-indigo-700 text-white"
+                  >
+                    Sign in as Buyer
+                    <ArrowRight className="ml-2 h-4 w-4" />
+                  </Button>
                 </div>
-              </div>
-
-              <div className="flex items-center justify-between">
-                <div className="flex items-center">
-                  <input
-                    id="remember-me"
-                    name="remember-me"
-                    type="checkbox"
-                    className="h-4 w-4 text-indigo-600 focus:ring-indigo-500 border-gray-300 rounded"
-                  />
-                  <span className="ml-2 block text-sm text-gray-700 dark:text-gray-300">
-                    Remember me
-                  </span>
-                </div>
-
-                <div className="text-sm">
-                  <Link href="/forgot-password" className="font-medium text-indigo-600 hover:text-indigo-500 dark:text-indigo-400 dark:hover:text-indigo-300">
-                    Forgot your password?
-                  </Link>
-                </div>
-              </div>
-
-              <div>
-                <Button
-                  type="submit"
-                  disabled={isLoading}
-                  className="w-full bg-linear-to-r from-indigo-600 to-purple-600 hover:from-indigo-700 hover:to-purple-700 text-white font-medium py-2 px-4 rounded-md focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500 transition-colors"
-                >
-                  {isLoading ? "Signing in..." : "Sign in"}
-                  {!isLoading && <ArrowRight className="ml-2 h-4 w-4 inline" />}
-                </Button>
-              </div>
-            </form>
+              </Link>
+            </div>
 
             <div className="mt-6">
               <div className="relative">
@@ -177,12 +77,18 @@ export default function LoginPage() {
                 </div>
               </div>
 
-              <div className="mt-6">
+              <div className="mt-6 flex space-x-4">
                 <Link
                   href="/signup"
-                  className="w-full flex justify-center items-center px-4 py-2 border border-indigo-300 dark:border-indigo-700 rounded-md shadow-sm text-sm font-medium text-indigo-700 dark:text-indigo-300 bg-white dark:bg-transparent hover:bg-indigo-50 dark:hover:bg-indigo-900/20 transition-colors"
+                  className="flex-1 flex justify-center items-center px-4 py-2 border border-indigo-300 dark:border-indigo-700 rounded-md shadow-sm text-sm font-medium text-indigo-700 dark:text-indigo-300 bg-white dark:bg-transparent hover:bg-indigo-50 dark:hover:bg-indigo-900/20 transition-colors"
                 >
-                  Sign up and get creating
+                  Artist Signup
+                </Link>
+                <Link
+                  href="/signup/buyer"
+                  className="flex-1 flex justify-center items-center px-4 py-2 border border-blue-300 dark:border-blue-700 rounded-md shadow-sm text-sm font-medium text-blue-700 dark:text-blue-300 bg-white dark:bg-transparent hover:bg-blue-50 dark:hover:bg-blue-900/20 transition-colors"
+                >
+                  Buyer Signup
                 </Link>
               </div>
             </div>

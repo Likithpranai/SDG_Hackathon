@@ -1,3 +1,5 @@
+"use client";
+
 import React from 'react';
 import Image from 'next/image';
 import Link from 'next/link';
@@ -6,6 +8,7 @@ import { Artwork } from '@/types/artwork';
 import { Card, CardContent, CardFooter } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
 import { cn } from '@/utils/cn';
+import { AddToCartButton } from './add-to-cart-button';
 
 interface ArtworkCardProps {
   artwork: Artwork;
@@ -72,25 +75,31 @@ export function ArtworkCard({ artwork, className }: ArtworkCardProps) {
         </div>
       </CardContent>
       
-      <CardFooter className="p-4 pt-0 flex items-center justify-between border-t border-gray-100 dark:border-gray-800">
-        <div className="font-medium">
-          {artwork.price ? (
-            <span>{artwork.price.toLocaleString()} {artwork.currency || 'HKD'}</span>
-          ) : (
-            <span className="text-gray-500">Price on request</span>
-          )}
+      <CardFooter className="p-4 pt-0 flex flex-col gap-3 border-t border-gray-100 dark:border-gray-800">
+        <div className="flex items-center justify-between w-full">
+          <div className="font-medium">
+            {artwork.price ? (
+              <span>{artwork.price.toLocaleString()} {artwork.currency || 'HKD'}</span>
+            ) : (
+              <span className="text-gray-500">Price on request</span>
+            )}
+          </div>
+          
+          <div className="flex items-center space-x-3 text-gray-500 dark:text-gray-400">
+            <div className="flex items-center text-xs">
+              <Eye className="h-4 w-4 mr-1" />
+              <span>{artwork.views}</span>
+            </div>
+            <div className="flex items-center text-xs">
+              <Heart className="h-4 w-4 mr-1" />
+              <span>{artwork.likes}</span>
+            </div>
+          </div>
         </div>
         
-        <div className="flex items-center space-x-3 text-gray-500 dark:text-gray-400">
-          <div className="flex items-center text-xs">
-            <Eye className="h-4 w-4 mr-1" />
-            <span>{artwork.views}</span>
-          </div>
-          <div className="flex items-center text-xs">
-            <Heart className="h-4 w-4 mr-1" />
-            <span>{artwork.likes}</span>
-          </div>
-        </div>
+        {artwork.status === 'available' && (
+          <AddToCartButton artwork={artwork} className="w-full" size="sm" />
+        )}
       </CardFooter>
     </Card>
   );

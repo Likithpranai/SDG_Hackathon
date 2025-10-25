@@ -1,5 +1,5 @@
 import { NextRequest, NextResponse } from 'next/server';
-import { findUserByEmail } from '@/data/users';
+import { AuthService } from '@/services/auth/auth-service';
 
 export async function POST(request: NextRequest) {
   try {
@@ -13,34 +13,18 @@ export async function POST(request: NextRequest) {
       );
     }
 
-    // Find user in our mock database
-    const user = findUserByEmail(email);
-
-    // Check if user exists and password matches
-    if (!user || user.password !== password) {
+    // Use AuthService to handle login
+    const result = await AuthService.login(email, password);
+    
+    if (!result.success) {
       return NextResponse.json(
-        { error: 'Invalid email or password' },
+        { error: result.message || 'Invalid email or password' },
         { status: 401 }
       );
     }
 
-    // Create a sanitized user object (without the password)
-    const sanitizedUser = {
-      id: user.id,
-      email: user.email,
-      name: user.name,
-      userType: user.userType,
-      profileImage: user.profileImage || null,
-      bio: user.bio || null,
-      location: user.location || null,
-      experience: user.experience || null,
-      primaryMedium: user.primaryMedium || null,
-      skills: user.skills || null,
-      socialLinks: user.socialLinks || [],
-    };
-
     return NextResponse.json({
-      user: sanitizedUser,
+      user: result.user,
       message: 'Login successful',
     });
   } catch (error) {
