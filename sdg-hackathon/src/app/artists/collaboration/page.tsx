@@ -4,13 +4,14 @@ import React, { useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
 import { MainLayout } from "@/components/layout/main-layout";
 import { useAuth } from "@/contexts/auth-context";
-import { Sparkles, Users, MessageSquare, Calendar, PlusCircle, Eye, CheckCircle, Clock } from "lucide-react";
+import { Sparkles, Users, MessageSquare, Calendar, PlusCircle, Eye, CheckCircle, Clock, MapPin } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import Image from "next/image";
 import { ChatbotModal } from "@/components/collaboration/chatbot-modal";
 import { ArtistDetailsModal } from "@/components/collaboration/artist-details-modal";
 import { ConnectionRequestModal } from "@/components/collaboration/connection-request-modal";
 import { ArtistRecommendation, getArtistRecommendations } from "@/lib/grok-api";
+import { NearbyMap } from "@/components/collaboration/nearby-map";
 
 export default function CollaborationHub() {
   const router = useRouter();
@@ -533,6 +534,25 @@ export default function CollaborationHub() {
           </div>
         </div>
       </div>
+
+      {/* Nearby Artists and Studios Map */}
+      <div className="bg-white dark:bg-[#1a1a2e] rounded-lg shadow-sm p-6 mt-8">
+        <div className="flex justify-between items-center mb-6">
+          <h2 className="text-xl font-bold text-gray-900 dark:text-white flex items-center">
+            <MapPin className="h-5 w-5 mr-2 text-purple-600 dark:text-purple-400" />
+            Nearby Artists & Studios
+          </h2>
+        </div>
+        
+        <div className="mb-4">
+          <p className="text-gray-600 dark:text-gray-400">
+            Discover artists and studio spaces near you. Use the filters to find exactly what you're looking for.
+          </p>
+        </div>
+
+        <NearbyMap />
+      </div>
+
       {/* Chatbot Modal */}
       <ChatbotModal
         isOpen={isChatbotOpen}
