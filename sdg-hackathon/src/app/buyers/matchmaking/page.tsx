@@ -188,6 +188,10 @@ export default function ArtistMatchmakingPage() {
                                 src={artistArtworks[0].images[0]} 
                                 alt={artistArtworks[0].title}
                                 className="w-full h-full object-cover opacity-50"
+                                onError={(e) => {
+                                  // Fallback to a default image if artwork image fails to load
+                                  e.currentTarget.src = 'https://images.unsplash.com/photo-1579783902614-a3fb3927b6a5?q=80&w=1000&auto=format&fit=crop';
+                                }}
                               />
                             )}
                             <div className="absolute bottom-0 left-0 right-0 bg-gradient-to-t from-black/80 to-transparent h-24"></div>
@@ -197,6 +201,10 @@ export default function ArtistMatchmakingPage() {
                                   src={artist.profileImage} 
                                   alt={artist.name} 
                                   className="w-full h-full object-cover"
+                                  onError={(e) => {
+                                    // Fallback to a default profile image if artist image fails to load
+                                    e.currentTarget.src = 'https://images.unsplash.com/photo-1511367461989-f85a21fda167?q=80&w=1000&auto=format&fit=crop';
+                                  }}
                                 />
                               </div>
                               <div>
@@ -309,6 +317,10 @@ export default function ArtistMatchmakingPage() {
                               src={artistArtworks[selectedArtworkIndex].images[0]} 
                               alt={artistArtworks[selectedArtworkIndex].title}
                               className="w-full h-full object-cover"
+                              onError={(e) => {
+                                // Fallback to a default image if artwork image fails to load
+                                e.currentTarget.src = 'https://images.unsplash.com/photo-1579783902614-a3fb3927b6a5?q=80&w=1000&auto=format&fit=crop';
+                              }}
                             />
                             {/* Artwork navigation */}
                             {artistArtworks.length > 1 && (
@@ -378,6 +390,10 @@ export default function ArtistMatchmakingPage() {
                               src={currentArtist.profileImage} 
                               alt={currentArtist.name} 
                               className="w-full h-full object-cover"
+                              onError={(e) => {
+                                // Fallback to a default profile image if artist image fails to load
+                                e.currentTarget.src = 'https://images.unsplash.com/photo-1511367461989-f85a21fda167?q=80&w=1000&auto=format&fit=crop';
+                              }}
                             />
                           </div>
                           <div>
