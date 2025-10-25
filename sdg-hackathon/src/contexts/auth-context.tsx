@@ -25,29 +25,20 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
   const [error, setError] = useState<string | null>(null);
   const router = useRouter();
 
-  // Auto-login as a buyer for development purposes
+  // Check for existing user session
   useEffect(() => {
-    // Create a mock buyer user
-    const mockBuyerUser: User = {
-      id: 'mock-buyer-1',
-      name: 'Demo Buyer',
-      email: 'buyer@example.com',
-      userType: 'buyer',
-      profileImage: '/placeholder-image.jpg',
-      bio: 'This is a mock buyer account for development',
-      location: 'Hong Kong',
-      savedArtists: ['1', '2', '3', '4', '6', '8']
-    };
-    
-    // Store in localStorage for persistence
-    localStorage.setItem("artconnect_user", JSON.stringify(mockBuyerUser));
-    localStorage.setItem("artconnect_user_id", mockBuyerUser.id);
-    
-    // Set the user in state
-    setUser(mockBuyerUser);
+    const storedUser = localStorage.getItem("artconnect_user");
+    if (storedUser) {
+      try {
+        const parsedUser = JSON.parse(storedUser);
+        setUser(parsedUser);
+      } catch (error) {
+        console.error("Error parsing stored user:", error);
+        localStorage.removeItem("artconnect_user");
+        localStorage.removeItem("artconnect_user_id");
+      }
+    }
     setIsLoading(false);
-    
-    console.log('Auto-logged in as buyer for development');
   }, []);
 
   const login = async (email: string, password: string): Promise<{success: boolean; message?: string}> => {

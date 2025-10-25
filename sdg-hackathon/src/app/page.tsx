@@ -6,12 +6,17 @@ import { MainLayout } from "@/components/layout/main-layout";
 import { Button } from "@/components/ui/button";
 import { ArtworkCard } from "@/components/artwork/artwork-card";
 import { ArtworkRecommendations } from "@/components/artwork/artwork-recommendations";
-import { mockArtworks, mockArtists } from "@/lib/mock-data";
+import { mockArtworks } from "@/data/mock/artworks";
+import { mockArtists } from "@/data/mock/artists";
 import { useArtworkRecommendations } from "@/hooks/use-artwork-recommendations";
 
 export default function Home() {
   // Featured artworks (normally would be selected by an admin or algorithm)
   const featuredArtworks = mockArtworks.slice(0, 3);
+  
+  // Select the same artists as used in the matchmaking page
+  const selectedArtistIds = ['1', '2', '3', '4']; // Mei Lin, David Wong, Sarah Chen, Michael Zhang
+  const featuredArtists = mockArtists.filter(artist => selectedArtistIds.includes(artist.id));
 
   return (
     <MainLayout>
@@ -130,7 +135,7 @@ export default function Home() {
           </div>
 
           <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
-            {mockArtists.slice(0, 4).map((artist) => (
+            {featuredArtists.map((artist) => (
               <Link
                 key={artist.id}
                 href={`/artists/${artist.id}`}
