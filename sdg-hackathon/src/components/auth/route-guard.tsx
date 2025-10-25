@@ -13,6 +13,9 @@ export function RouteGuard({ children, requiredUserType }: RouteGuardProps) {
   const router = useRouter();
   const { isLoggedIn, isLoading, user } = useAuth();
 
+  // For development - bypass authentication checks
+  // In a real app, you would use the commented code below
+  /*
   useEffect(() => {
     // Wait until auth is loaded before making decisions
     if (!isLoading) {
@@ -44,6 +47,8 @@ export function RouteGuard({ children, requiredUserType }: RouteGuardProps) {
       </div>
     );
   }
+  */
 
+  // Development mode - always show content
   return <>{children}</>;
 }

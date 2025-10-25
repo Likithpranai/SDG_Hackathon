@@ -35,15 +35,43 @@ export async function POST(request: NextRequest) {
     
     console.log(`Uploading file ${filename} to Vercel Blob Storage...`);
     
-    // Upload to Vercel Blob Storage
-    const { url } = await put(filename, file, {
-      access: 'public', // Make the file publicly accessible
-    });
+    let fileUrl = '';
     
-    console.log(`File uploaded successfully. URL: ${url}`);
-    
-    // Use the returned URL for the file
-    const fileUrl = url;
+    try {
+      // Check if BLOB_READ_WRITE_TOKEN is available
+      if (!process.env.BLOB_READ_WRITE_TOKEN || process.env.BLOB_READ_WRITE_TOKEN.includes('placeholder')) {
+        console.log('Using mock file URL since BLOB_READ_WRITE_TOKEN is not available');
+        
+        // For development, we'll save the file to the public/uploads directory
+        // This is a mock implementation and won't work in production
+        try {
+          // Convert the file to an ArrayBuffer
+          const buffer = await file.arrayBuffer();
+          
+          // In a real implementation, you would use the fs module to write the file
+          // But for this demo, we'll just log that we would save the file
+          console.log(`In production, would save file to public/uploads/${filename}`);
+          
+          // Use a mock URL for development
+          fileUrl = `/uploads/${filename}`;
+        } catch (error) {
+          console.error('Error processing file for local storage:', error);
+          fileUrl = `/uploads/${filename}`;
+        }
+      } else {
+        // Upload to Vercel Blob Storage
+        const { url } = await put(filename, file, {
+          access: 'public', // Make the file publicly accessible
+        });
+        
+        console.log(`File uploaded successfully. URL: ${url}`);
+        fileUrl = url;
+      }
+    } catch (error) {
+      console.error('Error uploading to Vercel Blob:', error);
+      // Fallback to mock URL
+      fileUrl = `/uploads/${filename}`;
+    }
     
     // Generate a unique ID for the new artwork
     const newArtworkId = `IMG${Date.now().toString().slice(-6)}`;

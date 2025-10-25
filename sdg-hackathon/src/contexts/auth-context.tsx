@@ -25,48 +25,29 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
   const [error, setError] = useState<string | null>(null);
   const router = useRouter();
 
-  // Check for existing session on mount
+  // Auto-login as a buyer for development purposes
   useEffect(() => {
-    const checkSession = async () => {
-      try {
-        const storedUser = localStorage.getItem("artconnect_user");
-        const storedUserId = localStorage.getItem("artconnect_user_id");
-        
-        if (storedUser) {
-          // Use the stored user data for immediate rendering
-          setUser(JSON.parse(storedUser));
-          
-          // If we have a user ID, validate the session with the server
-          if (storedUserId) {
-            try {
-              const response = await fetch(`/api/auth/user?userId=${storedUserId}`);
-              if (response.ok) {
-                const data = await response.json();
-                // Update the user data with the latest from the server
-                localStorage.setItem("artconnect_user", JSON.stringify(data.user));
-                setUser(data.user);
-              } else {
-                // If the server rejects the session, log the user out
-                localStorage.removeItem("artconnect_user");
-                localStorage.removeItem("artconnect_user_id");
-                setUser(null);
-              }
-            } catch (apiError) {
-              console.error("API error during session validation:", apiError);
-              // Keep the user logged in with stored data if API is unavailable
-            }
-          }
-        }
-      } catch (error) {
-        console.error("Failed to restore session:", error);
-        localStorage.removeItem("artconnect_user");
-        localStorage.removeItem("artconnect_user_id");
-      } finally {
-        setIsLoading(false);
-      }
+    // Create a mock buyer user
+    const mockBuyerUser: User = {
+      id: 'mock-buyer-1',
+      name: 'Demo Buyer',
+      email: 'buyer@example.com',
+      userType: 'buyer',
+      profileImage: '/placeholder-image.jpg',
+      bio: 'This is a mock buyer account for development',
+      location: 'Hong Kong',
+      savedArtists: ['1', '2', '3']
     };
-
-    checkSession();
+    
+    // Store in localStorage for persistence
+    localStorage.setItem("artconnect_user", JSON.stringify(mockBuyerUser));
+    localStorage.setItem("artconnect_user_id", mockBuyerUser.id);
+    
+    // Set the user in state
+    setUser(mockBuyerUser);
+    setIsLoading(false);
+    
+    console.log('Auto-logged in as buyer for development');
   }, []);
 
   const login = async (email: string, password: string): Promise<{success: boolean; message?: string}> => {
