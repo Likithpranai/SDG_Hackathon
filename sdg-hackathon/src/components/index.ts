@@ -7,3 +7,4 @@ export * from './layout';
 export * from './marketplace';
 export * from './theme/theme-provider';
 export * from './ui';
+export * from './placeholder-image';

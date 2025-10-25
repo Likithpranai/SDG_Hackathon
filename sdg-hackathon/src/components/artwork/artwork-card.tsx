@@ -9,6 +9,7 @@ import { Card, CardContent, CardFooter } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
 import { cn } from '@/utils/cn';
 import { AddToCartButton } from './add-to-cart-button';
+import { PlaceholderImage } from '@/components/placeholder-image';
 
 interface ArtworkCardProps {
   artwork: Artwork;
@@ -22,13 +23,24 @@ export function ArtworkCard({ artwork, className }: ArtworkCardProps) {
       className={cn("overflow-hidden transition-all duration-300 h-full flex flex-col", className)}
     >
       <Link href={`/artwork/${artwork.id}`} className="block relative aspect-4/3 overflow-hidden">
-        <Image
-          src={artwork.images[0] || '/placeholder-image.jpg'}
-          alt={artwork.title}
-          fill
-          sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw"
-          className="object-cover transition-transform duration-300 hover:scale-105"
-        />
+        {artwork.images && artwork.images[0] ? (
+          <Image
+            src={artwork.images[0]}
+            alt={artwork.title}
+            fill
+            sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw"
+            className="object-cover transition-transform duration-300 hover:scale-105"
+          />
+        ) : (
+          <div className="w-full h-full">
+            <PlaceholderImage 
+              text={artwork.title} 
+              width={400} 
+              height={300} 
+              className="w-full h-full"
+            />
+          </div>
+        )}
         {artwork.status === 'sold' && (
           <div className="absolute top-0 right-0 bg-red-500 text-white px-2 py-1 text-xs font-medium">
             Sold
