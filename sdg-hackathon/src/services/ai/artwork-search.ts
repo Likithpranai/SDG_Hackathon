@@ -3,8 +3,7 @@ import { Artwork } from "@/types";
 import { mockArtworks } from "@/data/mock";
 
 // Use the same API key setup as in image-analyzer.ts
-const envApiKey = process.env.XAI_API_KEY || process.env.OPENAI_API_KEY;
-// const directApiKey = "xai-UxDnYGeB0OrlGkZJOsAD7rXj5SnjI03eJ7kseis81Gn22cG6RIMX7nNaNxn24EwgEkmjveSiF7lKj8k4";
+const envApiKey = process.env.XAI_API_KEY
 const apiKey = envApiKey;
 
 // Create the OpenAI client with explicit configuration
@@ -33,7 +32,7 @@ export async function searchArtworks(query: string, allArtworks: Artwork[] = moc
     ) {
       return allArtworks.filter((artwork: Artwork) => 
         artwork.category?.toLowerCase().includes('traditional') ||
-        artwork.tags?.some(tag => tag.toLowerCase().includes('traditional')) ||
+        artwork.tags?.some((tag: string) => tag.toLowerCase().includes('traditional')) ||
         artwork.description?.toLowerCase().includes('traditional') ||
         artwork.title?.toLowerCase().includes('traditional')
       );
@@ -46,7 +45,7 @@ export async function searchArtworks(query: string, allArtworks: Artwork[] = moc
     ) {
       return allArtworks.filter((artwork: Artwork) => 
         artwork.category?.toLowerCase().includes('digital') ||
-        artwork.tags?.some(tag => tag.toLowerCase().includes('digital') || tag.toLowerCase().includes('modern')) ||
+        artwork.tags?.some((tag: string) => tag.toLowerCase().includes('digital') || tag.toLowerCase().includes('modern')) ||
         artwork.description?.toLowerCase().includes('digital') ||
         artwork.title?.toLowerCase().includes('digital')
       );
@@ -59,7 +58,7 @@ export async function searchArtworks(query: string, allArtworks: Artwork[] = moc
     ) {
       return allArtworks.filter((artwork: Artwork) => 
         artwork.category?.toLowerCase().includes('photo') ||
-        artwork.tags?.some(tag => tag.toLowerCase().includes('photo')) ||
+        artwork.tags?.some((tag: string) => tag.toLowerCase().includes('photo')) ||
         artwork.description?.toLowerCase().includes('photo') ||
         artwork.title?.toLowerCase().includes('photo')
       );
@@ -68,7 +67,7 @@ export async function searchArtworks(query: string, allArtworks: Artwork[] = moc
     // Try to use Grok AI for more complex queries
     try {
       // Prepare artwork data for the AI to analyze
-      const artworkData = allArtworks.map(artwork => ({
+      const artworkData = allArtworks.map((artwork: Artwork) => ({
         id: artwork.id,
         title: artwork.title,
         description: artwork.description,
