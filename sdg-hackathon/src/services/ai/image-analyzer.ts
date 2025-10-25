@@ -6,9 +6,6 @@ import OpenAI from "openai";
 // Option 1: Use environment variables (preferred in production)
 const envApiKey = process.env.XAI_API_KEY || process.env.OPENAI_API_KEY;
 
-// Option 2: Direct API key for testing (replace with your actual key)
-// Remove or comment this out before deploying to production
-// const directApiKey = "xai-UxDnYGeB0OrlGkZJOsAD7rXj5SnjI03eJ7kseis81Gn22cG6RIMX7nNaNxn24EwgEkmjveSiF7lKj8k4";
 
 // Use environment variable if available, otherwise fall back to direct key
 const apiKey = envApiKey;
