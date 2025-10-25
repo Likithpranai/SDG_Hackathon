@@ -27,15 +27,15 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
 
   // Check for existing user session
   useEffect(() => {
-    const storedUser = localStorage.getItem("artconnect_user");
+    const storedUser = localStorage.getItem("aura_user");
     if (storedUser) {
       try {
         const parsedUser = JSON.parse(storedUser);
         setUser(parsedUser);
       } catch (error) {
         console.error("Error parsing stored user:", error);
-        localStorage.removeItem("artconnect_user");
-        localStorage.removeItem("artconnect_user_id");
+        localStorage.removeItem("aura_user");
+        localStorage.removeItem("aura_user_id");
       }
     }
     setIsLoading(false);
@@ -62,8 +62,8 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
       }
 
       // Store user in localStorage for persistence
-      localStorage.setItem("artconnect_user", JSON.stringify(data.user));
-      localStorage.setItem("artconnect_user_id", data.user.id);
+      localStorage.setItem("aura_user", JSON.stringify(data.user));
+      localStorage.setItem("aura_user_id", data.user.id);
       setUser(data.user);
       return { success: true };
     } catch (error) {
@@ -76,8 +76,8 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
   };
 
   const logout = () => {
-    localStorage.removeItem("artconnect_user");
-    localStorage.removeItem("artconnect_user_id");
+    localStorage.removeItem("aura_user");
+    localStorage.removeItem("aura_user_id");
     setUser(null);
     router.push('/');
   };
@@ -88,7 +88,7 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
 
   const updateUser = (updatedUser: User) => {
     setUser(updatedUser);
-    localStorage.setItem("artconnect_user", JSON.stringify(updatedUser));
+    localStorage.setItem("aura_user", JSON.stringify(updatedUser));
   };
 
   const isLoggedIn = !!user;

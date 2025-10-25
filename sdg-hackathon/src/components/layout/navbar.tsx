@@ -39,7 +39,7 @@ export function Navbar() {
       <div className="p-6 border-b border-indigo-100 dark:border-indigo-900/30 bg-linear-to-r from-indigo-50 to-purple-50 dark:from-indigo-900/20 dark:to-purple-900/20">
         <Link href="/" className="flex items-center justify-center">
           <span className="text-2xl font-bold bg-clip-text text-transparent bg-linear-to-r from-indigo-600 to-purple-600 dark:from-indigo-400 dark:to-purple-400">
-            ArtConnect
+            Aura
           </span>
         </Link>
       </div>
@@ -316,7 +316,7 @@ export function Navbar() {
         <div className="p-6 border-b border-indigo-100 dark:border-indigo-900/30 bg-linear-to-r from-indigo-50 to-purple-50 dark:from-indigo-900/20 dark:to-purple-900/20">
           <Link href="/" className="flex items-center justify-center">
             <span className="text-2xl font-bold bg-clip-text text-transparent bg-linear-to-r from-indigo-600 to-purple-600 dark:from-indigo-400 dark:to-purple-400">
-              ArtConnect
+              Aura
             </span>
           </Link>
         </div>

@@ -12,7 +12,7 @@ export default function AboutPage() {
       <section className="bg-gray-50 dark:bg-gray-900 py-16">
         <div className="container mx-auto px-4">
           <div className="max-w-3xl mx-auto text-center">
-            <h1 className="text-4xl font-bold mb-6">About ArtConnect</h1>
+            <h1 className="text-4xl font-bold mb-6">About Aura</h1>
             <p className="text-xl text-gray-600 dark:text-gray-400 mb-8">
               Empowering Hong Kong's art community through technology, connection, and opportunity.
             </p>
@@ -27,7 +27,7 @@ export default function AboutPage() {
             <div>
               <h2 className="text-3xl font-bold mb-6">Our Mission</h2>
               <p className="text-gray-600 dark:text-gray-400 mb-4">
-                ArtConnect was founded with a clear mission: to address the challenges faced by artists in Hong Kong's vibrant but often fragmented art ecosystem.
+                Aura was founded with a clear mission: to address the challenges faced by artists in Hong Kong's vibrant but often fragmented art ecosystem.
               </p>
               <p className="text-gray-600 dark:text-gray-400 mb-4">
                 We believe that every artist deserves recognition, fair compensation, and the opportunity to collaborate with like-minded creatives. Our platform bridges the gap between artists and their audience, creating a thriving community where artistic talent can flourish.
@@ -149,7 +149,7 @@ export default function AboutPage() {
         <div className="container mx-auto px-4 text-center">
           <h2 className="text-3xl font-bold mb-6">Join Our Community Today</h2>
           <p className="text-xl mb-8 max-w-2xl mx-auto">
-            Whether you're an artist looking to showcase your work or an art enthusiast searching for unique pieces, ArtConnect is the platform for you.
+            Whether you're an artist looking to showcase your work or an art enthusiast searching for unique pieces, Aura is the platform for you.
           </p>
           <div className="flex flex-wrap justify-center gap-4">
             <Button 

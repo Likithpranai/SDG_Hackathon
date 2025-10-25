@@ -1,8 +1,8 @@
-# ArtConnect - Hong Kong's Art Community Platform
+# Aura - Hong Kong's Art Community Platform
 
-## About ArtConnect
+## About Aura
 
-ArtConnect is a community-based social platform designed to address key challenges faced by artists in Hong Kong. The platform focuses on providing artists with recognition, fair pay, and collaboration opportunities, which are often lacking in the Hong Kong art ecosystem.
+Aura is a community-based social platform designed to address key challenges faced by artists in Hong Kong. The platform focuses on providing artists with recognition, fair pay, and collaboration opportunities, which are often lacking in the Hong Kong art ecosystem.
 
 ### Key Features
 
@@ -68,7 +68,7 @@ src/
 
 ## SDG Hackathon Focus
 
-This project was created for the SDG Hackathon with a specific focus on using GenAI for social good. ArtConnect aims to create a more equitable art ecosystem in Hong Kong by:
+This project was created for the SDG Hackathon with a specific focus on using GenAI for social good. Aura aims to create a more equitable art ecosystem in Hong Kong by:
 
 1. Providing a platform for underrepresented artists to gain visibility
 2. Connecting artists with fair-paying opportunities

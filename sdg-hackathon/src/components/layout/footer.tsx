@@ -20,14 +20,14 @@ export function Footer() {
               <span className="sr-only">Facebook</span>
               <Facebook className="h-5 w-5" />
             </a>
-            <a href="mailto:info@artconnect.hk" className="text-gray-500 hover:text-primary-600 dark:text-gray-400 dark:hover:text-primary-400">
+            <a href="mailto:info@aura.hk" className="text-gray-500 hover:text-primary-600 dark:text-gray-400 dark:hover:text-primary-400">
               <span className="sr-only">Email</span>
               <Mail className="h-5 w-5" />
             </a>
           </div>
           
           <p className="text-sm text-center text-gray-500 dark:text-gray-400">
-            &copy; {new Date().getFullYear()} ArtConnect. All rights reserved.
+            &copy; {new Date().getFullYear()} Aura. All rights reserved.
           </p>
         </div>
       </div>

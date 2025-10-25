@@ -19,7 +19,7 @@ const geistMono = Geist_Mono({
 });
 
 export const metadata: Metadata = {
-  title: "ArtConnect - Hong Kong's Art Community Platform",
+  title: "Aura - Hong Kong's Art Community Platform",
   description: "A platform for Hong Kong artists to gain recognition, fair compensation, and collaboration opportunities.",
   keywords: ["art", "hong kong", "artists", "community", "collaboration", "digital art", "traditional art"],
 };
