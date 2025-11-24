@@ -1,3 +1,5 @@
+"use client";
+
 import Image from "next/image";
 import Link from "next/link";
 import { ArrowRight, Brush, Users, DollarSign } from "lucide-react";
@@ -9,6 +11,7 @@ import { ArtworkRecommendations } from "@/components/artwork/artwork-recommendat
 import { mockArtworks } from "@/data/mock/artworks";
 import { mockArtists } from "@/data/mock/artists";
 import { useArtworkRecommendations } from "@/hooks/use-artwork-recommendations";
+import { useAuth } from "@/contexts/auth-context";
 
 export default function Home() {
   // Featured artworks (normally would be selected by an admin or algorithm)
@@ -17,6 +20,9 @@ export default function Home() {
   // Select the same artists as used in the matchmaking page
   const selectedArtistIds = ['1', '2', '3', '4']; // Mei Lin, David Wong, Sarah Chen, Michael Zhang
   const featuredArtists = mockArtists.filter(artist => selectedArtistIds.includes(artist.id));
+  
+  // Get the setUserType function from auth context
+  const { setUserType } = useAuth();
 
   return (
     <MainLayout>
@@ -175,26 +181,24 @@ export default function Home() {
             Select your role to get started with Aura
           </p>
           <div className="flex flex-col sm:flex-row justify-center gap-6 sm:gap-10">
-            <Link href="/artists/auth" className="inline-block">
-              <Button
-                variant="primary"
-                size="lg"
-                className="bg-white text-indigo-600 hover:bg-indigo-50 shadow-lg px-10 flex items-center gap-2"
-              >
-                <Brush className="h-5 w-5" />
-                For Artists
-              </Button>
-            </Link>
-            <Link href="/buyers/auth" className="inline-block">
-              <Button
-                variant="primary"
-                size="lg"
-                className="bg-white text-pink-600 hover:bg-pink-50 shadow-lg px-10 flex items-center gap-2"
-              >
-                <Users className="h-5 w-5" />
-                For Buyers
-              </Button>
-            </Link>
+            <Button
+              variant="primary"
+              size="lg"
+              className="bg-white text-indigo-600 hover:bg-indigo-50 shadow-lg px-10 flex items-center gap-2"
+              onClick={() => setUserType("artist")}
+            >
+              <Brush className="h-5 w-5" />
+              For Artists
+            </Button>
+            <Button
+              variant="primary"
+              size="lg"
+              className="bg-white text-pink-600 hover:bg-pink-50 shadow-lg px-10 flex items-center gap-2"
+              onClick={() => setUserType("buyer")}
+            >
+              <Users className="h-5 w-5" />
+              For Buyers
+            </Button>
           </div>
         </div>
       </section>

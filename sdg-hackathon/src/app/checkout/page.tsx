@@ -43,7 +43,7 @@ export default function CheckoutPage() {
     console.log('Total price:', totalPrice);
     
     // Check if cart is in localStorage even if context is empty
-    const savedCart = localStorage.getItem('artconnect-cart');
+    const savedCart = localStorage.getItem('aura-cart');
     console.log('Saved cart in localStorage:', savedCart);
     
     // Instead of redirecting immediately, let's add a button to go to marketplace
