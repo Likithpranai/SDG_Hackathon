@@ -22,7 +22,7 @@ import { useAuth } from "@/contexts/auth-context";
 import { CartButton } from "@/components/cart";
 
 export function Navbar() {
-  const { isLoggedIn, isArtist, isBuyer, logout } = useAuth();
+  const { isLoggedIn, isArtist, isBuyer, logout, setUserType } = useAuth();
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
 
   const toggleMobileMenu = () => {
@@ -39,7 +39,7 @@ export function Navbar() {
       <div className="p-6 border-b border-indigo-100 dark:border-indigo-900/30 bg-linear-to-r from-indigo-50 to-purple-50 dark:from-indigo-900/20 dark:to-purple-900/20">
         <Link href="/" className="flex items-center justify-center">
           <span className="text-2xl font-bold bg-clip-text text-transparent bg-linear-to-r from-indigo-600 to-purple-600 dark:from-indigo-400 dark:to-purple-400">
-            ArtConnect
+            Aura
           </span>
         </Link>
       </div>
@@ -240,39 +240,39 @@ export function Navbar() {
         ) : (
           // Default Navigation (Not Logged In)
           <>
-            <Link
-              href="/artists/auth"
-              className="w-full flex items-center p-3 rounded-lg hover:bg-indigo-50 dark:hover:bg-indigo-900/20 transition-colors"
+            <div
+              onClick={() => setUserType("artist")}
+              className="w-full flex items-center p-3 rounded-lg hover:bg-indigo-50 dark:hover:bg-indigo-900/20 transition-colors cursor-pointer"
             >
               <div className="bg-indigo-100 dark:bg-indigo-900/30 p-2 rounded-full">
                 <Palette className="h-5 w-5 text-indigo-600 dark:text-indigo-400" />
               </div>
               <div className="ml-3">
                 <span className="font-medium text-base text-indigo-700 dark:text-indigo-300 block">
-                  Artists
+                  Continue as Artist
                 </span>
                 <p className="text-xs text-gray-500 dark:text-gray-400">
-                  Login or sign up as artist
+                  Showcase your artwork
                 </p>
               </div>
-            </Link>
+            </div>
 
-            <Link
-              href="/buyers/auth"
-              className="w-full flex items-center p-3 rounded-lg hover:bg-pink-50 dark:hover:bg-pink-900/20 transition-colors"
+            <div
+              onClick={() => setUserType("buyer")}
+              className="w-full flex items-center p-3 rounded-lg hover:bg-pink-50 dark:hover:bg-pink-900/20 transition-colors cursor-pointer"
             >
               <div className="bg-pink-100 dark:bg-pink-900/30 p-2 rounded-full">
-                <Users className="h-5 w-5 text-pink-600 dark:text-pink-400" />
+                <ShoppingBag className="h-5 w-5 text-pink-600 dark:text-pink-400" />
               </div>
               <div className="ml-3">
                 <span className="font-medium text-base text-pink-700 dark:text-pink-300 block">
-                  Buyers
+                  Continue as Buyer
                 </span>
                 <p className="text-xs text-gray-500 dark:text-gray-400">
-                  Login or sign up as buyer
+                  Discover unique art
                 </p>
               </div>
-            </Link>
+            </div>
           </>
         )}
       </div>
@@ -316,7 +316,7 @@ export function Navbar() {
         <div className="p-6 border-b border-indigo-100 dark:border-indigo-900/30 bg-linear-to-r from-indigo-50 to-purple-50 dark:from-indigo-900/20 dark:to-purple-900/20">
           <Link href="/" className="flex items-center justify-center">
             <span className="text-2xl font-bold bg-clip-text text-transparent bg-linear-to-r from-indigo-600 to-purple-600 dark:from-indigo-400 dark:to-purple-400">
-              ArtConnect
+              Aura
             </span>
           </Link>
         </div>
@@ -495,41 +495,45 @@ export function Navbar() {
           ) : (
             // Default Mobile Navigation (Not Logged In)
             <>
-              <Link
-                href="/login"
-                className="w-full flex flex-col items-center text-center p-5 rounded-lg hover:bg-indigo-50 dark:hover:bg-indigo-900/20 transition-colors"
-                onClick={() => setIsMobileMenuOpen(false)}
+              <div
+                className="w-full flex flex-col items-center text-center p-5 rounded-lg hover:bg-indigo-50 dark:hover:bg-indigo-900/20 transition-colors cursor-pointer"
+                onClick={() => {
+                  setUserType("artist");
+                  setIsMobileMenuOpen(false);
+                }}
               >
                 <div className="flex flex-row items-center">
                   <div className="bg-indigo-100 dark:bg-indigo-900/30 p-3 rounded-full mb-4 mr-3">
                     <Palette className="h-7 w-7 text-indigo-600 dark:text-indigo-400" />
                   </div>
                   <span className="font-bold text-3xl mb-2 text-indigo-700 dark:text-indigo-300">
-                    Artists
+                    Continue as Artist
                   </span>
                 </div>
                 <p className="text-sm text-gray-500 dark:text-gray-400 max-w-[180px]">
-                  Discover creators and experiment creatively
+                  Showcase your artwork and connect with buyers
                 </p>
-              </Link>
+              </div>
 
-              <Link
-                href="/signup/buyer"
-                className="w-full flex flex-col items-center text-center p-5 rounded-lg hover:bg-pink-50 dark:hover:bg-pink-900/20 transition-colors"
-                onClick={() => setIsMobileMenuOpen(false)}
+              <div
+                className="w-full flex flex-col items-center text-center p-5 rounded-lg hover:bg-pink-50 dark:hover:bg-pink-900/20 transition-colors cursor-pointer"
+                onClick={() => {
+                  setUserType("buyer");
+                  setIsMobileMenuOpen(false);
+                }}
               >
                 <div className="flex flex-row items-center">
                   <div className="bg-pink-100 dark:bg-pink-900/30 p-3 rounded-full mb-4 mr-3">
-                    <Users className="h-7 w-7 text-pink-600 dark:text-pink-400" />
+                    <ShoppingBag className="h-7 w-7 text-pink-600 dark:text-pink-400" />
                   </div>
                   <span className="font-bold text-3xl mb-2 text-pink-700 dark:text-pink-300">
-                    Buyers
+                    Continue as Buyer
                   </span>
                 </div>
                 <p className="text-sm text-gray-500 dark:text-gray-400 max-w-[180px]">
-                  Find art that resonates
+                  Discover and purchase unique artworks
                 </p>
-              </Link>
+              </div>
             </>
           )}
         </div>

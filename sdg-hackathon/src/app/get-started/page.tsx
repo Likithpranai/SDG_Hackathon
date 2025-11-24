@@ -13,7 +13,7 @@ export default function GetStarted() {
       <div className="py-12 px-4 sm:px-6 lg:px-8 max-w-6xl mx-auto">
         <div className="text-center mb-12">
           <h1 className="text-4xl font-bold text-gray-900 dark:text-white mb-4">
-            Join the <span className="text-transparent bg-clip-text bg-linear-to-r from-indigo-600 to-purple-600">ArtConnect</span> Community
+            Join the <span className="text-transparent bg-clip-text bg-linear-to-r from-indigo-600 to-purple-600">Aura</span> Community
           </h1>
           <p className="text-xl text-gray-600 dark:text-gray-400 max-w-3xl mx-auto">
             Choose your path to connect with the art world in a way that suits you best
@@ -152,7 +152,7 @@ export default function GetStarted() {
           </p>
           <Link href="/about">
             <Button variant="outline" className="px-8">
-              Learn More About ArtConnect
+              Learn More About Aura
             </Button>
           </Link>
         </div>

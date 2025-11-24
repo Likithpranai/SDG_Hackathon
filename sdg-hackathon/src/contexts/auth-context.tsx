@@ -2,19 +2,17 @@
 
 import React, { createContext, useContext, useState, useEffect } from "react";
 import { useRouter } from "next/navigation";
-import { User } from "@/types/user";
+import { User, UserType } from "@/types/user";
 
 interface AuthContextType {
   user: User | null;
   isLoading: boolean;
-  login: (email: string, password: string) => Promise<{success: boolean; message?: string}>;
+  setUserType: (userType: UserType) => void;
   logout: () => void;
   updateUser: (updatedUser: User) => void;
   isLoggedIn: boolean;
   isArtist: boolean;
   isBuyer: boolean;
-  error: string | null;
-  clearError: () => void;
 }
 
 const AuthContext = createContext<AuthContextType | undefined>(undefined);
@@ -22,73 +20,66 @@ const AuthContext = createContext<AuthContextType | undefined>(undefined);
 export function AuthProvider({ children }: { children: React.ReactNode }) {
   const [user, setUser] = useState<User | null>(null);
   const [isLoading, setIsLoading] = useState(true);
-  const [error, setError] = useState<string | null>(null);
   const router = useRouter();
 
   // Check for existing user session
   useEffect(() => {
-    const storedUser = localStorage.getItem("artconnect_user");
-    if (storedUser) {
+    const storedUserType = localStorage.getItem("aura_user_type");
+    if (storedUserType) {
       try {
-        const parsedUser = JSON.parse(storedUser);
-        setUser(parsedUser);
+        const userType = storedUserType as UserType;
+        // Create a demo user with the stored user type
+        const demoUser: User = {
+          id: "demo-user",
+          name: userType === "artist" ? "Demo Artist" : "Demo Buyer",
+          email: `demo-${userType}@example.com`,
+          userType: userType,
+          profileImage: "/placeholder-profile.jpg",
+          savedArtists: userType === "buyer" ? ["1", "2", "3"] : [] // Initialize with some matched artists for buyers
+        };
+        setUser(demoUser);
       } catch (error) {
-        console.error("Error parsing stored user:", error);
-        localStorage.removeItem("artconnect_user");
-        localStorage.removeItem("artconnect_user_id");
+        console.error("Error parsing stored user type:", error);
+        localStorage.removeItem("aura_user_type");
       }
     }
     setIsLoading(false);
   }, []);
 
-  const login = async (email: string, password: string): Promise<{success: boolean; message?: string}> => {
-    setIsLoading(true);
-    setError(null);
-    
-    try {
-      const response = await fetch('/api/auth/login', {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify({ email, password }),
-      });
+  // Set user type (artist or buyer) without authentication
+  const setUserType = (userType: UserType) => {
+    // Create a demo user with the selected user type
+    const demoUser: User = {
+      id: "demo-user",
+      name: userType === "artist" ? "Demo Artist" : "Demo Buyer",
+      email: `demo-${userType}@example.com`,
+      userType: userType,
+      profileImage: "/placeholder-profile.jpg",
+      savedArtists: userType === "buyer" ? ["1", "2", "3"] : [] // Initialize with some matched artists for buyers
+    };
 
-      const data = await response.json();
-      
-      if (!response.ok) {
-        setError(data.error || 'Login failed');
-        return { success: false, message: data.error || 'Login failed' };
-      }
+    // Store user type in localStorage for persistence
+    localStorage.setItem("aura_user_type", userType);
+    setUser(demoUser);
 
-      // Store user in localStorage for persistence
-      localStorage.setItem("artconnect_user", JSON.stringify(data.user));
-      localStorage.setItem("artconnect_user_id", data.user.id);
-      setUser(data.user);
-      return { success: true };
-    } catch (error) {
-      console.error("Login failed:", error);
-      setError('Network error. Please try again.');
-      return { success: false, message: 'Network error. Please try again.' };
-    } finally {
-      setIsLoading(false);
+    // Redirect to appropriate dashboard
+    if (userType === "artist") {
+      router.push('/artists/dashboard');
+    } else {
+      router.push('/buyers/dashboard');
     }
   };
 
   const logout = () => {
-    localStorage.removeItem("artconnect_user");
-    localStorage.removeItem("artconnect_user_id");
+    localStorage.removeItem("aura_user_type");
     setUser(null);
     router.push('/');
-  };
-  
-  const clearError = () => {
-    setError(null);
   };
 
   const updateUser = (updatedUser: User) => {
     setUser(updatedUser);
-    localStorage.setItem("artconnect_user", JSON.stringify(updatedUser));
+    // Store the updated user type in localStorage
+    localStorage.setItem("aura_user_type", updatedUser.userType);
   };
 
   const isLoggedIn = !!user;
@@ -98,14 +89,12 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
   const value = {
     user,
     isLoading,
-    login,
+    setUserType,
     logout,
     updateUser,
     isLoggedIn,
     isArtist,
     isBuyer,
-    error,
-    clearError,
   };
 
   return <AuthContext.Provider value={value}>{children}</AuthContext.Provider>;

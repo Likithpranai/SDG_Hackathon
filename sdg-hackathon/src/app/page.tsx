@@ -1,3 +1,5 @@
+"use client";
+
 import Image from "next/image";
 import Link from "next/link";
 import { ArrowRight, Brush, Users, DollarSign } from "lucide-react";
@@ -9,6 +11,7 @@ import { ArtworkRecommendations } from "@/components/artwork/artwork-recommendat
 import { mockArtworks } from "@/data/mock/artworks";
 import { mockArtists } from "@/data/mock/artists";
 import { useArtworkRecommendations } from "@/hooks/use-artwork-recommendations";
+import { useAuth } from "@/contexts/auth-context";
 
 export default function Home() {
   // Featured artworks (normally would be selected by an admin or algorithm)
@@ -17,6 +20,9 @@ export default function Home() {
   // Select the same artists as used in the matchmaking page
   const selectedArtistIds = ['1', '2', '3', '4']; // Mei Lin, David Wong, Sarah Chen, Michael Zhang
   const featuredArtists = mockArtists.filter(artist => selectedArtistIds.includes(artist.id));
+  
+  // Get the setUserType function from auth context
+  const { setUserType } = useAuth();
 
   return (
     <MainLayout>
@@ -32,7 +38,7 @@ export default function Home() {
             <div className="mb-8 inline-block">
               <h1 className="text-5xl md:text-7xl lg:text-8xl font-bold tracking-tight">
                 <span className="relative inline-block">
-                  ArtConnect
+                  Aura
                   <span className="absolute -bottom-2 left-0 right-0 h-3 bg-linear-to-r from-pink-400 to-purple-500 opacity-70 transform -rotate-1 rounded-full"></span>
                 </span>
               </h1>
@@ -50,7 +56,7 @@ export default function Home() {
       <section className="py-16 bg-white dark:bg-[#121225]">
         <div className="px-4 sm:px-6 lg:px-8">
           <h2 className="text-3xl font-bold text-center mb-12 text-indigo-700 dark:text-indigo-300">
-            Why Join ArtConnect?
+            Why Join Aura?
           </h2>
 
           <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
@@ -172,29 +178,27 @@ export default function Home() {
             Choose Your Experience
           </h2>
           <p className="text-lg mb-8 max-w-2xl mx-auto">
-            Select your role to get started with ArtConnect
+            Select your role to get started with Aura
           </p>
           <div className="flex flex-col sm:flex-row justify-center gap-6 sm:gap-10">
-            <Link href="/artists/auth" className="inline-block">
-              <Button
-                variant="primary"
-                size="lg"
-                className="bg-white text-indigo-600 hover:bg-indigo-50 shadow-lg px-10 flex items-center gap-2"
-              >
-                <Brush className="h-5 w-5" />
-                For Artists
-              </Button>
-            </Link>
-            <Link href="/buyers/auth" className="inline-block">
-              <Button
-                variant="primary"
-                size="lg"
-                className="bg-white text-pink-600 hover:bg-pink-50 shadow-lg px-10 flex items-center gap-2"
-              >
-                <Users className="h-5 w-5" />
-                For Buyers
-              </Button>
-            </Link>
+            <Button
+              variant="primary"
+              size="lg"
+              className="bg-white text-indigo-600 hover:bg-indigo-50 shadow-lg px-10 flex items-center gap-2"
+              onClick={() => setUserType("artist")}
+            >
+              <Brush className="h-5 w-5" />
+              For Artists
+            </Button>
+            <Button
+              variant="primary"
+              size="lg"
+              className="bg-white text-pink-600 hover:bg-pink-50 shadow-lg px-10 flex items-center gap-2"
+              onClick={() => setUserType("buyer")}
+            >
+              <Users className="h-5 w-5" />
+              For Buyers
+            </Button>
           </div>
         </div>
       </section>

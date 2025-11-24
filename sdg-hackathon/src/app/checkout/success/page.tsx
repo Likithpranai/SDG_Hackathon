@@ -184,7 +184,7 @@ export default function SuccessPage() {
       </head>
       <body>
         <div class="header">
-          <div class="logo">ArtConnect</div>
+          <div class="logo">Aura</div>
           <div class="receipt-id">Receipt: ${order.id}</div>
           <div>Date: ${new Date(order.date).toLocaleDateString()}</div>
         </div>
@@ -276,7 +276,7 @@ export default function SuccessPage() {
         
         <div class="footer">
           <p>Thank you for your purchase!</p>
-          <p>ArtConnect - Connecting Artists and Art Lovers</p>
+          <p>Aura - Connecting Artists and Art Lovers</p>
         </div>
         
         <button class="print-button" onclick="window.print()">Print Receipt</button>
